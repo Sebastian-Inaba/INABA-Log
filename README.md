@@ -31,8 +31,16 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Set up the workspace
-- Currently working on the design in figma
+- Set up the rest workspace(folders, files, etc..)
+- Finished the initial design(without fancy svg or canvas animations)
+
+#### Initial Design
+
+- The design is thought out to be simple to navigate with no big distraction from the users
+- However I wanted a dark theme design with allot of different colors to highlight content
+- Right now I'm playing around with a lot of different colors and they are a bit distracting
+
+![First Design without set background](/READMEImages/InitialDesign.png)
 
 ---
 
