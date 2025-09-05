@@ -34,6 +34,7 @@
 - dotenv
 - TypeScript
 - Nodemon
+- Supabase (image and pdf storage)
 
 **Utilities:**
 - Concurrently (run frontend + backend at the same time form root)
@@ -133,64 +134,176 @@
 ### API Routes
 
 #### Posts
-
-* <span style="color: #188038;">GET /api/posts</span> → list posts (filter by tag/date)
-* <span style="color: #188038;">GET /api/posts/\:id</span> → get single post
-* <span style="color: #188038;">POST /api/posts</span> → create post (admin only)
-* <span style="color: #188038;">PUT /api/posts/\:id</span> → update post (admin only)
-* <span style="color: #188038;">DELETE /api/posts/\:id</span> → delete post (admin only)
+- `GET /api/posts` → list posts (filter by tag/date)
+- `GET /api/posts/:id` → get single post
+- `POST /api/posts` → create post (admin only)
+- `PUT /api/posts/:id` → update post (admin only)
+- `DELETE /api/posts/:id` → delete post (admin only)
 
 #### Research
-
-* <span style="color: #188038;">GET /api/research</span> → list research entries
-* <span style="color: #188038;">GET /api/research/\:id</span> → get single research entry
-* <span style="color: #188038;">POST /api/research</span> → create research entry (admin only)
-* <span style="color: #188038;">PUT /api/research/\:id</span> → update research entry (admin only)
-* <span style="color: #188038;">DELETE /api/research/\:id</span> → delete research entry (admin only)
+- `GET /api/research` → list research entries
+- `GET /api/research/:id` → get single research entry
+- `POST /api/research` → create research entry (admin only)
+- `PUT /api/research/:id` → update research entry (admin only)
+- `DELETE /api/research/:id` → delete research entry (admin only)
 
 #### Auth
+- `POST /api/auth/login` → login admin
+- `GET /api/auth/me` → get current admin info
 
-* <span style="color: #188038;">POST /api/auth/login</span> → login admin (admin only)
-* <span style="color: #188038;">GET /api/auth/me</span> → get current admin info (admin only, Im the only admin so not sure if i should do this)
+#### Upload (Supabase Storage)
+- `POST /api/upload` → upload file to Supabase storage (admin only)
+- `DELETE /api/upload/:filename` → delete file from Supabase storage (admin only)
 
 ---
 
 ## Database Models
 
 ### Post Model
-
-* Model Name: Post
-* \_id: ObjectId
-* title: string
-* slug: string
-* content: string (Markdown)
-* category: string (coding, UX, etc.)
-* tags: string array
-* createdAt: Date
-* updatedAt: Date
-* featured: boolean (optional)
+- **Model Name:** Post
+- `_id`: ObjectId
+- `title`: string
+- `slug`: string
+- `content`: string (Markdown)
+- `category`: string (coding, UX, etc.)
+- `tags`: string array
+- `featuredImage`: string (Supabase storage URL)
+- `attachments`: string array (Supabase storage URLs)
+- `createdAt`: Date
+- `updatedAt`: Date
+- `featured`: boolean (optional)
 
 ### Research Model
-
-* Model Name: Research
-* \_id: ObjectId
-* title: string
-* author: string
-* abstract: string
-* content: string (Markdown)
-* references: string array (optional)
-* tags: string array
-* createdAt: Date
-* updatedAt: Date
-* featured: boolean (optional)
+- **Model Name:** Research
+- `_id`: ObjectId
+- `title`: string
+- `author`: string
+- `abstract`: string
+- `content`: string (Markdown)
+- `references`: string array (optional)
+- `tags`: string array
+- `featuredImage`: string (Supabase storage URL)
+- `attachments`: string array (Supabase storage URLs)
+- `createdAt`: Date
+- `updatedAt`: Date
+- `featured`: boolean (optional)
 
 ### User Model
+- **Model Name:** User (Admin Only)
+- `_id`: ObjectId
+- `username`: string
+- `passwordHash`: string
+- `role`: string ("admin")
 
-* Model Name: User (Admin Only)
-* \_id: ObjectId
-* username: string
-* passwordHash: string
-* role: string ("admin")
+---
+
+## Config
+
+### DB Configuration
+- MongoDB connection setup with Mongoose
+- Connection pooling optimization
+- Indexing strategy for posts and research collections
+
+### Environment Variables
+- `MONGODB_URI`
+- `PORT`
+- `JWT_SECRET`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_BUCKET`
+- `NODE_ENV`
+
+### Supabase Configuration
+- Supabase client initialization
+- Storage bucket configuration
+- File upload size limits
+- Allowed file types configuration
+
+---
+
+## Controllers
+
+### Post Controller
+- `getPosts` (with filtering and pagination)
+- `getPostById`
+- `createPost` (with image handling, link, code snippet area)
+- `updatePost` (with image handling, link, code snippet area)
+- `deletePost` (with associated file cleanup)
+
+### Research Controller
+- `getResearch` (with filtering and pagination)
+- `getResearchById`
+- `createResearch` (with image handling, link, code snippet area)
+- `updateResearch` (with image handling, link, code snippet area)
+- `deleteResearch` (with associated file cleanup)
+
+### Auth Controller
+- `login`
+- `getCurrentUser`
+- `logout` (optional, probably just set google api login on a timer so logout automatically)
+
+### Upload Controller
+- `uploadFile` (to Supabase storage)
+- `deleteFile` (from Supabase storage)
+- `validateFileType`
+- `generateSignedURLs` (for direct client access)
+
+### Admin Controller
+- `dashboardStats`(if i ever add any)
+- `contentManagement`
+
+---
+
+## Middleware
+
+### Auth Middleware
+- JWT verification
+- Admin role validation
+- Rate limiting for auth endpoints
+
+### Error Middleware
+- Global error handler
+- Validation error formatting
+- Supabase error handling
+
+### File Upload Middleware
+- Multer configuration for temp storage
+- File size validation
+- File type validation
+
+### Logging Middleware
+- Request logging
+- Error logging
+- Performance monitoring
+
+---
+
+## Utility Components for Animation (Frontend), not added yet
+
+### Animation Wrappers
+- `FadeInContainer` - for section fade-in animations
+- `SlideInWrapper` - for directional slide animations
+- `StaggeredList` - for staggered child animations
+
+### Interactive Components
+- `HoverScale` - scale transformation on hover
+- `TiltCard` - 3D tilt effect on cards
+- `GlowBorder` - neon glow effects for important elements
+
+### Text Animations
+- `TypewriterText` - typewriter effect component
+- `AnimatedUnderline` - animated underline for links
+- `TextReveal` - scroll-triggered text reveal
+
+### Scroll Effects
+- `ScrollProgress` - scroll progress indicator
+- `ParallaxSection` - parallax background effects
+- `ViewportTracker` - trigger animations when in viewport
+
+### Page Transitions
+- `RouteTransition` - smooth page transitions
+- `LoadingStates` - animated loading components
+- `AnimatedModal` - animated modal/overlay component
 
 ---
 

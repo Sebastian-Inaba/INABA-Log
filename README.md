@@ -31,16 +31,16 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Set up the rest workspace(folders, files, etc..)
-- Finished the initial design(without fancy svg or canvas animations)
+- Started setting up some of the backend and added some missing things
+- Finished full design example, however im not so sure about everything yet. It might look better after i add all the animations
 
-#### Initial Design
+#### Full Design Example (might not be final product)
 
 - The design is thought out to be simple to navigate with no big distraction from the users
 - However I wanted a dark theme design with allot of different colors to highlight content
 - Right now I'm playing around with a lot of different colors and they are a bit distracting
 
-![First Design without set background](/READMEImages/InitialDesign.png)
+![Full Design Example](/READMEImages/FullViewExampleOfDesigns.png)
 
 ---
 
