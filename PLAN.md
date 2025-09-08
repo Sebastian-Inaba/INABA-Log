@@ -13,6 +13,14 @@
 
 ---
 
+## Plan Status
+
+- I changed the models a bit
+- I added upload middleware 
+- I but most admin CRUD logic in the admin controller
+
+---
+
 ## INABA-LOG Project Plan
 
 ### Tech Stack (detailed)
@@ -136,64 +144,75 @@
 #### Posts
 - `GET /api/posts` → list posts (filter by tag/date)
 - `GET /api/posts/:id` → get single post
-- `POST /api/posts` → create post (admin only)
-- `PUT /api/posts/:id` → update post (admin only)
-- `DELETE /api/posts/:id` → delete post (admin only)
 
 #### Research
 - `GET /api/research` → list research entries
 - `GET /api/research/:id` → get single research entry
-- `POST /api/research` → create research entry (admin only)
-- `PUT /api/research/:id` → update research entry (admin only)
-- `DELETE /api/research/:id` → delete research entry (admin only)
 
 #### Auth
 - `POST /api/auth/login` → login admin
 - `GET /api/auth/me` → get current admin info
 
-#### Upload (Supabase Storage)
+#### Admin 
 - `POST /api/upload` → upload file to Supabase storage (admin only)
 - `DELETE /api/upload/:filename` → delete file from Supabase storage (admin only)
+- `POST /api/research` → create research entry (admin only)
+- `PUT /api/research/:id` → update research entry (admin only)
+- `DELETE /api/research/:id` → delete research entry (admin only)
+- `POST /api/posts` → create post (admin only)
+- `PUT /api/posts/:id` → update post (admin only)
+- `DELETE /api/posts/:id` → delete post (admin only)
 
 ---
 
-## Database Models
+# Database Models
 
-### Post Model
-- **Model Name:** Post
-- `_id`: ObjectId
-- `title`: string
-- `slug`: string
-- `content`: string (Markdown)
-- `category`: string (coding, UX, etc.)
-- `tags`: string array
-- `featuredImage`: string (Supabase storage URL)
-- `attachments`: string array (Supabase storage URLs)
-- `createdAt`: Date
-- `updatedAt`: Date
-- `featured`: boolean (optional)
+## Post Model
 
-### Research Model
-- **Model Name:** Research
-- `_id`: ObjectId
-- `title`: string
-- `author`: string
-- `abstract`: string
-- `content`: string (Markdown)
-- `references`: string array (optional)
-- `tags`: string array
-- `featuredImage`: string (Supabase storage URL)
-- `attachments`: string array (Supabase storage URLs)
-- `createdAt`: Date
-- `updatedAt`: Date
-- `featured`: boolean (optional)
+**Model Name:** Post  
+**Description:** Stores blog post content and metadata
 
-### User Model
-- **Model Name:** User (Admin Only)
-- `_id`: ObjectId
-- `username`: string
-- `passwordHash`: string
-- `role`: string ("admin")
+### Fields:
+- `_id`: ObjectId (auto-generated)
+- `title`: string (required)
+- `slug`: string (required, unique)
+- `author`: string (optional)
+- `description`: string (optional)
+- `content`: string (required, Markdown format)
+- `category`: string (required)
+- `tags`: string[] (optional, default: [])
+- `featuredImage`: string (optional, Supabase storage URL)
+- `featured`: boolean (optional, default: false)
+- `createdAt`: Date (auto-generated)
+- `updatedAt`: Date (auto-generated)
+
+## Research Model
+
+**Model Name:** Research  
+**Description:** Stores research/deep dive content with academic structure
+
+### Fields:
+- `_id`: ObjectId (auto-generated)
+- `title`: string (required)
+- `author`: string (required)
+- `abstract`: string (required)
+- `introduction`: string (optional)
+- `method`: string (optional)
+- `keyFindings`: string (optional)
+- `credibility`: string (optional)
+- `content`: string (required, Markdown format)
+- `references`: string[] (optional, default: [])
+- `tags`: string[] (optional, default: [])
+- `featuredImage`: string (optional, Supabase storage URL)
+- `attachments`: string[] (optional, default: [], PDF/document links)
+- `featured`: boolean (optional, default: false)
+- `createdAt`: Date (auto-generated)
+- `updatedAt`: Date (auto-generated)
+
+## User Model
+
+**Status:** Currently not implemented  
+**Authentication:** Using Google OAuth for single admin authentication
 
 ---
 
@@ -205,13 +224,18 @@
 - Indexing strategy for posts and research collections
 
 ### Environment Variables
-- `MONGODB_URI`
-- `PORT`
-- `JWT_SECRET`
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_BUCKET`
-- `NODE_ENV`
+- MONGODB_URI=
+- NODE_ENV=development(set to production in live)
+- SUPABASE_URL=
+- SUPABASE_ANON_KEY=
+- SUPABASE_SERVICE_ROLE_KEY=
+- SUPABASE_BUCKET_POSTS_IMAGE=
+- SUPABASE_BUCKET_RESEARCH_IMAGE=
+- SUPABASE_BUCKET_RESEARCH_ATTACHMENTS=
+- VITE_GOOGLE_CLIENT_ID= 
+- GOOGLE_CLIENT_ID=
+- ADMIN_EMAIL=
+- FRONTEND_URL=http://localhost:5173 (Change this to domain url)
 
 ### Supabase Configuration
 - Supabase client initialization
@@ -226,16 +250,10 @@
 ### Post Controller
 - `getPosts` (with filtering and pagination)
 - `getPostById`
-- `createPost` (with image handling, link, code snippet area)
-- `updatePost` (with image handling, link, code snippet area)
-- `deletePost` (with associated file cleanup)
 
 ### Research Controller
 - `getResearch` (with filtering and pagination)
 - `getResearchById`
-- `createResearch` (with image handling, link, code snippet area)
-- `updateResearch` (with image handling, link, code snippet area)
-- `deleteResearch` (with associated file cleanup)
 
 ### Auth Controller
 - `login`
@@ -249,15 +267,19 @@
 - `generateSignedURLs` (for direct client access)
 
 ### Admin Controller
-- `dashboardStats`(if i ever add any)
 - `contentManagement`
+- `createPost` (link, code snippet area)
+- `updatePost` (link, code snippet area)
+- `deletePost` (with associated file cleanup)
+- `createResearch` (link, code snippet area)
+- `updateResearch` (link, code snippet area)
+- `deleteResearch` (with associated file cleanup)
 
 ---
 
 ## Middleware
 
 ### Auth Middleware
-- JWT verification
 - Admin role validation
 - Rate limiting for auth endpoints
 
@@ -370,3 +392,7 @@
     - featured/highlighted posts with subtle hover effects and glow accents
 * Header: 
     - shrinks/collapses on scroll down, reappears on scroll up
+
+# Future Functionality
+- post comments
+- dashboardStats 

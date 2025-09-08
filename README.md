@@ -31,8 +31,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Started setting up some of the backend and added some missing things
-- Finished full design example, however im not so sure about everything yet. It might look better after i add all the animations
+- Set up most of the backend except routes (not tested)
+
+- Things that need to be done in backend: field selection for the get controllers, route setup and then test everything, CRUD, auth, file handling, middlewares, filtering, etc...
 
 #### Full Design Example (might not be final product)
 
