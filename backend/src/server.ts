@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import postsRoutes from './routes/PostRoutes';
+import researchRoutes from './routes/ResearchRoutes';
+import adminRoutes from './routes/AuthRoutes';
 import { connectDB, disconnectDB } from './config/DB';
 import { errorHandler } from './middleware/ErrorMiddleware';
 import { requestLogger } from './middleware/LoggingMiddleware';
@@ -31,9 +34,6 @@ app.use(
 // Custom logging middleware
 app.use(requestLogger);
 
-// Custom error middleware
-app.use(errorHandler);
-
 // Global limiter (for public endpoints)
 export const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -49,7 +49,15 @@ export const adminRateLimiter = rateLimit({
 });
 
 // ---------------- Routes ---------------------------------------------- //
-app.use('/api');
+// Public routes
+app.use('/api/posts', globalLimiter, postsRoutes);
+app.use('/api/research', globalLimiter, researchRoutes);
+
+// Admin routes (protected)
+app.use('/api/admin', adminRateLimiter, adminRoutes);
+
+// Custom error middleware (should be after routes)
+app.use(errorHandler);
 
 // ---------------- DB + Server ----------------------------------------- //
 connectDB()

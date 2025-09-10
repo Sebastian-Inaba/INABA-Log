@@ -4,6 +4,10 @@ import { Request, Response, NextFunction } from 'express'; // express types for 
 import { env } from '../config/env';
 import createHttpError from 'http-errors'; // error thrower instead of res.status..
 
+// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
+// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
+// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
+
 const client = new OAuth2Client(env.google.clientId);
 
 // request type extension
@@ -16,6 +20,13 @@ export interface AuthenticatedRequest extends Request {
 // Admin Guard: ensures the request has a valid Google ID token
 export async function requireGoogleAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
+        // TEMPORARY: bypass Google verification for testing
+        req.user = {
+            email: env.google.adminEmail, // or any test email
+        };
+        return next();
+
+        /*
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             throw createHttpError(401, 'Missing or invalid token');
@@ -42,6 +53,7 @@ export async function requireGoogleAuth(req: AuthenticatedRequest, res: Response
         };
 
         next();
+        */
     } catch (err) {
         next(err);
     }

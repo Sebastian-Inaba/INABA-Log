@@ -10,7 +10,7 @@ export interface UploadResult {
 }
 
 // Upload file (returns info)
-export const uploadFile = async (req: Request): Promise<UploadResult> => {
+export const uploadFile = async (req: Request, bucketName: keyof typeof buckets): Promise<UploadResult> => {
     if (!req.file) throw createHttpError(400, 'No file uploaded');
 
     const { originalname, mimetype, buffer } = req.file;
@@ -25,10 +25,9 @@ export const uploadFile = async (req: Request): Promise<UploadResult> => {
         contentType = 'image/webp';
     }
 
-    const targetBucket = req.params.bucket as keyof typeof buckets;
-    if (!buckets[targetBucket]) throw createHttpError(400, 'Invalid bucket');
+    if (!buckets[bucketName]) throw createHttpError(400, 'Invalid bucket');
 
-    const { error } = await supabase.storage.from(buckets[targetBucket]).upload(finalName, finalBuffer, {
+    const { error } = await supabase.storage.from(buckets[bucketName]).upload(finalName, finalBuffer, {
         contentType,
         cacheControl: '3600',
         upsert: true,
@@ -36,7 +35,7 @@ export const uploadFile = async (req: Request): Promise<UploadResult> => {
 
     if (error) throw createHttpError(500, error.message);
 
-    const { data } = supabase.storage.from(buckets[targetBucket]).getPublicUrl(finalName);
+    const { data } = supabase.storage.from(buckets[bucketName]).getPublicUrl(finalName);
 
     if (!data?.publicUrl) throw createHttpError(500, 'Failed to get public URL');
 
