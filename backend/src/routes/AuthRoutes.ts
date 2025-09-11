@@ -11,7 +11,7 @@ import {
     toggleFeatured,
 } from '../controllers/AdminController';
 import { requireGoogleAuth } from '../middleware/AuthMiddleware';
-import { uploadMiddleware } from '../middleware/UploadMiddleware';
+import uploadMiddleware from '../middleware/UploadMiddleware';
 
 const router = Router();
 
@@ -27,7 +27,6 @@ router.delete('/posts/:id', requireGoogleAuth, deletePost);
 
 // -------------------- RESEARCH ------------------------------------------------------------------- //
 
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
 // Create Research
 router.post(
     '/research',
@@ -52,7 +51,6 @@ router.patch(
 
 // Delete Research
 router.delete('/research/:id', requireGoogleAuth, deleteResearch);
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
 
 // -------------------- ADMIN PANEL ----------------------------------------------------------------- //
 // Get all content (posts + research)

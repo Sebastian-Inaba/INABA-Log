@@ -4,11 +4,6 @@ import createHttpError from 'http-errors';
 import { Post, IPost } from '../models/PostModel';
 import { Research, IResearch } from '../models/ResearchModel';
 import { uploadFile, removeFile, UploadResult } from '../controllers/UploadController';
-import { error } from 'console';
-
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
 
 // -------------------- POSTS -------------------------------------------------------------------- //
 
@@ -16,10 +11,10 @@ import { error } from 'console';
 export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, content, category, tags, featured, author, description } = req.body;
-        let featuredImage = '';
+        let featuredImage: string | null = null;
 
         if (req.file) {
-            const uploaded: UploadResult = await uploadFile(req, 'posts');
+            const uploaded: UploadResult = await uploadFile(req.file, 'posts');
             featuredImage = uploaded.publicUrl;
         }
 
@@ -61,7 +56,7 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
                 await removeFile('posts', filename);
             }
 
-            const uploaded: UploadResult = await uploadFile(req, 'posts');
+            const uploaded: UploadResult = await uploadFile(req.file, 'posts');
             console.log('Uploaded new file:', uploaded.filename, 'Public URL:', uploaded.publicUrl);
 
             post.featuredImage = uploaded.filename;
@@ -131,11 +126,21 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
     try {
         const { title, author, abstract, introduction, method, keyFindings, credibility, content, references, tags, featured } = req.body;
 
-        let featuredImage = '';
+        let featuredImage: string | null = null;
+        let pdfAttachment: string | null = null;
 
-        if (req.file) {
-            const uploaded: UploadResult = await uploadFile(req, 'research');
-            featuredImage = uploaded.publicUrl;
+        // Handle featured image
+        if (req.files && (req.files as any).featuredImage?.length) {
+            const imageFile = (req.files as any).featuredImage[0];
+            const uploadedImage: UploadResult = await uploadFile(imageFile, 'research');
+            featuredImage = uploadedImage.publicUrl;
+        }
+
+        // Handle PDF attachment
+        if (req.files && (req.files as any).pdfAttachment?.length) {
+            const pdfFile = (req.files as any).pdfAttachment[0];
+            const uploadedPdf: UploadResult = await uploadFile(pdfFile, 'attachments');
+            pdfAttachment = uploadedPdf.publicUrl;
         }
 
         const newResearch = await Research.create({
@@ -150,7 +155,7 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
             references: references || [],
             tags: tags || [],
             featuredImage,
-            attachments: [],
+            pdfAttachment,
             featured: !!featured,
         });
 
@@ -164,38 +169,67 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
 export const updateResearch = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const { title, author, abstract, introduction, method, keyFindings, credibility, content, references, tags, featured } = req.body;
+        const {
+            title,
+            author,
+            abstract,
+            introduction,
+            method,
+            keyFindings,
+            credibility,
+            content,
+            references,
+            tags,
+            featured,
+            removeImage,
+            removePdf,
+        } = req.body;
 
         const research: IResearch | null = await Research.findById(id);
         if (!research) throw createHttpError(404, 'Research not found');
 
-        if (req.file) {
+        // Handle featured image update
+        if (req.files && (req.files as any).featuredImage?.length) {
             if (research.featuredImage) {
-                const urlParts = research.featuredImage.split('/');
-                const encodedFilename = urlParts.pop()!;
-                const filename = decodeURIComponent(encodedFilename);
-                console.log('Deleting old research image:', filename);
-                await removeFile('research', filename);
+                const oldFile = decodeURIComponent(research.featuredImage.split('/').pop()!);
+                console.log('Deleting old research image:', oldFile);
+                await removeFile('research', oldFile);
             }
 
-            const uploaded: UploadResult = await uploadFile(req, 'research');
-            console.log('Uploaded new research image:', uploaded.filename, 'Public URL:', uploaded.publicUrl);
+            const imageFile = (req.files as any).featuredImage[0];
+            const uploadedImage: UploadResult = await uploadFile(imageFile, 'research');
+            console.log('Uploaded new research image:', uploadedImage.filename, uploadedImage.publicUrl);
 
-            research.featuredImage = uploaded.filename;
-        } else if (req.body.removeImage === 'true') {
-            if (research.featuredImage) {
-                const urlParts = research.featuredImage.split('/');
-                const encodedFilename = urlParts.pop()!;
-                const filename = decodeURIComponent(encodedFilename);
-                console.log('Deleting research image only:', filename);
-                await removeFile('research', filename);
-
-                research.featuredImage = null;
-            } else {
-                console.log('No research image to delete');
-            }
+            research.featuredImage = uploadedImage.publicUrl;
+        } else if (removeImage === 'true' && research.featuredImage) {
+            const oldFile = decodeURIComponent(research.featuredImage.split('/').pop()!);
+            console.log('Deleting research image only:', oldFile);
+            await removeFile('research', oldFile);
+            research.featuredImage = null;
         } else {
-            console.log('No new image uploaded and no delete flag set');
+            console.log('No new image uploaded and no delete requested');
+        }
+
+        // Handle PDF attachment update
+        if (req.files && (req.files as any).pdfAttachment?.length) {
+            if (research.pdfAttachment) {
+                const oldPdf = decodeURIComponent(research.pdfAttachment.split('/').pop()!);
+                console.log('Deleting old PDF attachment:', oldPdf);
+                await removeFile('attachments', oldPdf);
+            }
+
+            const pdfFile = (req.files as any).pdfAttachment[0];
+            const uploadedPdf: UploadResult = await uploadFile(pdfFile, 'attachments');
+            console.log('Uploaded new PDF attachment:', uploadedPdf.filename, uploadedPdf.publicUrl);
+
+            research.pdfAttachment = uploadedPdf.publicUrl;
+        } else if (removePdf === 'true' && research.pdfAttachment) {
+            const oldPdf = decodeURIComponent(research.pdfAttachment.split('/').pop()!);
+            console.log('Deleting PDF attachment only:', oldPdf);
+            await removeFile('attachments', oldPdf);
+            research.pdfAttachment = null;
+        } else {
+            console.log('No new PDF uploaded and no delete requested');
         }
 
         if (title) research.title = title;
@@ -225,17 +259,28 @@ export const deleteResearch = async (req: Request, res: Response, next: NextFunc
         const research = await Research.findById(id);
         if (!research) throw createHttpError(404, 'Research not found');
 
+        // Delete featured image
         if (research.featuredImage) {
             const urlParts = research.featuredImage.split('/');
             const encodedFilename = urlParts.pop()!;
             const filename = decodeURIComponent(encodedFilename);
             console.log('Deleting research image from bucket:', filename);
-
             await removeFile('research', filename);
-
             research.featuredImage = null;
         } else {
             console.log('No research image to delete');
+        }
+
+        // Delete PDF attachment
+        if (research.pdfAttachment) {
+            const urlParts = research.pdfAttachment.split('/');
+            const encodedFilename = urlParts.pop()!;
+            const filename = decodeURIComponent(encodedFilename);
+            console.log('Deleting PDF attachment from bucket:', filename);
+            await removeFile('attachments', filename);
+            research.pdfAttachment = null;
+        } else {
+            console.log('No PDF attachment to delete');
         }
 
         await Research.findByIdAndDelete(id);

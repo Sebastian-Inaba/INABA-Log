@@ -10,10 +10,10 @@ export interface UploadResult {
 }
 
 // Upload file (returns info)
-export const uploadFile = async (req: Request, bucketName: keyof typeof buckets): Promise<UploadResult> => {
-    if (!req.file) throw createHttpError(400, 'No file uploaded');
+export const uploadFile = async (file: Express.Multer.File, bucketName: keyof typeof buckets): Promise<UploadResult> => {
+    if (!file) throw createHttpError(400, 'No file uploaded');
 
-    const { originalname, mimetype, buffer } = req.file;
+    const { originalname, mimetype, buffer } = file;
     let finalBuffer = buffer;
     let finalName = originalname;
     let contentType = mimetype;

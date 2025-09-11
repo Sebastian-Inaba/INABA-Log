@@ -4,10 +4,6 @@ import { Request, Response, NextFunction } from 'express'; // express types for 
 import { env } from '../config/env';
 import createHttpError from 'http-errors'; // error thrower instead of res.status..
 
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-// -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-
 const client = new OAuth2Client(env.google.clientId);
 
 // request type extension

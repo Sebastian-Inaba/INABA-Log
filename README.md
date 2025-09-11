@@ -31,11 +31,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Post and research(deep dives) GET route in backend tested and working
+- Backend working with the auth2 bypass for all admin routes
 
-- Admin backend still being altered and tested, having trouble with including PDF's logic in to the code and images stopped being deleted on replacement even tho they worked when i started testing. 
-
-- Testing is taking a bit longer then i expected, its the first time im trying full testing from backend without any frontend implementation. Also google auth 2.0 was to annoying to test with there playground so i just ended up disabling id_token and using access_token directly from postman to do testing. 
+- Next up is frontend, with backend fixes if needed
 
 #### Full Design Example (might not be final product)
 
