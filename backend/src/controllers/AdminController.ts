@@ -4,6 +4,7 @@ import createHttpError from 'http-errors';
 import { Post, IPost } from '../models/PostModel';
 import { Research, IResearch } from '../models/ResearchModel';
 import { uploadFile, removeFile, UploadResult } from '../controllers/UploadController';
+import { error } from 'console';
 
 // -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
 // -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
@@ -43,20 +44,40 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const { title, content, category, tags, featured, author, description, oldFilename } = req.body;
+        const { title, content, category, tags, featured, author, description } = req.body;
 
         const post: IPost | null = await Post.findById(id);
         if (!post) throw createHttpError(404, 'Post not found');
 
         if (req.file) {
-            // remove the current featured image if it exists
+            // Replace image
+            console.log('Old featured image (full URL):', post.featuredImage);
+
             if (post.featuredImage) {
-                const filename = post.featuredImage.split('/').pop()!;
+                const urlParts = post.featuredImage.split('/');
+                const encodedFilename = urlParts.pop()!;
+                const filename = decodeURIComponent(encodedFilename); // ✅ decode URL
+                console.log('Deleting old file from bucket:', filename);
                 await removeFile('posts', filename);
             }
 
             const uploaded: UploadResult = await uploadFile(req, 'posts');
-            post.featuredImage = uploaded.publicUrl;
+            console.log('Uploaded new file:', uploaded.filename, 'Public URL:', uploaded.publicUrl);
+
+            post.featuredImage = uploaded.filename;
+        } else if (req.body.removeImage === 'true') {
+            // Delete only
+            if (post.featuredImage) {
+                const urlParts = post.featuredImage.split('/');
+                const encodedFilename = urlParts.pop()!;
+                const filename = decodeURIComponent(encodedFilename);
+                console.log('Deleting image without replacement:', filename);
+                await removeFile('posts', filename);
+                post.featuredImage = null;
+            }
+        } else {
+            // No change
+            console.log('No image uploaded and no delete requested — keeping current image');
         }
 
         if (title) post.title = title;
@@ -83,8 +104,16 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
         if (!post) throw createHttpError(404, 'Post not found');
 
         if (post.featuredImage) {
-            const filename = post.featuredImage.split('/').pop()!;
+            const urlParts = post.featuredImage.split('/');
+            const encodedFilename = urlParts.pop()!;
+            const filename = decodeURIComponent(encodedFilename);
+
+            console.log('Deleting featured image from bucket:', filename);
             await removeFile('posts', filename);
+
+            post.featuredImage = null;
+        } else {
+            console.log('No featured image to delete');
         }
 
         await Post.findByIdAndDelete(id);
@@ -135,33 +164,38 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
 export const updateResearch = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const {
-            title,
-            author,
-            abstract,
-            introduction,
-            method,
-            keyFindings,
-            credibility,
-            content,
-            references,
-            tags,
-            featured,
-            oldFilename,
-        } = req.body;
+        const { title, author, abstract, introduction, method, keyFindings, credibility, content, references, tags, featured } = req.body;
 
         const research: IResearch | null = await Research.findById(id);
         if (!research) throw createHttpError(404, 'Research not found');
 
         if (req.file) {
-            // remove the current featured image if it exists
             if (research.featuredImage) {
-                const filename = research.featuredImage.split('/').pop()!;
+                const urlParts = research.featuredImage.split('/');
+                const encodedFilename = urlParts.pop()!;
+                const filename = decodeURIComponent(encodedFilename);
+                console.log('Deleting old research image:', filename);
                 await removeFile('research', filename);
             }
 
             const uploaded: UploadResult = await uploadFile(req, 'research');
-            research.featuredImage = uploaded.publicUrl;
+            console.log('Uploaded new research image:', uploaded.filename, 'Public URL:', uploaded.publicUrl);
+
+            research.featuredImage = uploaded.filename;
+        } else if (req.body.removeImage === 'true') {
+            if (research.featuredImage) {
+                const urlParts = research.featuredImage.split('/');
+                const encodedFilename = urlParts.pop()!;
+                const filename = decodeURIComponent(encodedFilename);
+                console.log('Deleting research image only:', filename);
+                await removeFile('research', filename);
+
+                research.featuredImage = null;
+            } else {
+                console.log('No research image to delete');
+            }
+        } else {
+            console.log('No new image uploaded and no delete flag set');
         }
 
         if (title) research.title = title;
@@ -192,8 +226,16 @@ export const deleteResearch = async (req: Request, res: Response, next: NextFunc
         if (!research) throw createHttpError(404, 'Research not found');
 
         if (research.featuredImage) {
-            const filename = research.featuredImage.split('/').pop()!;
+            const urlParts = research.featuredImage.split('/');
+            const encodedFilename = urlParts.pop()!;
+            const filename = decodeURIComponent(encodedFilename);
+            console.log('Deleting research image from bucket:', filename);
+
             await removeFile('research', filename);
+
+            research.featuredImage = null;
+        } else {
+            console.log('No research image to delete');
         }
 
         await Research.findByIdAndDelete(id);

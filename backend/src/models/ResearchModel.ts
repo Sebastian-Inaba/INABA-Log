@@ -13,8 +13,8 @@ export interface IResearch extends Document {
     content: string; // markdown
     references?: string[];
     tags: string[];
-    featuredImage?: string; // Supabase storage URL
-    attachments?: string[]; // PDF download
+    featuredImage?: string | null; // Supabase storage URL
+    pdfAttachment?: string | null; // PDF download
     featured?: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -42,8 +42,8 @@ const ResearchSchema = new Schema<IResearch>(
         content: { type: String, required: true },
         references: { type: [String], default: [] },
         tags: { type: [String], default: [] },
-        featuredImage: { type: String },
-        attachments: { type: [String], default: [] },
+        featuredImage: { type: String, default: null },
+        pdfAttachment: { type: String, default: null },
         featured: { type: Boolean, default: false },
     },
     { timestamps: true },

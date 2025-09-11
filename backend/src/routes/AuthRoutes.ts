@@ -29,15 +29,30 @@ router.delete('/posts/:id', requireGoogleAuth, deletePost);
 
 // -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
 // Create Research
-router.post('/research', requireGoogleAuth, uploadMiddleware.single('file'), createResearch);
+router.post(
+    '/research',
+    requireGoogleAuth,
+    uploadMiddleware.fields([
+        { name: 'featuredImage', maxCount: 1 },
+        { name: 'pdfAttachment', maxCount: 1 },
+    ]),
+    createResearch,
+);
 
 // Update Research
-router.patch('/research/:id', requireGoogleAuth, uploadMiddleware.single('file'), updateResearch);
+router.patch(
+    '/research/:id',
+    requireGoogleAuth,
+    uploadMiddleware.fields([
+        { name: 'featuredImage', maxCount: 1 },
+        { name: 'pdfAttachment', maxCount: 1 },
+    ]),
+    updateResearch,
+);
 
 // Delete Research
 router.delete('/research/:id', requireGoogleAuth, deleteResearch);
 // -------------------- IN TESTING ---------------------------------------------------------------------------------------------- //
-
 
 // -------------------- ADMIN PANEL ----------------------------------------------------------------- //
 // Get all content (posts + research)

@@ -9,7 +9,7 @@ export interface IPost extends Document {
     content: string; // markdown
     category: string;
     tags: string[];
-    featuredImage?: string; // Supabase storage URL
+    featuredImage?: string | null; // Supabase storage URL
     featured?: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -33,7 +33,7 @@ const PostSchema = new Schema<IPost>(
         content: { type: String, required: true },
         category: { type: String, required: true },
         tags: { type: [String], default: [] },
-        featuredImage: { type: String },
+        featuredImage: { type: String, default: null },
         featured: { type: Boolean, default: false },
     },
     { timestamps: true },
