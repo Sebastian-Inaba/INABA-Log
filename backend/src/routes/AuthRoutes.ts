@@ -11,9 +11,28 @@ import {
     toggleFeatured,
 } from '../controllers/AdminController';
 import { requireGoogleAuth } from '../middleware/AuthMiddleware';
+import { login, logout, getCurrentUser } from '../controllers/AuthController';
 import uploadMiddleware from '../middleware/UploadMiddleware';
+import rateLimit from 'express-rate-limit';
 
 const router = Router();
+
+// Admin/write limiter (for admin endpoints)
+export const RateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // max 20 requests per 15 min per IP
+    message: 'Too many admin requests, please try again later.',
+});
+
+// -------------------- AUTH ------------------------------------------------------------------------ //
+// Login with Google - sets id cookie
+router.post('/login', RateLimiter, requireGoogleAuth, login);
+
+// Logout - clears id cookie
+router.post('/logout', logout);
+
+// Get current user - checks cookie
+router.get('/me', requireGoogleAuth, getCurrentUser);
 
 // -------------------- POSTS ---------------------------------------------------------------------- //
 // Create Post

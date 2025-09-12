@@ -14,8 +14,8 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 (for now)
 * **Frontend:** React + TypeScript + Tailwind CSS
 * **Backend:** Node.js + Express + TypeScript
-* **Database:** MongoDB
-* **Other Libraries:** react-router-dom, react-markdown(maybe)
+* **Database:** MongoDB * Supabase
+* **Other Tools:** react-router-dom, cookie-parser, prettier, axios react-markdown(maybe)
 
 **Key Features:**
 
@@ -31,9 +31,11 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Backend working with the auth2 bypass for all admin routes
+- Initial frontend setup with backend connection
 
-- Next up is frontend, with backend fixes if needed
+- Google auth i setup but with no refresh token 
+
+- Added some things in backend which i forgot or didn't change, mainly forgot a cookie parser and change the server cors ulr to use the env config
 
 #### Full Design Example (might not be final product)
 

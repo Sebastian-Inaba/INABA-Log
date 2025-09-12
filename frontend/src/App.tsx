@@ -1,9 +1,16 @@
-function App() {
-  return (
-    <>
-    null
-    </>
-  )
+import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
+import { routesConfig } from './routes/routes';
+
+function AppRoutes() {
+    return useRoutes(routesConfig);
 }
 
-export default App
+function App() {
+    return (
+        <Router>
+            <AppRoutes />
+        </Router>
+    );
+}
+
+export default App;

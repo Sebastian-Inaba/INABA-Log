@@ -1,12 +1,14 @@
 // SERVER
 import express from 'express';
 import dotenv from 'dotenv';
+import { env } from './config/env';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import postsRoutes from './routes/PostRoutes';
 import researchRoutes from './routes/ResearchRoutes';
 import adminRoutes from './routes/AuthRoutes';
+import cookieParser from 'cookie-parser';
 import { connectDB, disconnectDB } from './config/DB';
 import { errorHandler } from './middleware/ErrorMiddleware';
 import { requestLogger } from './middleware/LoggingMiddleware';
@@ -17,6 +19,9 @@ const PORT = process.env.PORT || 5000;
 
 // ---------------- Middleware ------------------------------------------ //
 
+// Parse cookie req
+app.use(cookieParser());
+
 // Parse JSON requests
 app.use(express.json());
 
@@ -26,8 +31,10 @@ app.use(helmet());
 // Enable CORS (only allow frontend domain in production)
 app.use(
     cors({
-        origin: process.env.frontendUrl,
-        credentials: true, // allow cookies/authorization headers
+        origin: env.frontendUrl,
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     }),
 );
 
@@ -41,20 +48,13 @@ export const globalLimiter = rateLimit({
     message: 'Too many requests, please try again later.',
 });
 
-// Admin/write limiter (for admin endpoints)
-export const adminRateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 20, // max 20 requests per 15 min per IP
-    message: 'Too many admin requests, please try again later.',
-});
-
 // ---------------- Routes ---------------------------------------------- //
 // Public routes
 app.use('/api/posts', globalLimiter, postsRoutes);
 app.use('/api/research', globalLimiter, researchRoutes);
 
 // Admin routes (protected)
-app.use('/api/admin', adminRateLimiter, adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Custom error middleware (should be after routes)
 app.use(errorHandler);

@@ -31,7 +31,7 @@ export const login = async (req: AuthenticatedRequest, res: Response, next: Next
         res.cookie(COOKIE_NAME, JSON.stringify(req.user), {
             httpOnly: true,
             secure: env.nodeEnv === 'production', // when node env is set to production (true)
-            sameSite: 'strict',
+            sameSite: env.nodeEnv === 'production' ? 'none' : 'lax', // changed to work with cross site, can prob just set to none
             maxAge: COOKIE_MAX_AGE,
             path: '/',
         });
@@ -45,13 +45,13 @@ export const login = async (req: AuthenticatedRequest, res: Response, next: Next
     }
 };
 
-// logout (Its here but not sure if i will add a logout button or just call a function when inactive)
+// logout
 export const logout = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.clearCookie(COOKIE_NAME, {
             httpOnly: true,
             secure: env.nodeEnv === 'production', // when node env is set to production (true)
-            sameSite: 'strict',
+            sameSite: env.nodeEnv === 'production' ? 'none' : 'lax', // changed to work with cross site, can prob just set to none
             path: '/',
         });
 

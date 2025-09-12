@@ -1,5 +1,6 @@
 // error middleware
 import { Request, Response, NextFunction } from 'express';
+import { env } from '../config/env';
 
 // error type extension
 interface ErrorWithStatus extends Error {
@@ -15,6 +16,6 @@ export const errorHandler = (err: ErrorWithStatus, req: Request, res: Response, 
     res.status(statusCode).json({
         success: false,
         message: err.message,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+        stack: env.nodeEnv === 'development' ? err.stack : undefined,
     });
 };

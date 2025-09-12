@@ -16,13 +16,27 @@ export interface AuthenticatedRequest extends Request {
 // Admin Guard: ensures the request has a valid Google ID token
 export async function requireGoogleAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
+        /*
         // TEMPORARY: bypass Google verification for testing
         req.user = {
             email: env.google.adminEmail, // or any test email
         };
         return next();
+        */
 
-        /*
+        if (req.cookies && req.cookies.inaba_admin) {
+            try {
+                const userData = JSON.parse(req.cookies.inaba_admin);
+                if (userData.email === env.google.adminEmail) {
+                    req.user = userData;
+                    return next();
+                }
+            } catch (e) {
+                // Cookie exists but is invalid, continue to check Authorization header
+                console.warn('Invalid session cookie:', e);
+            }
+        }
+
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             throw createHttpError(401, 'Missing or invalid token');
@@ -49,7 +63,6 @@ export async function requireGoogleAuth(req: AuthenticatedRequest, res: Response
         };
 
         next();
-        */
     } catch (err) {
         next(err);
     }

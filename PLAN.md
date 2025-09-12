@@ -15,9 +15,9 @@
 
 ## Plan Status
 
-- I changed the models a bit
-- I added upload middleware 
-- I but most admin CRUD logic in the admin controller
+- Backend setup
+
+- Initial Frontend setup 
 
 ---
 
@@ -33,16 +33,23 @@
 - TypeScript
 - Markdown support(not sure which to use yet)
 - ESLint
+- Axios
 
 **Backend:**
 - Node.js
 - Express
-- Mongoose
-- CORS
-- dotenv
 - TypeScript
-- Nodemon
-- Supabase (image and pdf storage)
+- Mongoose (MongoDB ORM)
+- CORS
+- dotenv 
+- Nodemon 
+- Supabase 
+- Helmet 
+- express-rate-limit 
+- cookie-parser 
+- multer 
+- sharp 
+- google-auth-library 
 
 **Utilities:**
 - Concurrently (run frontend + backend at the same time form root)
@@ -149,11 +156,7 @@
 - `GET /api/research` → list research entries
 - `GET /api/research/:id` → get single research entry
 
-#### Auth
-- `POST /api/auth/login` → login admin
-- `GET /api/auth/me` → get current admin info
-
-#### Admin 
+#### Auth 
 - `POST /api/upload` → upload file to Supabase storage (admin only)
 - `DELETE /api/upload/:filename` → delete file from Supabase storage (admin only)
 - `POST /api/research` → create research entry (admin only)
@@ -162,6 +165,9 @@
 - `POST /api/posts` → create post (admin only)
 - `PUT /api/posts/:id` → update post (admin only)
 - `DELETE /api/posts/:id` → delete post (admin only)
+- `POST /api/admin/login` → login with Google (sets `inaba_admin` cookie)
+- `POST /api/admin/logout` → logout (clears `inaba_admin` cookie)
+- `GET /api/admin/me` → get current user info (checks `inaba_admin` cookie)
 
 ---
 
@@ -204,7 +210,7 @@
 - `references`: string[] (optional, default: [])
 - `tags`: string[] (optional, default: [])
 - `featuredImage`: string (optional, Supabase storage URL)
-- `attachments`: string[] (optional, default: [], PDF/document links)
+- `pdfAttachment`: string[] (optional, default: [], PDF/document links)
 - `featured`: boolean (optional, default: false)
 - `createdAt`: Date (auto-generated)
 - `updatedAt`: Date (auto-generated)
@@ -236,6 +242,7 @@
 - GOOGLE_CLIENT_ID=
 - ADMIN_EMAIL=
 - FRONTEND_URL=http://localhost:5173 (Change this to domain url)
+- VITE_BACKEND_URL=http://localhost:5000 (Change this to backend url)
 
 ### Supabase Configuration
 - Supabase client initialization
@@ -396,3 +403,4 @@
 # Future Functionality
 - post comments
 - dashboardStats 
+- refresh tokens with server side tracking
