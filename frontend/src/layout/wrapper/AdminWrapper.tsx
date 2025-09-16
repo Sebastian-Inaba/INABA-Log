@@ -7,12 +7,20 @@ interface AdminWrapperProps {
     children: ReactNode;
 }
 
-// Used to check auth before admin page
+// Checks auth, loader and redirect
 export function AdminWrapper({ children }: AdminWrapperProps) {
     const { user, loading } = UseAuth();
 
-    if (loading) return <p>Loading...</p>; // basic loader for now, will make a spinner component in the future
-    if (!user) return <Navigate to="/login" replace />;
+    if (!user && !loading) return <Navigate to="/login" replace />;
 
-    return <>{children}</>;
+    return (
+        <div className="relative w-full h-full">
+            {children}
+            {loading && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-opacity-50">
+                    <p className="text-white text-lg font-medium">Loading...</p>
+                </div>
+            )}
+        </div>
+    );
 }

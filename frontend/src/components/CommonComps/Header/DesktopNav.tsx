@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import type { RouteConfig } from '../../../routes/routes';
 
 type DesktopNavProps = {
-    navItems: RouteConfig[];      
-    navFont: string;              
-    onItemClick?: () => void;     
+    navItems: RouteConfig[];
+    navFont: string;
+    onItemClick?: () => void;
 };
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems, navFont, onItemClick }) => {
@@ -55,12 +55,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems, navFont, onIte
                         >
                             {/* icon */}
                             {route.icon && (
-                                <img
-                                    src={route.icon}
-                                    alt={route.iconLabel}
-                                    className="w-5 h-5 flex-shrink-0 ml-0.5"
-                                    loading="lazy"
-                                />
+                                <img src={route.icon} alt={route.iconLabel} className="w-5 h-5 flex-shrink-0 ml-0.5" loading="lazy" />
                             )}
                             {/* Label text */}
                             <span

@@ -12,10 +12,7 @@ type HeaderProps = {
 };
 
 export const Header: React.FC<HeaderProps> = ({ logoFont = 'Poppins', navFont = 'Lato' }) => {
-    const navItems: RouteConfig[] = useMemo(
-        () => routesConfig[0].children?.filter(r => r.showInNav) ?? [],
-        []
-    );
+    const navItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     return (
         <header className="w-full max-w-6xl mx-auto flex items-center justify-between px-10 py-4 relative">

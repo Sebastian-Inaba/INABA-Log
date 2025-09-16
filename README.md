@@ -31,11 +31,11 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Fixed header but added some to do problems for later at the bottom of PLAN.md
+- Fixed Footer and some other small things
 
-- Fixed app Layout
+- Encountered a problem on Firefox, when hovering interactive elements they flash to pointer but on Chrome it works
 
-- Fixed Fonts
+- Prepared admin page layout
 
 #### Full Design Example (might not be final product)
 

@@ -14,6 +14,20 @@ import { AuthProvider } from '../provider/AuthProvider';
 import HomeIcon from '../assets/icons/other/homeIcon.svg';
 import PostIcon from '../assets/icons/other/postIcon.svg';
 import ResearchIcon from '../assets/icons/other/deepDiveIcon.svg';
+// Social Icons
+import GitHubIcon from '../assets/icons/brands/GitHubBrand.svg';
+import LinkedInIcon from '../assets/icons/brands/LinkedInBrand.svg';
+import InstagramIcon from '../assets/icons/brands/InstagramBrand.svg';
+// Other Icons
+import longArrow from '../assets/icons/other/longArrowIcon.svg';
+
+export const socialIcons = [
+    { icon: GitHubIcon, label: 'GitHub', url: 'https://github.com/yourname' },
+    { icon: LinkedInIcon, label: 'LinkedIn', url: 'https://linkedin.com/in/yourname' },
+    { icon: InstagramIcon, label: 'Instagram', url: 'https://instagram.com/yourname' },
+];
+
+export const otherIcons = [{ icon: longArrow, label: 'a long arrow' }];
 
 // TypeScript types for my routes
 export type RouteConfig = {

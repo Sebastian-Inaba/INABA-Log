@@ -7,9 +7,9 @@ type NavItemWithPath = RouteConfig & { path: string };
 
 type NavListProps = {
     navItems: NavItemWithPath[]; // List of routes to render
-    navFont: string;             // Font for the link labels
-    onItemClick?: () => void;    
-    tabIndex?: number;           // TabIndex to control keyboard navigation
+    navFont: string; // Font for the link labels
+    onItemClick?: () => void;
+    tabIndex?: number; // TabIndex to control keyboard navigation
 };
 
 export const NavList: React.FC<NavListProps> = ({ navItems, navFont, onItemClick, tabIndex }) => {
@@ -21,23 +21,13 @@ export const NavList: React.FC<NavListProps> = ({ navItems, navFont, onItemClick
                     <Link
                         to={route.path}
                         onClick={onItemClick}
-                        tabIndex={tabIndex} 
+                        tabIndex={tabIndex}
                         className="flex items-center gap-2 px-4 py-2 bg-green-400 rounded-3xl hover:bg-green-500 transition-colors"
                     >
                         {/* Optional icon */}
-                        {route.icon && (
-                            <img
-                                src={route.icon}
-                                alt={route.iconLabel}
-                                className="w-5 h-5"
-                                loading="lazy"
-                            />
-                        )}
+                        {route.icon && <img src={route.icon} alt={route.iconLabel} className="w-5 h-5" loading="lazy" />}
                         {/* Link label */}
-                        <span
-                            style={{ fontFamily: navFont, color: '#252525' }}
-                            className="font-semibold"
-                        >
+                        <span style={{ fontFamily: navFont, color: '#252525' }} className="font-semibold">
                             {route.label}
                         </span>
                     </Link>

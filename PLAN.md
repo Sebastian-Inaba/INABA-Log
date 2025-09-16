@@ -406,3 +406,5 @@
 - refresh tokens with server side tracking
 - Fix UX problem for desktopNav(hard to navigate) and make navList more reusable
 - Make SVG'S in to components
+- make a loading component
+- Fix so user info doesn't unmount on leaving admin area

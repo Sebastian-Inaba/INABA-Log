@@ -1,6 +1,7 @@
+// src/layout/AppLayout.tsx
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/CommonComps/Header/Header';
-import { Footer } from '../components/CommonComps/Footer';
+import { Footer } from '../components/CommonComps/Footer/Footer';
 
 export function AppLayout() {
     return (
@@ -13,7 +14,7 @@ export function AppLayout() {
                 <Outlet /> {/* Pages render in main */}
             </main>
 
-            <footer className="w-full bg-neutral-800 flex items-center justify-center p-4">
+            <footer className="w-full h-[300px] bg-neutral-800 flex items-center justify-center p-4">
                 <Footer />
             </footer>
         </div>
