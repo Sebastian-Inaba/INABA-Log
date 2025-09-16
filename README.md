@@ -31,11 +31,11 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Initial frontend setup with backend connection
+- Fixed header but added some to do problems for later at the bottom of PLAN.md
 
-- Google auth i setup but with no refresh token 
+- Fixed app Layout
 
-- Added some things in backend which i forgot or didn't change, mainly forgot a cookie parser and change the server cors ulr to use the env config
+- Fixed Fonts
 
 #### Full Design Example (might not be final product)
 

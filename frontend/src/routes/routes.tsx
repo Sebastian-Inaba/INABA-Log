@@ -1,4 +1,5 @@
 // src/routes/routes.tsx
+import type { ReactNode } from 'react';
 import { AppLayout } from '../layout/AppLayout';
 import { AdminWrapper } from '../layout/wrapper/AdminWrapper';
 import { Home } from '../pages/Home';
@@ -9,13 +10,43 @@ import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
 import { AuthProvider } from '../provider/AuthProvider';
 
+// SVG icons for Nav
+import HomeIcon from '../assets/icons/other/homeIcon.svg';
+import PostIcon from '../assets/icons/other/postIcon.svg';
+import ResearchIcon from '../assets/icons/other/deepDiveIcon.svg';
+
+// TypeScript types for my routes
+export type RouteConfig = {
+    path: string;
+    element: ReactNode;
+    label?: string;
+    showInNav?: boolean;
+    icon?: string;
+    children?: RouteConfig[];
+    iconLabel?: string;
+};
+
 export const routesConfig = [
     {
         element: <AppLayout />,
         children: [
-            { path: '/', element: <Home /> },
-            { path: '/post', element: <Post /> },
-            { path: '/research', element: <Research /> },
+            { path: '/', element: <Home />, label: 'Home', showInNav: true, icon: HomeIcon, iconLabel: 'A home Icon shaped like a house' },
+            {
+                path: '/post',
+                element: <Post />,
+                label: 'Posts',
+                showInNav: true,
+                icon: PostIcon,
+                iconLabel: 'A home Icon shaped like a note',
+            },
+            {
+                path: '/research',
+                element: <Research />,
+                label: 'Deep Dives',
+                showInNav: true,
+                icon: ResearchIcon,
+                iconLabel: 'A home Icon shaped like a lightbulb',
+            },
             {
                 path: '/login',
                 element: (
@@ -23,8 +54,9 @@ export const routesConfig = [
                         <Login />
                     </AuthProvider>
                 ),
+                showInNav: false,
             },
-            { path: '*', element: <NotFound /> },
+            { path: '*', element: <NotFound />, showInNav: false },
             {
                 path: '/admin',
                 element: (
@@ -34,6 +66,8 @@ export const routesConfig = [
                         </AdminWrapper>
                     </AuthProvider>
                 ),
+                label: 'Admin',
+                showInNav: false,
             },
         ],
     },
