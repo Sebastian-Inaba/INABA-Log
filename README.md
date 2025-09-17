@@ -31,11 +31,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Fixed Footer and some other small things
+- Setup post, get and delete for admin but it needs a lot of work
 
-- Encountered a problem on Firefox, when hovering interactive elements they flash to pointer but on Chrome it works
-
-- Prepared admin page layout
+- After i clean up and divide them in to more components i will continue with the Edit component and then filter
 
 #### Full Design Example (might not be final product)
 

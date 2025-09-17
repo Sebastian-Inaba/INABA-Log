@@ -1,6 +1,8 @@
 // src/pages/Admin.tsx
 import { UseAuth } from '../provider/AuthProvider';
 import { LogoutButton } from '../components/AdminComps/AdminLogout';
+import CreateNewModal from '../components/AdminComps/AdminCreatorComponent';
+import ContentList from '../components/AdminComps/AdminPostAndResearchListComponent';
 
 export function Admin() {
     const { user } = UseAuth();
@@ -18,7 +20,7 @@ export function Admin() {
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 border-b-4 border-yellow-500 gap-2">
                     <h1 className="text-2xl">Admin Content</h1>
                     <div className="flex gap-2 items-center">
-                        <button className="bg-green-500 text-black px-3 py-1 rounded">Create New</button>
+                        <CreateNewModal />
                         <LogoutButton />
                         <p className="font-bold">Admin: {user?.email.split('@')[0]}</p>
                     </div>
@@ -33,7 +35,7 @@ export function Admin() {
 
                     {/* Admin content */}
                     <div className="flex-1 border-2 border-yellow-500 p-4 flex items-center justify-center">
-                        <p className="text-center">Admin content area</p>
+                        <ContentList />
                     </div>
                 </div>
             </div>
