@@ -1,8 +1,8 @@
 // src/pages/Admin.tsx
 import { UseAuth } from '../provider/AuthProvider';
 import { LogoutButton } from '../components/AdminComps/AdminLogout';
-import CreateNewModal from '../components/AdminComps/AdminCreatorComponent';
-import ContentList from '../components/AdminComps/AdminPostAndResearchListComponent';
+import CreateNewModal from '../components/AdminComps/AdminPost';
+import ContentList from '../components/AdminComps/AdminGet';
 
 export function Admin() {
     const { user } = UseAuth();
@@ -28,12 +28,7 @@ export function Admin() {
 
                 {/* Main Content */}
                 <div className="flex-1 p-6 border-t-4 border-purple-500 flex flex-col gap-4">
-                    {/* Stats area */}
-                    <div className="border-2 border-green-500 p-4">
-                        <p className="font-bold">Stats Area</p>
-                    </div>
 
-                    {/* Admin content */}
                     <div className="flex-1 border-2 border-yellow-500 p-4 flex items-center justify-center">
                         <ContentList />
                     </div>

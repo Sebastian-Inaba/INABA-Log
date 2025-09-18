@@ -31,9 +31,13 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Setup post, get and delete for admin but it needs a lot of work
+- Cleaned up the AdminPost and AdminGet (previously: AdminCreate.. and AdminPostAndRe...) 
 
-- After i clean up and divide them in to more components i will continue with the Edit component and then filter
+- Removed normalizeServerItem, RawServerItem adn heavy parseTags since our database call will always return the same schema
+
+- Started setting up global tools for them after that and mobile tablet responsiveness is set up i well be spiting the components inside them.
+
+- I will also start using GitHub conventional commit structure in commit messages
 
 #### Full Design Example (might not be final product)
 
