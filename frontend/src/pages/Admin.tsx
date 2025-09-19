@@ -8,31 +8,30 @@ export function Admin() {
     const { user } = UseAuth();
 
     return (
-        <div className="w-full max-h-full flex flex-col md:flex-row text-white gap-6 p-4 max-w-11/12 mx-auto mb-10">
-            {/* Left Column */}
-            <div className="w-full md:w-1/4 border-4 border-red-500 p-4 min-h-[300px] min-w-[200px] flex items-start justify-center">
-                <p className="text-center">Left Column Placeholder</p>
-            </div>
+        <div className="w-full max-h-7/12 flex flex-col md:flex-row text-white gap-6 p-4 max-w-10/12 mx-auto">
+            {/* Left Sidebar */}
+            <aside className="w-full md:w-1/4 bg-neutral-900 rounded-xl shadow-lg p-6 flex flex-col items-center justify-start gap-4">
+                <p className="text-center text-purple-300 font-medium">Sidebar Placeholder</p>
+                {/* You can add menu links, navigation, or stats here */}
+            </aside>
 
-            {/* Right Column */}
-            <div className="flex flex-col w-full md:w-3/4 border-4 border-blue-500 min-h-[800px] min-w-[400px]">
+            {/* Main Content Area */}
+            <main className="flex-1 flex flex-col bg-neutral-800 rounded-xl shadow-lg overflow-hidden">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row items-center justify-between p-4 border-b-4 border-yellow-500 gap-2">
-                    <h1 className="text-2xl">Admin Content</h1>
-                    <div className="flex gap-2 items-center">
+                <header className="flex flex-col md:flex-row items-center justify-between bg-purple-900 px-6 py-4 gap-4 md:gap-0">
+                    <h1 className="text-2xl font-bold text-purple-200">Admin Content</h1>
+                    <div className="flex gap-3 items-center">
                         <CreateNewModal />
                         <LogoutButton />
-                        <p className="font-bold">Admin: {user?.email.split('@')[0]}</p>
+                        <p className="font-semibold text-purple-100">Admin: {user?.email.split('@')[0]}</p>
                     </div>
-                </div>
+                </header>
 
-                {/* Main Content */}
-                <div className="flex-1 p-6 border-t-4 border-purple-500 flex flex-col gap-4">
-                    <div className="flex-1 border-2 border-yellow-500 p-4 flex items-center justify-center">
-                        <ContentList />
-                    </div>
-                </div>
-            </div>
+                {/* Main List / Content */}
+                <section className="flex-1 p-6 overflow-y-auto bg-neutral-950/70">
+                    <ContentList />
+                </section>
+            </main>
         </div>
     );
 }

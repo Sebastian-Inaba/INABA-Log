@@ -23,6 +23,7 @@ export interface Research extends ContentBase {
     type: 'research';
     abstract?: string;
     pdfAttachment?: string | null;
+    references: string[];
 }
 
 export type ContentItem = Post | Research;

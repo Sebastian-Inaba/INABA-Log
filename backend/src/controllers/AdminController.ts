@@ -11,6 +11,8 @@ import { uploadFile, removeFile, UploadResult } from '../controllers/UploadContr
 export const createPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, content, category, tags, featured, author, description } = req.body;
+        // Parse tags if sent as JSON string
+        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
         let featuredImage: string | null = null;
 
         if (req.file) {
@@ -24,7 +26,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
             description: description || '',
             content,
             category,
-            tags: tags || [],
+            tags: parsedTags,
             featured: !!featured,
             featuredImage,
         });
@@ -78,7 +80,7 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
         if (title) post.title = title;
         post.content = content || post.content;
         post.category = category || post.category;
-        post.tags = tags || post.tags;
+        post.tags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : post.tags;
         if (featured !== undefined) post.featured = featured === true || featured === 'true';
         post.author = author || post.author;
         post.description = description || post.description;
@@ -119,12 +121,27 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+// Get Post
+export const getPost = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const post = await Post.findById(id);
+        if (!post) throw createHttpError(404, 'Post not found');
+        res.status(200).json(post);
+    } catch (err) {
+        next(err);
+    }
+};
+
 // -------------------- RESEARCH -------------------------------------------------------------------------- //
 
 // Create Research
 export const createResearch = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, author, abstract, introduction, method, keyFindings, credibility, content, references, tags, featured } = req.body;
+
+        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
+        const parsedReferences = references ? (Array.isArray(references) ? references : JSON.parse(references)) : [];
 
         let featuredImage: string | null = null;
         let pdfAttachment: string | null = null;
@@ -152,8 +169,8 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
             keyFindings: keyFindings || '',
             credibility: credibility || '',
             content,
-            references: references || [],
-            tags: tags || [],
+            references: parsedReferences,
+            tags: parsedTags,
             featuredImage,
             pdfAttachment,
             featured: !!featured,
@@ -232,6 +249,9 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
             console.log('No new PDF uploaded and no delete requested');
         }
 
+        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
+        const parsedReferences = references ? (Array.isArray(references) ? references : JSON.parse(references)) : [];
+
         if (title) research.title = title;
         research.author = author || research.author;
         research.abstract = abstract || research.abstract;
@@ -240,8 +260,8 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
         research.keyFindings = keyFindings || research.keyFindings;
         research.credibility = credibility || research.credibility;
         research.content = content || research.content;
-        research.references = references || research.references;
-        research.tags = tags || research.tags;
+        research.references = parsedReferences;
+        research.tags = parsedTags;
         if (featured !== undefined) research.featured = featured === true || featured === 'true';
 
         await research.save();
@@ -286,6 +306,18 @@ export const deleteResearch = async (req: Request, res: Response, next: NextFunc
         await Research.findByIdAndDelete(id);
 
         res.status(200).json({ success: true, message: 'Research deleted' });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Get Research
+export const getResearch = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const research = await Research.findById(id);
+        if (!research) throw createHttpError(404, 'Research not found');
+        res.status(200).json(research);
     } catch (err) {
         next(err);
     }

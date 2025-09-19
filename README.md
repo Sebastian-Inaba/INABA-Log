@@ -31,13 +31,13 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Cleaned up the AdminPost and AdminGet (previously: AdminCreate.. and AdminPostAndRe...) 
+- Split up the components in to child components 
 
-- Removed normalizeServerItem, RawServerItem adn heavy parseTags since our database call will always return the same schema
+- Fixed array parsing 
 
-- Started setting up global tools for them after that and mobile tablet responsiveness is set up i well be spiting the components inside them.
+- Added Patch component
 
-- I will also start using GitHub conventional commit structure in commit messages
+- Changed some style in admin page
 
 #### Full Design Example (might not be final product)
 

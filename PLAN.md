@@ -409,3 +409,4 @@
 - make a loading component
 - Fix so user info doesn't unmount on leaving admin area
 - Add so img and pdf create a unique name string with random number and date
+- fix model validation if something is required or not on front end

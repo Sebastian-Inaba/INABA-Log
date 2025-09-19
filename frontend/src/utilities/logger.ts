@@ -5,23 +5,23 @@
 
 type LogArgs = unknown[];
 
-// Log messages in development 
+// Log messages in development
 export const log = (...args: LogArgs): void => {
-  if (import.meta.env.DEV) {
-    console.log('[LOG]', ...args);
-  }
+    if (import.meta.env.DEV) {
+        console.log('[LOG]', ...args);
+    }
 };
 
-// Log errors in development 
+// Log errors in development
 export const error = (...args: LogArgs): void => {
-  if (import.meta.env.DEV) {
-    console.error('[ERROR]', ...args);
-  }
+    if (import.meta.env.DEV) {
+        console.error('[ERROR]', ...args);
+    }
 };
 
-// Log debug messages in development 
+// Log debug messages in development
 export const debug = (...args: LogArgs): void => {
-  if (import.meta.env.DEV) {
-    console.debug('[DEBUG]', ...args);
-  }
+    if (import.meta.env.DEV) {
+        console.debug('[DEBUG]', ...args);
+    }
 };

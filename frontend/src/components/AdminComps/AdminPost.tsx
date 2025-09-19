@@ -1,50 +1,17 @@
 // src/components/AdminComps/AdminPost.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import MarkdownRenderer from '../UtilityComps/MarkdownRenderer';
 import { apiClient } from '../../utilities/api';
 import { makeSlug, parseTags, parseReferences } from '../../utilities/helpers';
 import type { ContentType, FormState } from '../../types';
-
-interface FileUploadProps {
-    label: string;
-    accept: string;
-    onChange: (file: File | null) => void;
-    previewUrl?: string | null;
-    previewName?: string | null;
-}
-
-interface CheckboxProps {
-    label: string;
-    checked: boolean;
-    onChange: (checked: boolean) => void;
-}
-
-interface PreviewPanelProps {
-    title: string;
-    author: string;
-    description: string;
-    category: string;
-    tags: string;
-    featuredImageUrl: string | null;
-    content: string;
-}
-
-interface StatusMessagesProps {
-    status: { error: string | null; success: string | null };
-}
-
-interface ConfirmationModalProps {
-    type: ContentType;
-    loading: boolean;
-    disabled?: boolean;
-    onCancel: () => void;
-    onConfirm: () => void;
-}
+import { FileUpload, Checkbox, PreviewPanel, StatusMessages, ConfirmationModal } from './ChildComps';
 
 export default function CreateNewModal() {
+    // Modal open state and content type
     const [open, setOpen] = useState(false);
     const [type, setType] = useState<ContentType>('post');
+
+    // Form state for all input fields
     const [formData, setFormData] = useState<FormState>({
         title: '',
         slug: '',
@@ -62,9 +29,11 @@ export default function CreateNewModal() {
         references: '',
     });
 
+    // File uploads
     const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
     const [pdfAttachment, setPdfAttachment] = useState<File | null>(null);
 
+    // Preview URLs for files
     const [featuredImageUrl, setFeaturedImageUrl] = useState<string | null>(null);
     useEffect(() => {
         if (!featuredImageFile) {
@@ -73,7 +42,7 @@ export default function CreateNewModal() {
         }
         const url = URL.createObjectURL(featuredImageFile);
         setFeaturedImageUrl(url);
-        return () => URL.revokeObjectURL(url);
+        return () => URL.revokeObjectURL(url); // Clean up object URL when file changes
     }, [featuredImageFile]);
 
     const pdfPreviewName = pdfAttachment?.name ?? null;
@@ -83,15 +52,18 @@ export default function CreateNewModal() {
     const [status, setStatus] = useState<{ error: string | null; success: string | null }>({ error: null, success: null });
     const initialFocusRef = useRef<HTMLTextAreaElement>(null);
 
+    // Generic handler to update form fields
     const updateField = (field: keyof FormState, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    // Auto-generate slug from title
     useEffect(() => {
         const newSlug = makeSlug(formData.title);
         setFormData((prev) => (prev.slug === newSlug ? prev : { ...prev, slug: newSlug }));
     }, [formData.title]);
 
+    // Prevent background scrolling when modal is open
     useEffect(() => {
         document.body.style.overflow = open ? 'hidden' : '';
         return () => {
@@ -99,6 +71,7 @@ export default function CreateNewModal() {
         };
     }, [open]);
 
+    // Close modal on Escape key
     useEffect(() => {
         if (!open) return;
         const onKey = (e: KeyboardEvent) => {
@@ -108,6 +81,7 @@ export default function CreateNewModal() {
         return () => window.removeEventListener('keydown', onKey);
     }, [open]);
 
+    // Reset form to initial state
     const resetForm = () => {
         setFormData({
             title: '',
@@ -131,6 +105,7 @@ export default function CreateNewModal() {
         setShowConfirm(false);
     };
 
+    // Validate required fields before submission
     const isValid = () => {
         if (!formData.title.trim()) return false;
         if (!formData.content.trim()) return false;
@@ -138,6 +113,7 @@ export default function CreateNewModal() {
         return true;
     };
 
+    // Handle submission: prepare FormData, call API, handle response
     const handleSubmit = async () => {
         if (!isValid()) {
             setStatus({ error: 'Please fill required fields (title, content, and abstract for research).', success: null });
@@ -197,6 +173,7 @@ export default function CreateNewModal() {
         }
     };
 
+    // Standard props for all input fields
     const commonInputProps = (field: keyof FormState) => ({
         value: formData[field] as unknown as string,
         onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => updateField(field, e.target.value),
@@ -205,11 +182,12 @@ export default function CreateNewModal() {
 
     return (
         <>
+            {/* Trigger button to open modal */}
             <button
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-3xl transition-colors"
                 onClick={() => {
                     setOpen(true);
-                    setTimeout(() => initialFocusRef.current?.focus(), 60);
+                    setTimeout(() => initialFocusRef.current?.focus(), 60); // Focus first input after modal opens
                 }}
                 aria-haspopup="dialog"
             >
@@ -223,9 +201,12 @@ export default function CreateNewModal() {
                     aria-modal="true"
                     aria-label="Create new content"
                 >
+                    {/* Background overlay */}
                     <div className="absolute inset-0 bg-neutral-900 bg-opacity-80" onClick={() => setOpen(false)} aria-hidden />
 
+                    {/* Modal content container */}
                     <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60">
+                        {/* Header with title and content type selector */}
                         <div className="flex items-start justify-between gap-4 mb-6">
                             <div className="flex items-center gap-4">
                                 <h2 className="text-2xl font-bold text-purple-400">Create New Content</h2>
@@ -244,12 +225,14 @@ export default function CreateNewModal() {
                                 className="text-xl font-bold px-2 py-1 hover:bg-purple-900 rounded-lg"
                                 aria-label="Close"
                             >
-                                ×
+                                x
                             </button>
                         </div>
 
+                        {/* Two-column layout: form and preview */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="space-y-5">
+                                {/* Basic fields: title and author */}
                                 {(['title', 'author'] as (keyof FormState)[]).map((field) => (
                                     <div key={field}>
                                         <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">{field}</label>
@@ -257,16 +240,18 @@ export default function CreateNewModal() {
                                     </div>
                                 ))}
 
+                                {/* Description / Abstract */}
                                 <div>
                                     <label className="block text-sm font-semibold text-purple-300 mb-1">
                                         {type === 'post' ? 'Description (optional)' : 'Abstract (required)'}
                                     </label>
                                     <textarea
                                         {...commonInputProps(type === 'post' ? 'description' : 'abstractText')}
-                                        className="min-h-[100px]"
+                                        className={`${commonInputProps(type === 'post' ? 'description' : 'abstractText').className} min-h-[100px]`}
                                     />
                                 </div>
 
+                                {/* Category for posts */}
                                 {type === 'post' && (
                                     <div>
                                         <label className="block text-sm font-semibold text-purple-300 mb-1">Category</label>
@@ -274,6 +259,7 @@ export default function CreateNewModal() {
                                     </div>
                                 )}
 
+                                {/* Research-specific fields */}
                                 {type === 'research' && (
                                     <>
                                         {(['introduction', 'method', 'keyFindings', 'credibility'] as (keyof FormState)[]).map((field) => (
@@ -287,11 +273,13 @@ export default function CreateNewModal() {
                                     </>
                                 )}
 
+                                {/* Tags */}
                                 <div>
                                     <label className="block text-sm font-semibold text-purple-300 mb-1">Tags (comma separated)</label>
                                     <input {...commonInputProps('tags')} placeholder="tag1, tag2, tag3" />
                                 </div>
 
+                                {/* References for research */}
                                 {type === 'research' && (
                                     <div>
                                         <label className="block text-sm font-semibold text-purple-300 mb-1">
@@ -299,12 +287,13 @@ export default function CreateNewModal() {
                                         </label>
                                         <textarea
                                             {...commonInputProps('references')}
-                                            className="min-h-[100px]"
+                                            className={`${commonInputProps('references').className} min-h-[100px]`}
                                             placeholder="Reference 1, Reference 2; Reference 3"
                                         />
                                     </div>
                                 )}
 
+                                {/* File uploads */}
                                 <FileUpload
                                     label="Featured Image"
                                     accept="image/*"
@@ -321,27 +310,28 @@ export default function CreateNewModal() {
                                     />
                                 )}
 
+                                {/* Content editor */}
                                 <div>
                                     <label className="block text-sm font-semibold text-purple-300 mb-1">Content (Markdown)</label>
                                     <textarea
                                         ref={initialFocusRef}
                                         {...commonInputProps('content')}
-                                        className="min-h-[200px]"
+                                        className={`${commonInputProps('content').className} min-h-[200px]`}
                                         placeholder="Start writing your content in Markdown format..."
                                     />
                                 </div>
 
+                                {/* Feature checkbox */}
                                 <Checkbox
                                     label="Feature this content"
                                     checked={formData.featured}
                                     onChange={(checked: boolean) => updateField('featured', checked)}
                                 />
 
+                                {/* Action buttons */}
                                 <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-purple-800">
                                     <button
-                                        onClick={() => {
-                                            setOpen(false);
-                                        }}
+                                        onClick={() => setOpen(false)}
                                         className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600"
                                     >
                                         Cancel
@@ -355,6 +345,7 @@ export default function CreateNewModal() {
                                 </div>
                             </div>
 
+                            {/* Live preview */}
                             <PreviewPanel
                                 title={formData.title}
                                 author={formData.author}
@@ -366,8 +357,10 @@ export default function CreateNewModal() {
                             />
                         </div>
 
+                        {/* Status messages */}
                         <StatusMessages status={status} />
 
+                        {/* Confirmation modal */}
                         {showConfirm && (
                             <ConfirmationModal
                                 type={type}
@@ -383,89 +376,3 @@ export default function CreateNewModal() {
         </>
     );
 }
-
-const FileUpload: React.FC<FileUploadProps> = ({ label, accept, onChange, previewUrl, previewName }) => (
-    <div>
-        <label className="block text-sm font-semibold text-purple-300 mb-1">{label}</label>
-        <input
-            type="file"
-            accept={accept}
-            onChange={(e) => onChange(e.target.files?.[0] || null)}
-            className="mt-1 block w-full text-sm text-purple-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700"
-        />
-        {previewUrl && <img src={previewUrl} alt="preview" className="mt-2 w-full h-48 object-cover rounded-lg" />}
-        {previewName && <p className="text-xs text-purple-400 mt-2">Selected: {previewName}</p>}
-    </div>
-);
-
-const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange }) => (
-    <div className="flex items-center">
-        <input
-            type="checkbox"
-            checked={checked}
-            onChange={(e) => onChange(e.target.checked)}
-            className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-        />
-        <label className="ml-2 block text-sm text-purple-300">{label}</label>
-    </div>
-);
-
-const PreviewPanel: React.FC<PreviewPanelProps> = ({ title, author, description, category, tags, featuredImageUrl, content }) => (
-    <div className="border-l border-purple-800 pl-6">
-        <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-purple-400 text-lg">Preview</h3>
-            <div className="text-xs text-purple-500">Live markdown preview</div>
-        </div>
-        <div className="overflow-auto max-h-[70vh] p-5 bg-neutral-800 rounded-lg border border-purple-700">
-            {featuredImageUrl && <img src={featuredImageUrl} alt="Featured" className="w-full h-64 object-cover rounded-lg mb-4" />}
-            <h1 className="text-3xl font-bold text-white mb-2">{title || 'Untitled'}</h1>
-            <div className="flex items-center text-sm text-purple-300 mb-3">
-                <span>By {author || 'Author'}</span>
-                <span className="mx-2">•</span>
-                <span>{new Date().toLocaleDateString()}</span>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-                {category && <span className="px-3 py-1 bg-purple-900 text-purple-300 rounded-full text-sm">{category}</span>}
-                {tags
-                    .split(',')
-                    .filter((tag) => tag.trim())
-                    .map((tag: string, index: number) => (
-                        <span key={index} className="px-3 py-1 bg-neutral-700 text-neutral-300 rounded-full text-sm">
-                            {tag.trim()}
-                        </span>
-                    ))}
-            </div>
-            {description && <p className="text-lg text-neutral-300 italic mb-4">{description}</p>}
-            <MarkdownRenderer content={content || '*Start typing markdown to see preview...*'} variant="preview" />
-        </div>
-    </div>
-);
-
-const StatusMessages: React.FC<StatusMessagesProps> = ({ status }) => (
-    <div className="mt-6">
-        {status.error && <div className="p-3 bg-red-900 border border-red-700 text-red-200 rounded-lg">{status.error}</div>}
-        {status.success && <div className="p-3 bg-green-900 border border-green-700 text-green-200 rounded-lg">{status.success}</div>}
-    </div>
-);
-
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ type, loading, disabled, onCancel, onConfirm }) => (
-    <div className="fixed inset-0 z-70 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black bg-opacity-70" />
-        <div className="relative z-80 bg-neutral-800 border border-purple-700 p-6 rounded-lg w-full max-w-md">
-            <h4 className="font-bold text-lg text-purple-300 mb-3">Confirm Creation</h4>
-            <p className="text-neutral-300 mb-4">Are you sure you want to create this {type}? This action cannot be undone.</p>
-            <div className="flex justify-end gap-3">
-                <button onClick={onCancel} className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600">
-                    Cancel
-                </button>
-                <button
-                    onClick={onConfirm}
-                    disabled={loading || disabled}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
-                >
-                    {loading ? 'Creating...' : 'Yes, Create'}
-                </button>
-            </div>
-        </div>
-    </div>
-);

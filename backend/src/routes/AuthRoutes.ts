@@ -3,9 +3,11 @@ import {
     createPost,
     updatePost,
     deletePost,
+    getPost,
     createResearch,
     updateResearch,
     deleteResearch,
+    getResearch,
     getAllContent,
     getContentStats,
     toggleFeatured,
@@ -44,6 +46,9 @@ router.patch('/posts/:id', requireGoogleAuth, uploadMiddleware.single('featuredI
 // Delete Post
 router.delete('/posts/:id', requireGoogleAuth, deletePost);
 
+// Get Post (id)
+router.get('/posts/:id', requireGoogleAuth, getPost);
+
 // -------------------- RESEARCH ------------------------------------------------------------------- //
 
 // Create Research
@@ -70,6 +75,9 @@ router.patch(
 
 // Delete Research
 router.delete('/research/:id', requireGoogleAuth, deleteResearch);
+
+// Get Research (id)
+router.get('/research/:id', requireGoogleAuth, getResearch);
 
 // -------------------- ADMIN PANEL ----------------------------------------------------------------- //
 // Get all content (posts + research)

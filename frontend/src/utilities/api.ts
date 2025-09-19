@@ -11,7 +11,7 @@ export const apiClient = axios.create({
 // Response interceptor for logging and error handling (dev only)
 apiClient.interceptors.response.use(
     (res) => {
-        // Log successful responses 
+        // Log successful responses
         log('[API] response:', {
             url: res.config?.url,
             status: res.status,
