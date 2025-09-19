@@ -2,6 +2,7 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UseAuth } from '../provider/AuthProvider';
+import { error } from '../utilities/logger';
 
 interface GoogleCredentialResponse {
     credential: string;
@@ -25,12 +26,11 @@ export function Login() {
         async (response: GoogleCredentialResponse) => {
             try {
                 await login(response.credential);
-                navigate('/admin', { replace: true });
             } catch (err) {
-                console.error('Login failed', err);
+                error('Login failed', err);
             }
         },
-        [login, navigate],
+        [login],
     );
 
     // Load Google Identity script

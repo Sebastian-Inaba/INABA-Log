@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, useRoutes } from 'react-router-dom';
 import { routesConfig } from './routes/routes';
+import { AuthProvider } from './provider/AuthProvider';
 
 function AppRoutes() {
     return useRoutes(routesConfig);
@@ -7,9 +8,11 @@ function AppRoutes() {
 
 function App() {
     return (
-        <Router>
-            <AppRoutes />
-        </Router>
+        <AuthProvider>
+            <Router>
+                <AppRoutes />
+            </Router>
+        </AuthProvider>
     );
 }
 

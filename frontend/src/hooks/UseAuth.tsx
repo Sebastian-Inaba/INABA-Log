@@ -1,110 +1,94 @@
 // src/hooks/UseAuth.tsx
-import { useState, useEffect, useRef } from 'react';
-import axios, { AxiosError } from 'axios';
+import { useState, useEffect } from 'react';
+import type { AxiosError } from 'axios';
+import { apiClient as axiosInstance } from '../utilities/api';
+import { log, error } from '../utilities/logger';
 
+// Shape of a logged-in user
 export type User = { email: string };
 
-// Create a reusable Axios instance config
-const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    withCredentials: true,
-    headers: { 'Content-Type': 'application/json' },
-});
-
 export function useAuthLogic() {
-    // States
+    // States for user data and request lifecycle
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [initialized, setInitialized] = useState(false);
-    const abortControllerRef = useRef<AbortController | null>(null);
 
-    // Fetch if Admin status (logged in or not)
+    // Fetch user info from backend (/admin/me)
     const fetchUser = async (idToken?: string) => {
-        // Cancel any previous fetch request to avoid race conditions
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-
-        const controller = new AbortController();
-        abortControllerRef.current = controller;
-
         try {
+            setLoading(true);
+            log('[Auth] fetchUser start', { idTokenProvided: !!idToken });
+
+            // Add token to headers if provided
             const headers = idToken ? { Authorization: `Bearer ${idToken}` } : {};
-            const res = await axiosInstance.get('/api/admin/me', {
-                headers,
-                signal: controller.signal,
-            });
-            // Update state with user data from backend
-            setUser(res.data.admin);
+            const res = await axiosInstance.get('/admin/me', { headers });
+
+            log('[Auth] fetchUser success', res.status, res.data);
+            setUser(res.data.admin ?? null);
         } catch (err: unknown) {
             const error = err as AxiosError;
-
-            // Ignore errors caused by request cancellation
-            if (error.name === 'CanceledError') return;
+            log('[Auth] fetchUser error', error);
 
             if (error.response?.status === 401) {
                 setUser(null);
-            } else {
-                console.error('Fetch user failed:', err);
             }
         } finally {
             setLoading(false);
         }
     };
 
-    // Login user with google id, if its correct email
+    // Log in with Google ID token, then backend sets cookie
     const login = async (idToken: string) => {
         setLoading(true);
         try {
-            await axiosInstance.post(
-                '/api/admin/login',
+            log('[Auth] login start');
+
+            const res = await axiosInstance.post(
+                '/admin/login',
                 {},
                 {
                     headers: { Authorization: `Bearer ${idToken}` },
                 },
             );
 
-            // Fetch user info and update state
-            await fetchUser();
+            log('[Auth] login response', res.status, res.data);
+
+            if (res.data?.admin) {
+                setUser(res.data.admin);
+                sessionStorage.setItem('inaba_admin_flag', '1'); // marker for refresh
+            } else {
+                await fetchUser(); // fallback if no admin returned
+            }
         } catch (err) {
-            console.error('Login failed:', err);
+            error('Login failed:', err);
             setUser(null);
         } finally {
             setLoading(false);
         }
     };
 
-    // Logout user and clear cookie
+    // Log out, backend clears cookie, reset state
     const logout = async () => {
         setLoading(true);
         try {
-            // Cancel any ongoing fetch requests
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-            await axiosInstance.post('/api/admin/logout');
+            await axiosInstance.post('/admin/logout');
             setUser(null);
-            setInitialized(false); // Reset initialization flag
+            setInitialized(false);
+            sessionStorage.removeItem('inaba_admin_flag');
         } catch (err) {
-            console.error('Logout failed:', err);
+            error('Logout failed:', err);
         } finally {
             setLoading(false);
         }
     };
 
-    // fetch and clean user on mount
+    // Run once on mount, check if user is logged in
     useEffect(() => {
         if (!initialized) {
             fetchUser();
             setInitialized(true);
         }
-
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        };
     }, [initialized]);
 
-    return { user, loading, login, logout };
+    return { user, loading, login, logout } as const;
 }

@@ -28,7 +28,6 @@ export function Admin() {
 
                 {/* Main Content */}
                 <div className="flex-1 p-6 border-t-4 border-purple-500 flex flex-col gap-4">
-
                     <div className="flex-1 border-2 border-yellow-500 p-4 flex items-center justify-center">
                         <ContentList />
                     </div>

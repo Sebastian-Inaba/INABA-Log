@@ -3,7 +3,8 @@
         "dev": "nodemon src/server.ts",
         "build": "tsc",
         "start": "node dist/server.js",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
     },
     "dependencies": {
         "@supabase/supabase-js": "^2.57.0",

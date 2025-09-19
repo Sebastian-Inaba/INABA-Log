@@ -1,59 +1,13 @@
 // src/components/AdminComps/AdminGet.tsx
 import { useEffect, useState } from 'react';
+import { apiClient } from '../../utilities/api';
+import { formatDate } from '../../utilities/helpers';
+import type { ContentItem, Post, Research } from '../../types';
+import { error as logError } from '../../utilities/logger';
 
-// todo:
-// same as AdminPost.tsx
-
-const API_BASE = 'http://localhost:5000/api/admin';
-
-interface ContentItem {
-    _id: string;
-    type: 'post' | 'research';
-    title: string;
-    slug: string;
-    author?: string;
-    description?: string;
-    abstract?: string;
-    category?: string;
-    tags: string[];
-    featured: boolean;
-    featuredImage?: string | null;
-    pdfAttachment?: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface ApiPost {
-    _id: string;
-    title: string;
-    slug: string;
-    author?: string;
-    description?: string;
-    category?: string;
-    tags: string[];
-    featured: boolean;
-    featuredImage?: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface ApiResearch {
-    _id: string;
-    title: string;
-    slug: string;
-    author: string;
-    abstract: string;
-    tags: string[];
-    featured: boolean;
-    featuredImage?: string | null;
-    pdfAttachment?: string | null;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface ApiResponse {
-    posts?: ApiPost[];
-    research?: ApiResearch[];
+interface ApiContentResponse {
+    posts?: Post[];
+    research?: Research[];
 }
 
 export default function ContentList() {
@@ -66,44 +20,30 @@ export default function ContentList() {
         setError(null);
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE}/content`, { credentials: 'include' });
-            if (!res.ok) throw new Error(`Failed to fetch content: ${res.status}`);
-            const data: ApiResponse = await res.json();
+            const res = await apiClient.get('/admin/content');
+            const data: ApiContentResponse = res.data;
 
             const items: ContentItem[] = [
                 ...(data.posts?.map((post) => ({
-                    _id: post._id,
+                    ...post,
                     type: 'post' as const,
-                    title: post.title,
-                    slug: post.slug,
-                    author: post.author,
-                    description: post.description,
-                    category: post.category,
                     tags: post.tags || [],
                     featured: post.featured || false,
                     featuredImage: post.featuredImage || null,
-                    createdAt: post.createdAt,
-                    updatedAt: post.updatedAt
                 })) || []),
                 ...(data.research?.map((research) => ({
-                    _id: research._id,
+                    ...research,
                     type: 'research' as const,
-                    title: research.title,
-                    slug: research.slug,
-                    author: research.author,
-                    abstract: research.abstract,
                     tags: research.tags || [],
                     featured: research.featured || false,
                     featuredImage: research.featuredImage || null,
                     pdfAttachment: research.pdfAttachment || null,
-                    createdAt: research.createdAt,
-                    updatedAt: research.updatedAt
-                })) || [])
+                })) || []),
             ];
 
             setContent(items);
         } catch (err) {
-            console.error(err);
+            logError(err);
             setError(err instanceof Error ? err.message : String(err));
         } finally {
             setLoading(false);
@@ -117,27 +57,15 @@ export default function ContentList() {
     const handleDelete = async (id: string, type: 'post' | 'research') => {
         try {
             const segment = type === 'post' ? 'posts' : 'research';
-            const response = await fetch(`${API_BASE}/${segment}/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
+            await apiClient.delete(`/admin/${segment}/${id}`);
 
-            if (!response.ok) throw new Error(`Failed to delete ${type}`);
-            
-            setContent(prev => prev.filter(item => item._id !== id));
+            setContent((prev) => prev.filter((item) => item._id !== id));
             setDeleteConfirm(null);
         } catch (err) {
-            console.error(err);
+            logError(err);
             setError(err instanceof Error ? err.message : 'An error occurred during deletion');
         }
     };
-
-    const formatDate = (dateString: string) =>
-        new Date(dateString).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
-        });
 
     if (loading) {
         return (
@@ -152,8 +80,8 @@ export default function ContentList() {
             <div className="h-full min-h-0 flex items-center justify-center">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-4 rounded-lg max-w-lg w-full">
                     <p className="break-words">Error: {error}</p>
-                    <button 
-                        onClick={() => void fetchContent()} 
+                    <button
+                        onClick={() => void fetchContent()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 mt-2"
                     >
                         Try Again
@@ -184,11 +112,11 @@ export default function ContentList() {
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                item.type === 'post' 
-                                                    ? 'bg-blue-900 text-blue-300' 
-                                                    : 'bg-purple-900 text-purple-300'
-                                            }`}>
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                    item.type === 'post' ? 'bg-blue-900 text-blue-300' : 'bg-purple-900 text-purple-300'
+                                                }`}
+                                            >
                                                 {item.type}
                                             </span>
                                             {item.featured && (
@@ -196,7 +124,7 @@ export default function ContentList() {
                                                     Featured
                                                 </span>
                                             )}
-                                            {item.category && (
+                                            {'category' in item && item.category && (
                                                 <span className="px-2 py-1 bg-neutral-700 text-neutral-300 rounded-full text-xs">
                                                     {item.category}
                                                 </span>
@@ -205,7 +133,7 @@ export default function ContentList() {
 
                                         <h3 className="text-xl font-semibold text-white mb-1 truncate">{item.title}</h3>
                                         <p className="text-neutral-400 text-sm mb-2 line-clamp-2">
-                                            {item.description || item.abstract}
+                                            {'description' in item ? item.description : 'abstract' in item ? item.abstract : ''}
                                         </p>
 
                                         <div className="flex flex-wrap gap-2 mb-2">

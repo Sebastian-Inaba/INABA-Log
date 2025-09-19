@@ -8,7 +8,6 @@ import { Research } from '../pages/Research';
 import { Admin } from '../pages/Admin';
 import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
-import { AuthProvider } from '../provider/AuthProvider';
 
 // SVG icons for Nav
 import HomeIcon from '../assets/icons/other/homeIcon.svg';
@@ -63,22 +62,16 @@ export const routesConfig = [
             },
             {
                 path: '/login',
-                element: (
-                    <AuthProvider>
-                        <Login />
-                    </AuthProvider>
-                ),
+                element: <Login />,
                 showInNav: false,
             },
             { path: '*', element: <NotFound />, showInNav: false },
             {
                 path: '/admin',
                 element: (
-                    <AuthProvider>
-                        <AdminWrapper>
-                            <Admin />
-                        </AdminWrapper>
-                    </AuthProvider>
+                    <AdminWrapper>
+                        <Admin />
+                    </AdminWrapper>
                 ),
                 label: 'Admin',
                 showInNav: false,
