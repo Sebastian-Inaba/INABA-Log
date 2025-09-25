@@ -1,7 +1,8 @@
 // src/components/CommonComps/Footer/Footer.tsx
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { routesConfig, socialIcons, otherIcons } from '../../../routes/routes';
+import { routesConfig } from '../../../routes/routes';
+import { socialIcons, otherIcons } from '../../../assets/icons/icons';
 import type { RouteConfig } from '../../../routes/routes';
 
 type FooterProps = {
@@ -10,10 +11,35 @@ type FooterProps = {
     ctaFont?: string;
 };
 
-export function Footer ({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Roboto_Slab' }: FooterProps) {
+export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Roboto_Slab' }: FooterProps) {
     const footerNavItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
-    const longArrow = otherIcons.find((i) => i.label === 'a long arrow')?.icon;
+    // local arrays
+    const socialList = [
+        {
+            key: 'github',
+            icon: (socialIcons as Record<string, string>).github,
+            label: 'GitHub',
+            url: 'https://github.com/yourname',
+        },
+        {
+            key: 'linkedin',
+            icon: (socialIcons as Record<string, string>).linkedin,
+            label: 'LinkedIn',
+            url: 'https://linkedin.com/in/yourname',
+        },
+        {
+            key: 'instagram',
+            icon: (socialIcons as Record<string, string>).instagram,
+            label: 'Instagram',
+            url: 'https://instagram.com/yourname',
+        },
+    ];
+
+    const otherList = [{ key: 'longArrow', icon: (otherIcons as Record<string, string>).longArrow, label: 'Long Arrow' }];
+
+    // Lookup directly by key
+    const longArrow = otherList.find((i) => i.key === 'longArrow')?.icon;
 
     return (
         <div className="w-full flex justify-center relative tracking-wider">
@@ -67,9 +93,9 @@ export function Footer ({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Rob
                     </div>
 
                     {/* Row 4: Social icons */}
-                    <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center">
-                        {socialIcons.map((s, idx) => (
-                            <a key={idx} href={s.url} aria-label={s.label} className="">
+                    <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center p-3">
+                        {socialList.map((s) => (
+                            <a key={s.key} href={s.url} aria-label={s.label}>
                                 <img src={s.icon} alt={s.label} className="w-8 h-8" />
                             </a>
                         ))}
@@ -81,4 +107,4 @@ export function Footer ({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Rob
             </div>
         </div>
     );
-};
+}
