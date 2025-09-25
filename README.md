@@ -31,13 +31,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Split up the components in to child components 
+- Added a filter wrapper component for the lists
 
-- Fixed array parsing 
-
-- Added Patch component
-
-- Changed some style in admin page
+- Next will be home page get components and then i will redo the deep dive and post page style.
 
 #### Full Design Example (might not be final product)
 

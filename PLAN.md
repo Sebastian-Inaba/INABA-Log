@@ -63,7 +63,7 @@
 ### Header
 
 * Title: INABA-LOG
-* Navigation: Home (logo), Posts, Research
+* Navigation: Home , Posts, Deep dives (Research)
 * Hamburger menu on mobile
 
 ### Footer
@@ -84,19 +84,17 @@
 
 #### Posts Page (<span style="color: #188038;">/posts</span>)
 
-* 3-column grid:
+* 2-column grid:
 
-  * Left aside nav: search, filter with tags, date, etc.
-  * Center: posts feed (PostCard)
+  * Center: search, filter with tags, date, etc with posts feed (PostCard) bellow
   * Right aside: highlighted posts
 * Clicking a post opens modal/overlay
 
 #### Research Page, deepdives (<span style="color: #188038;">/research</span>)
 
-* Same 3-column layout as Posts
+* Same 1-column layout as Posts
 
-  * Left aside nav: search, filter with tags, date, etc.
-  * Right aside: highlighted posts
+  * search, filter with tags, date, etc with deep dive feed 
 * ResearchCard styled like research paper: title, author, abstract, metadata
 * Clicking research entry opens modal/overlay
 
@@ -150,20 +148,26 @@
 
 #### Posts
 - `GET /api/posts` → list posts (filter by tag/date)
-- `GET /api/posts/:id` → get single post
+- `GET /api/posts/:id` → get single post by id
+- `GET /api/posts/newest` → get newest post
+- `GET /api/posts/latest-five` → get latest five posts
+- `GET /api/posts/featured` → get featured post
 
 #### Research
 - `GET /api/research` → list research entries
 - `GET /api/research/:id` → get single research entry
+- `GET /api/research/newest` → get 2 newest deep dives (research)
 
 #### Auth 
 - `POST /api/upload` → upload file to Supabase storage (admin only)
 - `DELETE /api/upload/:filename` → delete file from Supabase storage (admin only)
 - `POST /api/research` → create research entry (admin only)
-- `PUT /api/research/:id` → update research entry (admin only)
+- `GET /api/research/:id` → get research by id (admin only)
+- `PATCH /api/research/:id` → update research entry (admin only)
 - `DELETE /api/research/:id` → delete research entry (admin only)
 - `POST /api/posts` → create post (admin only)
-- `PUT /api/posts/:id` → update post (admin only)
+- `GET /api/posts/:id` → get post by id (admin only)
+- `PATCH /api/posts/:id` → update post (admin only)
 - `DELETE /api/posts/:id` → delete post (admin only)
 - `POST /api/admin/login` → login with Google (sets `inaba_admin` cookie)
 - `POST /api/admin/logout` → logout (clears `inaba_admin` cookie)
