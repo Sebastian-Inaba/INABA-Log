@@ -1,19 +1,21 @@
 // src/components/AdminComps/AdminGet.tsx
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
-import type { ContentItem, Post, Research } from '../../types';
 import { error as logError } from '../../utilities/logger';
-import EditModal from './AdminPatch';
+import { EditModal } from './AdminPatch';
+import { FilterWrapper } from '../../components/CommonComps/FilterWrapper';
+import type { ContentItem, Post, Research } from '../../types';
 
 interface ApiContentResponse {
     posts?: Post[];
     research?: Research[];
 }
 
-export default function ContentList() {
+export function ContentList() {
     // state
     const [content, setContent] = useState<ContentItem[]>([]);
+    const [filteredContent, setFilteredContent] = useState<ContentItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -23,8 +25,8 @@ export default function ContentList() {
 
     // Pagination state
     const [page, setPage] = useState(0);
-    const itemsPerPage = 6; // adjust as needed
-    const totalPages = Math.ceil(content.length / itemsPerPage);
+    const itemsPerPage = 6;
+    const totalPages = Math.ceil(filteredContent.length / itemsPerPage);
 
     // effects
     useEffect(() => {
@@ -58,7 +60,8 @@ export default function ContentList() {
             ];
 
             setContent(items);
-            setPage(0); // reset page when content updates
+            setFilteredContent(items);
+            setPage(0);
         } catch (err) {
             logError(err);
             setError(err instanceof Error ? err.message : String(err));
@@ -96,7 +99,9 @@ export default function ContentList() {
             const segment = type === 'post' ? 'posts' : 'research';
             await apiClient.delete(`/admin/${segment}/${id}`);
 
+            // update both sets so filter/ui stays consistent
             setContent((prev) => prev.filter((item) => item._id !== id));
+            setFilteredContent((prev) => prev.filter((item) => item._id !== id));
             setDeleteConfirm(null);
         } catch (err) {
             logError(err);
@@ -104,8 +109,14 @@ export default function ContentList() {
         }
     };
 
+    // onFilter receives ContentItem[] from FilterWrapper
+    const handleFilter = useCallback((items: ContentItem[]) => {
+        setFilteredContent(items);
+        setPage(0);
+    }, []);
+
     // Pagination helpers
-    const currentItems = content.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+    const currentItems = filteredContent.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     // loadingAndErrorStates
     if (loading) {
@@ -134,13 +145,25 @@ export default function ContentList() {
 
     return (
         <div className="flex flex-col h-full min-h-0 w-full">
+            {/* Filter bar (admin) */}
+            <div className="p-2">
+                <FilterWrapper
+                    items={content}
+                    onFilter={handleFilter}
+                    isAdmin={true}
+                    showSearch={true}
+                    showDateFilter={true}
+                    showFeaturedFilter={true}
+                />
+            </div>
+
             {/* Header and stats */}
             <div className="flex items-center justify-end p-2">
-                <div className="text-sm text-purple-300">Total: {content.length} items</div>
+                <div className="text-sm text-purple-300">Total: {filteredContent.length} items</div>
             </div>
 
             {/* Main content area */}
-            {content.length === 0 ? (
+            {filteredContent.length === 0 ? (
                 <div className="flex-1 min-h-0 flex items-center justify-center text-center text-neutral-400 p-4">
                     <p>No content found. Create your first post or research!</p>
                 </div>
@@ -250,7 +273,7 @@ export default function ContentList() {
                         </div>
                     </div>
 
-                    {/* Pagination buttons always at bottom */}
+                    {/* Pagination buttons */}
                     {totalPages > 1 && (
                         <div className="flex justify-center items-center gap-2 p-4 border-t border-purple-700">
                             <button
