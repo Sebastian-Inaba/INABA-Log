@@ -1,5 +1,4 @@
 // src/components/Header/NavList.tsx
-import React from 'react';
 import { Link } from 'react-router-dom';
 import type { RouteConfig } from '../../../routes/routes';
 
@@ -12,7 +11,7 @@ type NavListProps = {
     tabIndex?: number; // TabIndex to control keyboard navigation
 };
 
-export const NavList: React.FC<NavListProps> = ({ navItems, navFont, onItemClick, tabIndex }) => {
+export function NavList ({ navItems, navFont, onItemClick, tabIndex }: NavListProps) {
     return (
         <ul className={`flex flex-col gap-4`}>
             {navItems.map((route) => (

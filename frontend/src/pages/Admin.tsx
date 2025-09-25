@@ -1,20 +1,14 @@
 // src/pages/Admin.tsx
 import { UseAuth } from '../provider/AuthProvider';
 import { LogoutButton } from '../components/AdminComps/AdminLogout';
-import CreateNewModal from '../components/AdminComps/AdminPost';
-import ContentList from '../components/AdminComps/AdminGet';
+import { CreateNewModal } from '../components/AdminComps/AdminPost';
+import { ContentList } from '../components/AdminComps/AdminGet';
 
 export function Admin() {
     const { user } = UseAuth();
 
     return (
         <div className="w-full max-h-7/12 flex flex-col md:flex-row text-white gap-6 p-4 max-w-10/12 mx-auto">
-            {/* Left Sidebar */}
-            <aside className="w-full md:w-1/4 bg-neutral-900 rounded-xl shadow-lg p-6 flex flex-col items-center justify-start gap-4">
-                <p className="text-center text-purple-300 font-medium">Sidebar Placeholder</p>
-                {/* You can add menu links, navigation, or stats here */}
-            </aside>
-
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col bg-neutral-800 rounded-xl shadow-lg overflow-hidden">
                 {/* Header */}

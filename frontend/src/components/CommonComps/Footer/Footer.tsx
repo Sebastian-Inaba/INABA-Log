@@ -1,5 +1,5 @@
 // src/components/CommonComps/Footer/Footer.tsx
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { routesConfig, socialIcons, otherIcons } from '../../../routes/routes';
 import type { RouteConfig } from '../../../routes/routes';
@@ -10,7 +10,7 @@ type FooterProps = {
     ctaFont?: string;
 };
 
-export const Footer: React.FC<FooterProps> = ({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Roboto_Slab' }) => {
+export function Footer ({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Roboto_Slab' }: FooterProps) {
     const footerNavItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     const longArrow = otherIcons.find((i) => i.label === 'a long arrow')?.icon;

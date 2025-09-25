@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
 // This is to hard set the styles for the markdown HTML, These styles will most likely be changed later
 // Tried some other stuff but this was the only thing that worked
 
-export default function MarkdownRenderer({ content, className = '', variant = 'public' }: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, className = '', variant = 'public' }: MarkdownRendererProps) {
     // Base styles that apply to all variants
     const baseStyles = `
     .markdown-content h1, 

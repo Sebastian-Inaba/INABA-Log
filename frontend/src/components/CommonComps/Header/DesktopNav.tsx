@@ -1,5 +1,5 @@
 // src/components/Header/DesktopNav.tsx
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { RouteConfig } from '../../../routes/routes';
 
@@ -9,7 +9,7 @@ type DesktopNavProps = {
     onItemClick?: () => void;
 };
 
-export const DesktopNav: React.FC<DesktopNavProps> = ({ navItems, navFont, onItemClick }) => {
+export function DesktopNav ({ navItems, navFont, onItemClick }: DesktopNavProps) {
     const [hoveredWidths, setHoveredWidths] = useState<Record<string, number>>({});
     const [isHovered, setIsHovered] = useState<Record<string, boolean>>({});
     const labelRefs = useRef<Record<string, HTMLSpanElement | null>>({});

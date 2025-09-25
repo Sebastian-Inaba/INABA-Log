@@ -1,10 +1,10 @@
 // src/components/AdminComps/AdminPatch.tsx
 import { useEffect, useRef, useState } from 'react';
-import type { ChangeEvent } from 'react';
 import { apiClient } from '../../utilities/api';
 import { makeSlug, parseTags, parseReferences } from '../../utilities/helpers';
-import type { ContentType, FormState, Post, Research } from '../../types';
 import { FileUpload, Checkbox, PreviewPanel, StatusMessages, ConfirmationModal } from './ChildComps';
+import type { ContentType, FormState, Post, Research } from '../../types';
+import type { ChangeEvent } from 'react';
 
 interface EditModalProps {
     item: Post | Research;
@@ -28,7 +28,7 @@ const getProperty = (item: Post | Research, property: string): string => {
     return typeof value === 'string' ? value : '';
 };
 
-export default function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalProps) {
+export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalProps) {
     // Form state for all input fields
     const [formData, setFormData] = useState<FormState>({
         title: '',

@@ -1,12 +1,12 @@
 // src/components/AdminComps/AdminPost.tsx
 import { useEffect, useRef, useState } from 'react';
-import type { ChangeEvent } from 'react';
 import { apiClient } from '../../utilities/api';
 import { makeSlug, parseTags, parseReferences } from '../../utilities/helpers';
-import type { ContentType, FormState } from '../../types';
 import { FileUpload, Checkbox, PreviewPanel, StatusMessages, ConfirmationModal } from './ChildComps';
+import type { ContentType, FormState } from '../../types';
+import type { ChangeEvent } from 'react';
 
-export default function CreateNewModal() {
+export function CreateNewModal() {
     // Modal open state and content type
     const [open, setOpen] = useState(false);
     const [type, setType] = useState<ContentType>('post');

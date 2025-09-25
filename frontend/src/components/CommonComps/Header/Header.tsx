@@ -1,5 +1,5 @@
 // src/components/Header/Header.tsx
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { routesConfig } from '../../../routes/routes';
 import { DesktopNav } from './DesktopNav';
@@ -11,7 +11,7 @@ type HeaderProps = {
     navFont?: string;
 };
 
-export const Header: React.FC<HeaderProps> = ({ logoFont = 'Poppins', navFont = 'Lato' }) => {
+export function Header ({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) {
     const navItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     return (

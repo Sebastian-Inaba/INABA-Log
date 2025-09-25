@@ -1,5 +1,5 @@
 // src/components/Header/MobileNav.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { NavList } from './NavList';
 import type { RouteConfig } from '../../../routes/routes';
@@ -10,7 +10,7 @@ type MobileNavProps = {
     logoFont?: string;
 };
 
-export const MobileNav: React.FC<MobileNavProps> = ({ navItems, navFont, logoFont = 'Poppins' }) => {
+export function MobileNav ({ navItems, navFont, logoFont = 'Poppins' }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     // Close menu on Escape key
