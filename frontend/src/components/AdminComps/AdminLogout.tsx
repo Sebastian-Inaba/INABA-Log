@@ -1,7 +1,7 @@
 // src/components/AdminComps/AdminLogout.tsx
 import { UseAuth } from '../../provider/AuthProvider';
 
-export function LogoutButton () {
+export function LogoutButton() {
     // authContext
     const { logout } = UseAuth();
 
@@ -11,11 +11,8 @@ export function LogoutButton () {
     };
 
     return (
-        <button
-            onClick={handleLogout}
-            className={`bg-red-600 text-white rounded-3xl px-4 py-2 hover:bg-red-900 transition-colors`}
-        >
+        <button onClick={handleLogout} className={`bg-red-600 text-white rounded-3xl px-4 py-2 hover:bg-red-900 transition-colors`}>
             Logout
         </button>
     );
-};
+}

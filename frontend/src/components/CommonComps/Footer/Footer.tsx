@@ -15,7 +15,7 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
     const footerNavItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     // local arrays
-    const socialList = [
+    const socialIconList = [
         {
             key: 'github',
             icon: (socialIcons as Record<string, string>).github,
@@ -94,7 +94,7 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
 
                     {/* Row 4: Social icons */}
                     <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center p-3">
-                        {socialList.map((s) => (
+                        {socialIconList.map((s) => (
                             <a key={s.key} href={s.url} aria-label={s.label}>
                                 <img src={s.icon} alt={s.label} className="w-8 h-8" />
                             </a>

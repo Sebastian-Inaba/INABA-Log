@@ -11,7 +11,7 @@ type NavListProps = {
     tabIndex?: number; // TabIndex to control keyboard navigation
 };
 
-export function NavList ({ navItems, navFont, onItemClick, tabIndex }: NavListProps) {
+export function NavList({ navItems, navFont, onItemClick, tabIndex }: NavListProps) {
     return (
         <ul className={`flex flex-col gap-4`}>
             {navItems.map((route) => (
@@ -34,4 +34,4 @@ export function NavList ({ navItems, navFont, onItemClick, tabIndex }: NavListPr
             ))}
         </ul>
     );
-};
+}

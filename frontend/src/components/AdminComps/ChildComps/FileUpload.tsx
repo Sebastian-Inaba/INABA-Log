@@ -7,7 +7,7 @@ interface FileUploadProps {
     previewName?: string | null;
 }
 
-export function FileUpload ({ label, accept, onChange, previewUrl, previewName }: FileUploadProps) {
+export function FileUpload({ label, accept, onChange, previewUrl, previewName }: FileUploadProps) {
     return (
         <div>
             <label className="block text-sm font-semibold text-purple-300 mb-1">{label}</label>
@@ -20,5 +20,5 @@ export function FileUpload ({ label, accept, onChange, previewUrl, previewName }
             {previewUrl && <img src={previewUrl} alt="preview" className="mt-2 w-full h-48 object-cover rounded-lg" />}
             {previewName && <p className="text-xs text-purple-400 mt-2">Selected: {previewName}</p>}
         </div>
-    )
-};
+    );
+}

@@ -10,7 +10,7 @@ type MobileNavProps = {
     logoFont?: string;
 };
 
-export function MobileNav ({ navItems, navFont, logoFont = 'Poppins' }: MobileNavProps) {
+export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     // Close menu on Escape key
@@ -94,4 +94,4 @@ export function MobileNav ({ navItems, navFont, logoFont = 'Poppins' }: MobileNa
             </div>
         </div>
     );
-};
+}

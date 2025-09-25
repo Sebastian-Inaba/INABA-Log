@@ -5,7 +5,7 @@ interface CheckboxProps {
     onChange: (checked: boolean) => void;
 }
 
-export function Checkbox ({ label, checked, onChange }: CheckboxProps) {
+export function Checkbox({ label, checked, onChange }: CheckboxProps) {
     return (
         <div className="flex items-center">
             <input
@@ -16,5 +16,5 @@ export function Checkbox ({ label, checked, onChange }: CheckboxProps) {
             />
             <label className="ml-2 block text-sm text-purple-300">{label}</label>
         </div>
-    )
-};
+    );
+}

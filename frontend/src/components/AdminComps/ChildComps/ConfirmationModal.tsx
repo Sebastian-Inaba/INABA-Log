@@ -9,7 +9,7 @@ interface ConfirmationModalProps {
     onConfirm: () => void;
 }
 
-export function ConfirmationModal ({ type, loading, disabled, onCancel, onConfirm }: ConfirmationModalProps) {
+export function ConfirmationModal({ type, loading, disabled, onCancel, onConfirm }: ConfirmationModalProps) {
     return (
         <div className="fixed inset-0 z-70 flex items-center justify-center">
             <div className="absolute inset-0 bg-black bg-opacity-70" />
@@ -32,5 +32,5 @@ export function ConfirmationModal ({ type, loading, disabled, onCancel, onConfir
                 </div>
             </div>
         </div>
-    )
-};
+    );
+}

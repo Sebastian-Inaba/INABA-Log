@@ -11,7 +11,7 @@ interface PreviewPanelProps {
     content: string;
 }
 
-export function PreviewPanel ({ title, author, description, category, tags, featuredImageUrl, content }: PreviewPanelProps ) {
+export function PreviewPanel({ title, author, description, category, tags, featuredImageUrl, content }: PreviewPanelProps) {
     return (
         <div className="border-l border-purple-800 pl-6">
             <div className="flex items-center justify-between mb-4">
@@ -41,5 +41,5 @@ export function PreviewPanel ({ title, author, description, category, tags, feat
                 <MarkdownRenderer content={content || '*Start typing markdown to see preview...*'} variant="preview" />
             </div>
         </div>
-    )
-};
+    );
+}

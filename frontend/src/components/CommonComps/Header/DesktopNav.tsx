@@ -9,7 +9,7 @@ type DesktopNavProps = {
     onItemClick?: () => void;
 };
 
-export function DesktopNav ({ navItems, navFont, onItemClick }: DesktopNavProps) {
+export function DesktopNav({ navItems, navFont, onItemClick }: DesktopNavProps) {
     const [hoveredWidths, setHoveredWidths] = useState<Record<string, number>>({});
     const [isHovered, setIsHovered] = useState<Record<string, boolean>>({});
     const labelRefs = useRef<Record<string, HTMLSpanElement | null>>({});
@@ -73,4 +73,4 @@ export function DesktopNav ({ navItems, navFont, onItemClick }: DesktopNavProps)
             })}
         </ul>
     );
-};
+}

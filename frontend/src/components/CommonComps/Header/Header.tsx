@@ -11,7 +11,7 @@ type HeaderProps = {
     navFont?: string;
 };
 
-export function Header ({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) {
+export function Header({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) {
     const navItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     return (
@@ -35,4 +35,4 @@ export function Header ({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps)
             <MobileNav navItems={navItems} navFont={navFont} />
         </header>
     );
-};
+}
