@@ -15,15 +15,24 @@ export const uploadFile = async (file: Express.Multer.File, bucketName: keyof ty
 
     const { originalname, mimetype, buffer } = file;
     let finalBuffer = buffer;
-    let finalName = originalname;
+    let finalName: string;
     let contentType = mimetype;
 
     // Convert images to WebP
     if (mimetype.startsWith('image/')) {
         finalBuffer = await sharp(buffer).webp({ quality: 80 }).toBuffer();
-        finalName = originalname.replace(/\.[^/.]+$/, '.webp');
         contentType = 'image/webp';
+        finalName = originalname.replace(/\.[^/.]+$/, '.webp');
+    } else {
+        finalName = originalname;
     }
+
+    // Add random number + date to filename
+    const randomNum = Math.floor(Math.random() * 10000); // 0-9999
+    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const extension = finalName.split('.').pop();
+    const nameWithoutExt = finalName.replace(/\.[^/.]+$/, '');
+    finalName = `${nameWithoutExt}-${date}-${randomNum}.${extension}`;
 
     if (!buckets[bucketName]) throw createHttpError(400, 'Invalid bucket');
 
@@ -45,6 +54,7 @@ export const uploadFile = async (file: Express.Multer.File, bucketName: keyof ty
         contentType,
     };
 };
+
 
 // Remove file from Supabase
 export const removeFile = async (bucket: keyof typeof buckets, filename: string) => {
