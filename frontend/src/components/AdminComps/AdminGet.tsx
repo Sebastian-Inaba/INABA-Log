@@ -4,7 +4,7 @@ import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
 import { error as logError } from '../../utilities/logger';
 import { EditModal } from './AdminPatch';
-import { FilterWrapper } from '../../components/CommonComps/FilterWrapper';
+import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 import type { ContentItem, Post, Research } from '../../types';
 
 interface ApiContentResponse {

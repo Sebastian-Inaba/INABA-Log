@@ -4,7 +4,7 @@ import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
 import type { Post, ContentItem } from '../../types';
 import { error as logError } from '../../utilities/logger';
-import { FilterWrapper } from '../../components/CommonComps/FilterWrapper';
+import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 
 // TEST
 
