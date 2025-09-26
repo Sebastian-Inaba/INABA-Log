@@ -8,7 +8,7 @@ export function Admin() {
     const { user } = UseAuth();
 
     return (
-        <div className="w-full max-h-7/12 flex flex-col md:flex-row text-white gap-6 p-4 max-w-10/12 mx-auto">
+        <div data-lenis-prevent className="w-full max-h-7/12 flex flex-col md:flex-row text-white gap-6 p-4 max-w-10/12 mx-auto">
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col bg-neutral-800 rounded-xl shadow-lg overflow-hidden">
                 {/* Header */}

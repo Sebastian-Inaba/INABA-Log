@@ -200,7 +200,10 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
             <div className="absolute inset-0 bg-neutral-900 bg-opacity-80" onClick={onClose} aria-hidden />
 
             {/* Modal container */}
-            <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60">
+            <div
+                data-lenis-prevent
+                className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60"
+            >
                 {/* Header with title and close button */}
                 <div className="flex items-start justify-between gap-4 mb-6">
                     <div className="flex items-center gap-4">

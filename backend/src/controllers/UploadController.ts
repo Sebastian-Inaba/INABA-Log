@@ -55,7 +55,6 @@ export const uploadFile = async (file: Express.Multer.File, bucketName: keyof ty
     };
 };
 
-
 // Remove file from Supabase
 export const removeFile = async (bucket: keyof typeof buckets, filename: string) => {
     if (!buckets[bucket]) throw createHttpError(400, 'Invalid bucket');

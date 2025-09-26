@@ -31,9 +31,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Added a filter wrapper component for the lists
+- Started working on some animations and home page took a while because i got sidetracked and tired to implement something useless for along time.
 
-- Next will be home page get components and then i will redo the deep dive and post page style.
+- Not finished style for home, i have deep dive highlight and five latest posts ready but no styling.
 
 #### Full Design Example (might not be final product)
 

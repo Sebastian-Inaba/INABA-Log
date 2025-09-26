@@ -196,7 +196,7 @@ export function CreateNewModal() {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-500 flex items-center justify-center p-4"
                     role="dialog"
                     aria-modal="true"
                     aria-label="Create new content"
@@ -205,7 +205,10 @@ export function CreateNewModal() {
                     <div className="absolute inset-0 bg-neutral-900 bg-opacity-80" onClick={() => setOpen(false)} aria-hidden />
 
                     {/* Modal content container */}
-                    <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60">
+                    <div
+                        data-lenis-prevent
+                        className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60"
+                    >
                         {/* Header with title and content type selector */}
                         <div className="flex items-start justify-between gap-4 mb-6">
                             <div className="flex items-center gap-4">

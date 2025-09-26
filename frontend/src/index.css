@@ -5,12 +5,4 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overscroll-behavior: none;
-}
-
-main {
-    flex: 1;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
 }
