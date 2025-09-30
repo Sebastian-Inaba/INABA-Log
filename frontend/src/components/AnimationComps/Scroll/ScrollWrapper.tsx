@@ -1,6 +1,5 @@
 // src/components/AnimationComps/Scroll/ScrollWrapper.tsx
-import { useEffect, useRef } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import Lenis from 'lenis';
 
 interface LenisScrollProps {
@@ -14,12 +13,13 @@ export function LenisScroll({ children }: LenisScrollProps) {
     useEffect(() => {
         // Initialize Lenis for smooth scrolling
         lenisRef.current = new Lenis({
-            lerp: 0.1,
-            smoothWheel: true,
-            wheelMultiplier: 1,
-            autoRaf: true,
+            lerp: 0.1, // smoothing factor
+            smoothWheel: true, // enable smooth wheel scroll
+            wheelMultiplier: 1, // control wheel sensitivity
+            autoRaf: true, // automatically hook into requestAnimationFrame
         });
 
+        // Cleanup Lenis instance on unmount
         return () => {
             lenisRef.current?.destroy();
         };
