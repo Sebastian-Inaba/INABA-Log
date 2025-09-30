@@ -41,11 +41,17 @@ app.use(
 // Custom logging middleware
 app.use(requestLogger);
 
-// Global limiter (for public endpoints)
+// Global limiter (for public endpoints, might become problem with heavy end point later, like GET all)
 export const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // max 100 requests per IP
-    message: 'Too many requests, please try again later.',
+    windowMs: 15 * 60 * 1000,
+    max: env.nodeEnv === 'production' ? 300 : 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => env.nodeEnv !== 'production',
+    handler: (req, res) => {
+        res.set('Retry-After', String(Math.ceil(15 * 60)));
+        return res.status(429).json({ error: 'Too many requests', message: 'Too many requests, please try again later.' });
+    },
 });
 
 // ---------------- Routes ---------------------------------------------- //

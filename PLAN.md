@@ -415,3 +415,4 @@
 - Fix so user info doesn't unmount on leaving admin area
 - fix model validation if something is required or not on front end
 - add tool tip component for image context if people want to know
+- Think about future heavy end point for GET all, (if i make comments possible and or have 500+ posts/deep dives)
