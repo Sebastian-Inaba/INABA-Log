@@ -31,9 +31,21 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Started working on some animations and home page took a while because i got sidetracked and tired to implement something useless for along time.
+- Fixed new homepage with three main components and a animation component:
 
-- Not finished style for home, i have deep dive highlight and five latest posts ready but no styling.
+  * **NewPost**
+  * **FiveLates**
+  * **ResearchHighlight** (includes website information)
+  * **FadeIn** The animation component for smooth transitions
+
+- Improved layout rendering on the top and bottom sections of the homepage:
+
+  * Fixed sticky behavior across devices
+  * Corrected zoom issues to better align with WCAG accessibility guidelines
+
+- Next Step is to replace the current temporary fonts with finalized typefaces.
+- Then either do next page (get by id) or rename everything "research" related to "deepDive" since research is deep dives.
+
 
 #### Full Design Example (might not be final product)
 

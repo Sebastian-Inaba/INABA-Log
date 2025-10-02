@@ -1,41 +1,66 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
+import { FadeIn } from '../AnimationComps/FadeIn';
 import type { Research } from '../../types/';
-
-//TEST
 
 interface NewestResearchProps {
     apiUrl?: string;
     className?: string;
     showAuthor?: boolean;
-    imageHeight?: string;
     autoFetch?: boolean;
+    heroTitle?: string;
+    heroText?: string;
+    heroCtaText?: string;
+    // Font props
+    titleFont?: string;
+    bodyFont?: string;
+    ctaFont?: string;
+    metaFont?: string;
 }
 
 export function NewestResearch({
     apiUrl = '/research/newest',
     className = '',
     showAuthor = true,
-    imageHeight = 'h-64',
     autoFetch = true,
+    heroTitle = 'The person behind it all',
+    heroText = 'You have come to the right place if you are interested in web development, gaming, or Sebastian Inaba(me). Feel free to look around my posts; and if something catches your eye, check out my latest deep dives or some of my other projects.',
+    heroCtaText = 'or go deeper.',
+    // Fonts
+    titleFont = 'Poppins',
+    bodyFont = 'Roboto_Slab',
+    ctaFont = 'Poppins',
+    metaFont = 'Lato',
 }: NewestResearchProps) {
-    const [research, setResearch] = useState<Research | null>(null);
+    const [researchList, setResearchList] = useState<Research[]>([]);
     const [loading, setLoading] = useState(autoFetch);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const fetchNewestResearch = useCallback(
+    // Simple font styles
+    const fontStyles = useMemo(
+        () => ({
+            heroTitle: { fontFamily: titleFont, fontWeight: 800 },
+            heroText: { fontFamily: bodyFont, fontWeight: 400 },
+            heroCta: { fontFamily: ctaFont, fontWeight: 500 },
+            researchTitle: { fontFamily: titleFont, fontWeight: 600 },
+            researchMeta: { fontFamily: metaFont, fontWeight: 400 },
+            researchAbstract: { fontFamily: bodyFont, fontWeight: 400 },
+            researchCta: { fontFamily: ctaFont, fontWeight: 500 },
+        }),
+        [titleFont, bodyFont, ctaFont, metaFont],
+    );
+
+    // Fetch newest research handler
+    const handleFetchNewestResearch = useCallback(
         async (url: string = apiUrl) => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get(url);
-                const data: Research[] = response.data.research; 
-
-                const firstItem: Research | null = data.length > 0 ? data[0] : null;
-                setResearch(firstItem);
+                const response = await apiClient.get<{ success: boolean; research: Research[] }>(url);
+                setResearchList(response.data.research);
             } catch (err) {
                 const message = err instanceof Error ? err.message : 'Failed to fetch research';
                 setError(message);
@@ -48,122 +73,204 @@ export function NewestResearch({
     );
 
     useEffect(() => {
-        if (autoFetch) fetchNewestResearch();
-    }, [autoFetch, fetchNewestResearch]);
+        if (autoFetch) handleFetchNewestResearch();
+    }, [autoFetch, handleFetchNewestResearch]);
 
-    const handleReadMore = () => {
-        if (research) navigate(`/research/${research.slug}`);
+    const handleGoDeeperRedirect = () => {
+        if (!researchList) return;
+        navigate(`/research/`);
     };
 
-    const handleRetry = () => fetchNewestResearch();
+    const handleRetry = () => handleFetchNewestResearch();
 
-    if (loading) {
-        return (
-            <div className={`animate-pulse ${className}`}>
-                <div className={`bg-gray-200 ${imageHeight} rounded-lg mb-4`} />
-                <div className="bg-gray-200 h-6 rounded mb-2" />
-                <div className="bg-gray-200 h-4 rounded w-3/4 mb-4" />
-                <div className="bg-gray-200 h-10 rounded w-32" />
-            </div>
-        );
-    }
-
+    /** Error state */
     if (error) {
         return (
-            <div className={`bg-red-50 border border-red-200 rounded-lg p-6 text-center ${className}`}>
-                <p className="text-red-800 mb-2">Failed to load research</p>
-                <p className="text-red-600 text-sm mb-4">{error}</p>
-                <button onClick={handleRetry} className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg">
-                    Try Again
-                </button>
-            </div>
+            <section className={`p-3 sm:p-4 md:p-6 ${className}`}>
+                <div className="rounded-lg p-6 text-center bg-transparent border border-gray-700">
+                    <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.heroText}>
+                        Something went wrong getting research highlights.
+                    </p>
+                    <button
+                        onClick={handleRetry}
+                        className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
+                        style={fontStyles.researchCta}
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </section>
         );
     }
 
-    if (!research) {
+    /** Loading skeleton */
+    if (loading) {
         return (
-            <div className={`bg-gray-50 border border-gray-200 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-600 mb-3">No research available</p>
-                <button onClick={handleRetry} className="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <section className={`p-3 sm:p-4 md:p-6 ${className}`} aria-labelledby="home-hero">
+                <header id="home-hero" className="mb-4 sm:mb-5">
+                    <div className="h-7 sm:h-8 w-48 sm:w-64 rounded bg-gray-700 mb-2" />
+                    <div className="h-3 sm:h-4 w-full sm:w-5/6 rounded bg-gray-700" />
+                    <div className="h-7 sm:h-8 w-24 sm:w-32 rounded bg-gray-700 mt-3" />
+                </header>
+                <div className="space-y-3">
+                    {[0, 1].map((_, researchIndex) => (
+                        <div key={researchIndex} className="p-3 rounded-lg border border-gray-700 bg-transparent animate-pulse">
+                            <div className="h-4 sm:h-5 w-full sm:w-3/4 rounded bg-gray-700 mb-2" />
+                            <div className="h-3 sm:h-4 w-3/4 sm:w-1/2 rounded bg-gray-700" />
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+    }
+
+    if (!loading && researchList.length === 0) {
+        return (
+            <section className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}>
+                <p className="text-gray-300" style={fontStyles.heroText}>
+                    No research highlights available.
+                </p>
+                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm" style={fontStyles.researchCta}>
                     Refresh
                 </button>
-            </div>
+            </section>
         );
     }
 
     return (
-        <article
-            className={`bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
-        >
-            {research.featuredImage && (
-                <div className={`relative ${imageHeight} overflow-hidden rounded-t-lg`}>
-                    <img
-                        src={research.featuredImage}
-                        alt={research.title}
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
-            )}
+        <section className={`${className}`} aria-labelledby="home-hero">
+            <div id="home-hero" className="mb-4 sm:mb-6">
+                <FadeIn direction="right" delay={0}>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white break-words" style={fontStyles.heroTitle}>
+                        {heroTitle}
+                    </h1>
+                </FadeIn>
 
-            <div className="p-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-3 line-clamp-2 cursor-pointer" onClick={handleReadMore}>
-                    {research.title}
-                </h1>
+                <FadeIn direction="right" delay={100}>
+                    <p
+                        className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300"
+                        style={fontStyles.heroText}
+                    >
+                        {heroText}
+                    </p>
+                </FadeIn>
 
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                    {showAuthor && research.author && <span className="mr-4">By {research.author}</span>}
-                    <time dateTime={research.createdAt}>
-                        {new Date(research.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </time>
-                </div>
-
-                {research.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {research.tags.slice(0, 4).map((t, i) => (
-                            <span key={i} className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
-                                #{t}
-                            </span>
-                        ))}
-                        {research.tags.length > 4 && (
-                            <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                                +{research.tags.length - 4} more
-                            </span>
-                        )}
-                    </div>
-                )}
-
-                {research.abstract && <p className="text-gray-700 leading-relaxed mb-6 line-clamp-3">{research.abstract}</p>}
-
-                <div className="flex items-center justify-between">
-                    <div className="flex gap-3">
-                        <button
-                            onClick={handleReadMore}
-                            className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg"
+                <FadeIn direction="right" delay={200}>
+                    <div className="mt-3 sm:mt-4 flex flex-wrap gap-2 sm:gap-3 items-center">
+                        <a
+                            href="/portfolio"
+                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
+                            style={fontStyles.heroCta}
                         >
-                            Read Research
+                            View Portfolio
+                        </a>
+                        <a
+                            href="https://github.com/your-username"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
+                            style={fontStyles.heroCta}
+                        >
+                            GitHub
+                        </a>
+                        <a
+                            href="/newsletter"
+                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap"
+                            style={fontStyles.heroCta}
+                        >
+                            Subscribe
+                        </a>
+                        <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">•</span>
+                        <button
+                            onClick={() => navigate('/research')}
+                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer"
+                            aria-label={heroCtaText}
+                            style={fontStyles.heroCta}
+                        >
+                            {heroCtaText}
                         </button>
-
-                        {research.pdfAttachment && (
-                            <a
-                                href={research.pdfAttachment}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg inline-flex items-center"
-                            >
-                                View PDF
-                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                            </a>
-                        )}
                     </div>
-
-                    <span className="text-xs font-medium px-2 py-1 rounded bg-purple-100 text-purple-800">Research</span>
-                </div>
+                </FadeIn>
             </div>
-        </article>
+
+            <div className="space-y-3 sm:space-y-4">
+                {researchList.map((research, idx) => {
+                    const id = research._id ?? research.slug;
+                    return (
+                        <FadeIn direction="right" delay={300 + idx * 100} key={id}>
+                            <article
+                                role="button"
+                                tabIndex={0}
+                                onClick={handleGoDeeperRedirect}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleGoDeeperRedirect();
+                                    }
+                                }}
+                                className="
+                                    group transform transition-transform duration-200 ease-out
+                                    hover:scale-101 hover:-translate-y-1 hover:shadow-xl
+                                    bg-white/0 hover:bg-white/5 dark:hover:bg-slate-800/60
+                                    rounded-lg border border-gray-100 dark:border-slate-700
+                                    p-3 sm:p-4 flex items-start gap-2 sm:gap-4 cursor-pointer
+                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
+                                "
+                                style={{ willChange: 'transform' }}
+                            >
+                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 mt-1 flex-shrink-0 transition-colors duration-200 group-hover:bg-indigo-500" />
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-left w-full">
+                                        <h3
+                                            className="text-base sm:text-lg text-gray-900 dark:text-white break-words line-clamp-2 transition-colors duration-200 group-hover:text-indigo-600"
+                                            style={fontStyles.researchTitle}
+                                        >
+                                            {research.title}
+                                        </h3>
+                                    </div>
+
+                                    <div
+                                        className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300"
+                                        style={fontStyles.researchMeta}
+                                    >
+                                        <div className="flex-shrink-0">
+                                            {showAuthor && research.author ? (
+                                                <span className="break-words">By {research.author} • </span>
+                                            ) : (
+                                                ''
+                                            )}
+                                            <time dateTime={research.createdAt}>{new Date(research.createdAt).toLocaleDateString()}</time>
+                                        </div>
+                                    </div>
+
+                                    {research.abstract && (
+                                        <p
+                                            className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 break-words
+                    transition-opacity duration-200 group-hover:opacity-90"
+                                            style={fontStyles.researchAbstract}
+                                        >
+                                            {research.abstract}
+                                        </p>
+                                    )}
+                                </div>
+                            </article>
+                        </FadeIn>
+                    );
+                })}
+
+                {/* If backend returns <2 items, show placeholders */}
+                {researchList.length < 2 &&
+                    Array.from({ length: 2 - researchList.length }).map((_, i) => (
+                        <FadeIn direction="right" delay={300 + researchList.length * 100 + i * 100} key={`empty-${i}`}>
+                            <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
+                                <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400" style={fontStyles.researchMeta}>
+                                    More deep dives coming soon.
+                                </p>
+                            </div>
+                        </FadeIn>
+                    ))}
+            </div>
+        </section>
     );
 }

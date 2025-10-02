@@ -414,5 +414,6 @@
 - make a loading component
 - Fix so user info doesn't unmount on leaving admin area
 - fix model validation if something is required or not on front end
-- add tool tip component for image context if people want to know
+- add tool tip? maybe better to use for header nav instead of expanding text and can be used for other things maybe
 - Think about future heavy end point for GET all, (if i make comments possible and or have 500+ posts/deep dives)
+- Rename everything "research" related to "deepDive" since research is deep dives

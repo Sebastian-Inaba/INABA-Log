@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
+import { FadeIn } from '../AnimationComps/FadeIn';
 import type { Post } from '../../types/';
 
-//TEST
+const COLOR_OPTIONS = ['text-yellow-500', 'text-green-500', 'text-blue-500', 'text-pink-500', 'text-red-500'];
 
 interface LatestPostsProps {
     apiUrl?: string;
@@ -13,22 +14,47 @@ interface LatestPostsProps {
     imageHeight?: string;
     autoFetch?: boolean;
     maxPosts?: number;
+    // Font props
+    titleFont?: string;
+    bodyFont?: string;
+    ctaFont?: string;
+    tagFont?: string;
+    dateFont?: string;
 }
 
 export function LatestPosts({
     apiUrl = '/posts/latest-five',
     className = '',
-    showAuthor = true,
-    imageHeight = 'h-48',
+    imageHeight = 'h-64',
     autoFetch = true,
     maxPosts = 5,
+    // Font defaults
+    titleFont = 'Poppins',
+    bodyFont = 'Roboto_Slab',
+    ctaFont = 'Poppins',
+    tagFont = 'Lato',
+    dateFont = 'Poppins',
 }: LatestPostsProps) {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(autoFetch);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const fetchLatestPosts = useCallback(
+    // Simple font styles
+    const fontStyles = useMemo(
+        () => ({
+            dateDay: { fontFamily: dateFont, fontWeight: 800 },
+            dateMonth: { fontFamily: dateFont, fontWeight: 400 },
+            postTitle: { fontFamily: titleFont, fontWeight: 700 },
+            tags: { fontFamily: tagFont, fontWeight: 400 },
+            description: { fontFamily: bodyFont, fontWeight: 400 },
+            readMore: { fontFamily: ctaFont, fontWeight: 500 },
+        }),
+        [titleFont, bodyFont, ctaFont, tagFont, dateFont],
+    );
+
+    // Fetch latest posts handler
+    const handleFetchLatestPosts = useCallback(
         async (url: string = apiUrl) => {
             try {
                 setLoading(true);
@@ -36,7 +62,6 @@ export function LatestPosts({
                 const response = await apiClient.get<{ success: boolean; posts: Post[] }>(url);
                 const postsArray = response.data.posts ?? [];
                 const postsData = postsArray.slice(0, maxPosts);
-
                 setPosts(postsData);
             } catch (err) {
                 const errorMessage = err instanceof Error ? err.message : 'Failed to fetch posts';
@@ -51,53 +76,50 @@ export function LatestPosts({
 
     useEffect(() => {
         if (autoFetch) {
-            fetchLatestPosts();
+            handleFetchLatestPosts();
         }
-    }, [autoFetch, fetchLatestPosts]);
+    }, [autoFetch, handleFetchLatestPosts]);
 
-    const handleReadMore = (post: Post) => {
-        navigate(`/post/${post.slug}`);
+    // Read more handler
+    const handleReadMore = () => {
+        if (!posts) return;
+        navigate(`/post/`);
     };
 
+    // Retry handler
     const handleRetry = () => {
-        fetchLatestPosts();
+        handleFetchLatestPosts();
     };
 
-    if (loading) {
-        return (
-            <div className={`space-y-6 ${className}`}>
-                {[...Array(5)].map((_, index) => (
-                    <div key={index} className="animate-pulse bg-white border border-gray-200 rounded-lg shadow-sm">
-                        <div className={`bg-gray-200 ${imageHeight} rounded-t-lg`}></div>
-                        <div className="p-6">
-                            <div className="bg-gray-200 h-6 rounded mb-3"></div>
-                            <div className="bg-gray-200 h-4 rounded w-3/4 mb-4"></div>
-                            <div className="bg-gray-200 h-10 rounded w-32"></div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    }
+    // Generate color maps for all posts with unique colors per post
+    const postColorMaps = useMemo(() => {
+        return posts.map((post) => {
+            if (!post?.tags) return [] as string[];
+            const colors: string[] = [];
+            const availableColors = [...COLOR_OPTIONS];
+
+            return post.tags.slice(0, 4).map(() => {
+                if (availableColors.length === 0) {
+                    availableColors.push(...COLOR_OPTIONS);
+                }
+                const randomIndex = Math.floor(Math.random() * availableColors.length);
+                const selectedColor = availableColors.splice(randomIndex, 1)[0];
+                colors.push(selectedColor);
+                return selectedColor;
+            });
+        });
+    }, [posts]);
 
     if (error) {
         return (
-            <div className={`bg-red-50 border border-red-200 rounded-lg p-6 text-center ${className}`}>
-                <div className="text-red-600 mb-3">
-                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
-                        />
-                    </svg>
-                </div>
-                <p className="text-red-800 mb-2">Failed to load latest posts</p>
-                <p className="text-red-600 text-sm mb-4">{error}</p>
+            <div className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}>
+                <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.description}>
+                    Something went wrong getting recent posts.
+                </p>
                 <button
                     onClick={handleRetry}
-                    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                    className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
+                    style={fontStyles.readMore}
                 >
                     Try Again
                 </button>
@@ -105,21 +127,42 @@ export function LatestPosts({
         );
     }
 
-    if (!posts || posts.length === 0) {
+    /** Loading skeleton */
+    if (loading) {
         return (
-            <div className={`bg-gray-50 border border-gray-200 rounded-lg p-8 text-center ${className}`}>
-                <div className="text-gray-400 mb-3">
-                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                    </svg>
-                </div>
-                <p className="text-gray-600">No posts available</p>
-                <button onClick={handleRetry} className="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <div className={`space-y-6 ${className}`}>
+                {[...Array(maxPosts)].map((_, postIndex) => (
+                    <div
+                        key={postIndex}
+                        className="flex flex-col lg:flex-row bg-transparent border border-gray-700 rounded-lg animate-pulse"
+                    >
+                        <div className="lg:w-28 flex-shrink-0 flex items-center justify-center p-4">
+                            <div className="h-10 w-10 rounded bg-gray-700" />
+                        </div>
+                        <div className="hidden lg:flex items-stretch">
+                            <div className="w-px bg-gray-700 mx-4" />
+                        </div>
+                        <div className="flex-1 border border-gray-700 rounded-lg">
+                            <div className={`bg-gray-800 ${imageHeight} rounded-t-lg`} />
+                            <div className="p-6">
+                                <div className="h-6 w-3/4 rounded bg-gray-700 mb-3" />
+                                <div className="h-4 w-1/2 rounded bg-gray-700 mb-4" />
+                                <div className="h-10 w-32 rounded bg-gray-700" />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    if (!loading && posts.length === 0) {
+        return (
+            <div className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}>
+                <p className="text-gray-300" style={fontStyles.description}>
+                    No recent posts available.
+                </p>
+                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm" style={fontStyles.readMore}>
                     Refresh
                 </button>
             </div>
@@ -127,91 +170,124 @@ export function LatestPosts({
     }
 
     return (
-        <div className={`space-y-6 ${className}`}>
-            {posts.map((post) => (
-                <article
-                    key={post._id}
-                    className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group"
-                >
-                    <div className="flex flex-col md:flex-row">
-                        {/* Featured Image */}
-                        {post.featuredImage && (
-                            <div
-                                className={`relative ${imageHeight} md:w-64 md:flex-shrink-0 overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-tr-none`}
-                            >
-                                <img
-                                    src={post.featuredImage}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.style.display = 'none';
-                                    }}
-                                />
+        <div className={`${className}`}>
+            <div className="flex flex-col xl:flex-row">
+                <div className="flex-1 space-y-0">
+                    {posts.map((post, postIndex) => {
+                        const visibleTags = post?.tags?.slice(0, 5) ?? [];
+                        const tagColorMap = postColorMaps[postIndex] || [];
+
+                        return (
+                            <div key={post._id}>
+                                <article className="flex flex-col xl:flex-row items-stretch bg-transparent xl:gap-0">
+                                    {/* Date column, top on mobile/tablet, left sidebar on xl+ */}
+                                    <FadeIn direction="up" delay={postIndex * 100}>
+                                        <div className="xl:absolute xl:-ml-[136px] xl:w-28 flex-shrink-0 flex flex-col items-start ls:items-center justify-center p-4">
+                                            <div className="text-center">
+                                                <div className="text-xl text-gray-900 dark:text-white" style={fontStyles.dateDay}>
+                                                    {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
+                                                </div>
+                                                <div
+                                                    className="text-xs text-gray-500 dark:text-slate-300 mt-1"
+                                                    style={fontStyles.dateMonth}
+                                                >
+                                                    {new Date(post.createdAt).toLocaleDateString('en-US', {
+                                                        month: 'short',
+                                                        year: 'numeric',
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </FadeIn>
+                                    {/* Vertical divider, hidden on tablet and below, shown on xl+ */}
+                                    <div className="hidden xl:flex items-stretch mr-30">
+                                        <div className="w-px border-2 rounded-2xl border-gray-400" />
+                                    </div>
+
+                                    {/* Cards*/}
+                                    <FadeIn direction="up" delay={postIndex * 100} className="w-full">
+                                        <article className="flex-1 relative">
+                                            {post.featuredImage && (
+                                                <div
+                                                    className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
+                                                    onClick={handleReadMore}
+                                                >
+                                                    <img
+                                                        src={post.featuredImage}
+                                                        alt={post.title}
+                                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).style.display = 'none';
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+
+                                            <div className="p-6 flex flex-col gap-4">
+                                                <h2
+                                                    className="w-fit text-2xl text-white hover:text-gray-200 hover:underline line-clamp-2 cursor-pointer"
+                                                    style={fontStyles.postTitle}
+                                                    onClick={handleReadMore}
+                                                >
+                                                    {post.title}
+                                                </h2>
+
+                                                {visibleTags.length > 0 && (
+                                                    <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
+                                                        {visibleTags.map((tag: string, i: number) => (
+                                                            <span
+                                                                key={i}
+                                                                className={`${tagColorMap[i] ?? 'text-blue-600'}`}
+                                                                style={fontStyles.tags}
+                                                            >
+                                                                {tag}
+                                                                {i !== visibleTags.length - 1 && (
+                                                                    <span className="mx-2 text-gray-300">|</span>
+                                                                )}
+                                                            </span>
+                                                        ))}
+                                                        {post.tags && post.tags.length > 4 && (
+                                                            <span className="ml-3 text-gray-500 text-sm" style={fontStyles.tags}>
+                                                                +{post.tags.length - 4} more
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {post.description && (
+                                                    <p
+                                                        className="text-white line-clamp-3 tracking-wide mt-4"
+                                                        style={fontStyles.description}
+                                                    >
+                                                        {post.description}
+                                                    </p>
+                                                )}
+
+                                                <div className="mt-2 flex items-center justify-end relative">
+                                                    <button
+                                                        onClick={handleReadMore}
+                                                        className="relative left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
+                                                        aria-label="Read more about this post"
+                                                        style={fontStyles.readMore}
+                                                    >
+                                                        <span>Read More</span>
+                                                        <span className="text-current text-xl">&gt;</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Horizontal divider between posts */}
+                                            {postIndex < posts.length - 1 && (
+                                                <div className="mb-12 border-t border-1 rounded-2xl border-gray-400" />
+                                            )}
+                                        </article>
+                                    </FadeIn>
+                                </article>
                             </div>
-                        )}
-
-                        <div className="flex-1 p-6">
-                            {/* Title */}
-                            <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">
-                                {post.title}
-                            </h2>
-
-                            {/* Meta Information */}
-                            <div className="flex items-center text-sm text-gray-600 mb-3">
-                                {showAuthor && post.author && <span className="mr-4">By {post.author}</span>}
-                                <time dateTime={post.createdAt}>
-                                    {new Date(post.createdAt).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                    })}
-                                </time>
-                            </div>
-
-                            {/* Category */}
-                            {post.category && (
-                                <div className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3">
-                                    {post.category}
-                                </div>
-                            )}
-
-                            {/* Tags */}
-                            {post.tags && post.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mb-3">
-                                    {post.tags.slice(0, 3).map((tag, tagIndex) => (
-                                        <span
-                                            key={tagIndex}
-                                            className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
-                                        >
-                                            #{tag}
-                                        </span>
-                                    ))}
-                                    {post.tags.length > 3 && (
-                                        <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                                            +{post.tags.length - 3} more
-                                        </span>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Description */}
-                            {post.description && <p className="text-gray-700 leading-relaxed mb-4 line-clamp-2">{post.description}</p>}
-
-                            {/* Read More Button */}
-                            <button
-                                onClick={() => handleReadMore(post)}
-                                className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center transition-colors"
-                            >
-                                Read More
-                                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </article>
-            ))}
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 }
