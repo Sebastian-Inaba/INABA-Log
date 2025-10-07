@@ -234,7 +234,7 @@ export function Home() {
     }, []);
 
     return (
-        <div className="w-full mx-auto h-full overflow-x-hidden overflow-y-hidden">
+        <div className="w-full mx-auto h-full overflow-x-hidden overflow-y-auto hide-scrollbar">
             {/* Top section (newest post & research highlight) */}
             <div ref={topSectionRef} className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}>
                 <div className="max-w-11/12 mx-auto relative pt-10 pb-20">
