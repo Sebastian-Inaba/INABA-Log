@@ -70,9 +70,10 @@ export function NewestPost({
         if (autoFetch) handleFetchNewestPost();
     }, [autoFetch, handleFetchNewestPost]);
 
-    const handleReadMore = () => {
-        if (!post) return;
-        navigate(`/post`);
+    // Read more handler using slug
+    const handleReadMore = (slug: string) => {
+        if (!slug) return;
+        navigate(`/post/${slug}`);
     };
 
     const handleRetry = () => handleFetchNewestPost();
@@ -152,7 +153,7 @@ export function NewestPost({
             {post.featuredImage && (
                 <div
                     className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
-                    onClick={handleReadMore}
+                    onClick={() => handleReadMore(post.slug)}
                 >
                     <img
                         src={post.featuredImage}
@@ -170,7 +171,7 @@ export function NewestPost({
                 <h2
                     className="w-fit text-2xl text-white line-clamp-2 cursor-pointer hover:text-gray-200 hover:underline"
                     style={fontStyles.h2}
-                    onClick={handleReadMore}
+                    onClick={() => handleReadMore(post.slug)}
                 >
                     {post.title}
                 </h2>
@@ -202,7 +203,7 @@ export function NewestPost({
                 <div className="mt-2 flex items-center justify-center">
                     {/* CTA with medium ctaFont and smaller size */}
                     <button
-                        onClick={handleReadMore}
+                        onClick={() => handleReadMore(post.slug)}
                         className="cursor-pointer inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border border-blue-100 shadow-md hover:shadow-lg px-6 py-3 rounded-full tracking-wide transition-transform transform hover:-translate-y-0.5"
                         aria-label="Read more about this post"
                         style={fontStyles.cta}

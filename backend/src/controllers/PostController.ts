@@ -95,11 +95,11 @@ export const getFeaturedPosts = async (req: Request, res: Response, next: NextFu
     }
 };
 
-// get post by _id
-export const getPostById = async (req: Request, res: Response, next: NextFunction) => {
+// get post by slug
+export const getPostBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const post = await Post.findById(id);
+        const { slug } = req.params;
+        const post = await Post.findOne({ slug });
 
         if (!post) throw createHttpError(404, 'Post not found');
 
@@ -116,7 +116,7 @@ export const getLatestFivePosts = async (req: Request, res: Response, next: Next
             .sort({ createdAt: -1 })
             .skip(1)
             .limit(5)
-            .select('title author description category tags featuredImage createdAt');
+            .select('title author description category tags featuredImage createdAt updatedAt slug');
 
         res.status(200).json({
             success: true,

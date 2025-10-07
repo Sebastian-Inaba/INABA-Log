@@ -17,6 +17,7 @@ export interface Post extends ContentBase {
     type: 'post';
     description?: string;
     category?: string;
+    content: string;
 }
 
 export interface Research extends ContentBase {

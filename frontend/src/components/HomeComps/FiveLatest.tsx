@@ -80,10 +80,10 @@ export function LatestPosts({
         }
     }, [autoFetch, handleFetchLatestPosts]);
 
-    // Read more handler
-    const handleReadMore = () => {
-        if (!posts) return;
-        navigate(`/post/`);
+    // Read more handler using slug
+    const handleReadMore = (slug: string) => {
+        if (!slug) return;
+        navigate(`/post/${slug}`);
     };
 
     // Retry handler
@@ -210,7 +210,7 @@ export function LatestPosts({
                                             {post.featuredImage && (
                                                 <div
                                                     className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
-                                                    onClick={handleReadMore}
+                                                    onClick={() => handleReadMore(post.slug)}
                                                 >
                                                     <img
                                                         src={post.featuredImage}
@@ -227,7 +227,7 @@ export function LatestPosts({
                                                 <h2
                                                     className="w-fit text-2xl text-white hover:text-gray-200 hover:underline line-clamp-2 cursor-pointer"
                                                     style={fontStyles.postTitle}
-                                                    onClick={handleReadMore}
+                                                    onClick={() => handleReadMore(post.slug)}
                                                 >
                                                     {post.title}
                                                 </h2>
@@ -265,7 +265,7 @@ export function LatestPosts({
 
                                                 <div className="mt-2 flex items-center justify-end relative">
                                                     <button
-                                                        onClick={handleReadMore}
+                                                        onClick={() => handleReadMore(post.slug)}
                                                         className="relative left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
                                                         aria-label="Read more about this post"
                                                         style={fontStyles.readMore}
