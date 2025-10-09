@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { NavList } from './NavList';
-import type { RouteConfig } from '../../../routes/routes';
+import type { RouteConfig } from '../../../../routes/routes';
 
 type MobileNavProps = {
     navItems: RouteConfig[];
@@ -67,7 +67,7 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                 role="dialog"
                 aria-modal="true"
                 aria-hidden={!isOpen} // Hide from screen readers when closed
-                className={`rounded-xl border-1 border-purple-500 fixed top-0 right-0 h-auto w-md max-w-xs bg-neutral-900 shadow-lg z-50 p-6 m-1 transition-transform duration-300 flex flex-col ${
+                className={`rounded-xl border-1 border-purple-500 fixed top-0 right-0 h-auto w-md max-w-xs bg-neutral-900 shadow-lg z-50 p-6 m-0 transition-transform duration-300 flex flex-col ${
                     isOpen ? 'translate-x-0' : 'translate-x-[120%]' // Slide in/out animation for nav
                 }`}
             >

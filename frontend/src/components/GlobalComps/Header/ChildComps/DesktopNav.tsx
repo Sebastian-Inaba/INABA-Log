@@ -1,7 +1,7 @@
 // src/components/Header/DesktopNav.tsx
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import type { RouteConfig } from '../../../routes/routes';
+import type { RouteConfig } from '../../../../routes/routes';
 
 type DesktopNavProps = {
     navItems: RouteConfig[];
@@ -51,7 +51,7 @@ export function DesktopNav({ navItems, navFont, onItemClick }: DesktopNavProps) 
                                     ? 'width 0.5s ease-out' // expand
                                     : 'width 0.8s ease-out', // collapse
                             }}
-                            className="flex items-center gap-2 px-2 py-2 rounded-3xl bg-green-400 overflow-hidden"
+                            className="flex items-center gap-2 px-2 py-2 rounded bg-green-400 overflow-hidden"
                         >
                             {/* icon */}
                             {route.icon && (

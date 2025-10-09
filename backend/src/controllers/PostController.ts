@@ -70,7 +70,9 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
 // get newest post
 export const getNewestPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const post = await Post.findOne().sort({ createdAt: -1 }).select('title author description category tags featuredImage createdAt');
+        const post = await Post.findOne()
+            .sort({ createdAt: -1 })
+            .select('title author description category tags featuredImage createdAt slug');
 
         if (!post) throw createHttpError(404, 'No posts found');
 
@@ -83,7 +85,7 @@ export const getNewestPost = async (req: Request, res: Response, next: NextFunct
 // get featured posts
 export const getFeaturedPosts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const posts = await Post.find({ featured: true }).select('title tags featured');
+        const posts = await Post.find({ featured: true }).select('title category featured slug');
 
         res.status(200).json({
             success: true,

@@ -75,9 +75,9 @@ export function Login() {
     }
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <h1>Login Page</h1>
-            <div id="google-signin"></div>
+        <div className="flex flex-col items-center justify-start my-20">
+            <h1 className="text-xl font-semibold mb-4">Login</h1>
+            <div id="google-signin" className="mx-auto" />
         </div>
     );
 }

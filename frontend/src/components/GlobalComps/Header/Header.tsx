@@ -2,8 +2,8 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { routesConfig } from '../../../routes/routes';
-import { DesktopNav } from './DesktopNav';
-import { MobileNav } from './MobileNav';
+import { DesktopNav } from './ChildComps/DesktopNav';
+import { MobileNav } from './ChildComps/MobileNav';
 import type { RouteConfig } from '../../../routes/routes';
 
 type HeaderProps = {
@@ -15,7 +15,7 @@ export function Header({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) 
     const navItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     return (
-        <header className="w-full max-w-6xl mx-auto flex items-center justify-between px-10 py-4 relative">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-between px-10 py-4 relative">
             {/* Logo */}
             <Link
                 to="/"
@@ -33,6 +33,6 @@ export function Header({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) 
 
             {/* Mobile nav */}
             <MobileNav navItems={navItems} navFont={navFont} />
-        </header>
+        </div>
     );
 }

@@ -1,6 +1,6 @@
 // src/components/Header/NavList.tsx
 import { Link } from 'react-router-dom';
-import type { RouteConfig } from '../../../routes/routes';
+import type { RouteConfig } from '../../../../routes/routes';
 
 type NavItemWithPath = RouteConfig & { path: string };
 
