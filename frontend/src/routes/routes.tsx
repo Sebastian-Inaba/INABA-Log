@@ -7,6 +7,7 @@ import { Post } from '../pages/Post';
 import { Research } from '../pages/Research';
 import { Admin } from '../pages/Admin';
 import { Login } from '../pages/Login';
+import { PostDetail } from '../pages/PostDetail';
 import { NotFound } from '../pages/NotFound';
 import { navIcons } from '../assets/icons/icons';
 
@@ -53,8 +54,15 @@ export const routesConfig = [
                 iconKey: 'research',
             },
             {
+                path: '/post/:slug',
+                element: <PostDetail />,
+                label: 'Post Detail',
+                showInNav: false,
+            },
+            {
                 path: '/login',
                 element: <Login />,
+                label: 'Login',
                 showInNav: false,
             },
             { path: '*', element: <NotFound />, showInNav: false },
