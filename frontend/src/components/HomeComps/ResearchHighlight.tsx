@@ -173,13 +173,15 @@ export function NewestResearch({
                         >
                             GitHub
                         </a>
+                        {/* This will be for news letter or something else later? 
                         <a
                             href="/newsletter"
                             className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap"
                             style={fontStyles.heroCta}
                         >
                             Subscribe
-                        </a>
+                        </a>  
+                        */} 
                         <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">•</span>
                         <button
                             onClick={() => navigate('/research')}

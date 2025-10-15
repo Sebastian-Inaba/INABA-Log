@@ -1,7 +1,6 @@
 // src/components/PostComps/PostFeatured.tsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FadeIn } from '../AnimationComps/FadeIn';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
 import type { Post } from '../../types';
@@ -40,7 +39,6 @@ export function FeaturedPosts() {
     // Loading state
     if (loading) {
         return (
-            <FadeIn direction="left" duration={700} delay={1600}>
                 <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500 animate-pulse">
                     <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                         <div className="h-6 w-40 bg-neutral-800 rounded" />
@@ -54,14 +52,12 @@ export function FeaturedPosts() {
                         ))}
                     </div>
                 </aside>
-            </FadeIn>
         );
     }
 
     // Error state
     if (fetchError) {
         return (
-            <FadeIn direction="left" duration={700} delay={1600}>
                 <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                     <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                         <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
@@ -76,26 +72,22 @@ export function FeaturedPosts() {
                         </button>
                     </div>
                 </aside>
-            </FadeIn>
         );
     }
 
     // Empty state
     if (featuredPosts.length === 0) {
         return (
-            <FadeIn direction="left" duration={700} delay={1600}>
                 <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                     <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                         <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
                     </div>
                     <div className="text-center py-6 text-gray-400 text-sm">No featured posts yet</div>
                 </aside>
-            </FadeIn>
         );
     }
 
     return (
-        <FadeIn direction="left" duration={700} delay={1600}>
             <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                     <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
@@ -126,6 +118,5 @@ export function FeaturedPosts() {
                     ))}
                 </ul>
             </aside>
-        </FadeIn>
     );
 }

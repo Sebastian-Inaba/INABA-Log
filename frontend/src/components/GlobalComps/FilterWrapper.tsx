@@ -181,7 +181,8 @@ export function FilterWrapper({
                     }`}
                 >
                     <img src={getIcon('filter')} alt={getLabel('filter')} className="w-4 h-4" />
-                    <span>Filters</span>
+                    {/* Hide "Filter" text on mobile */}
+                    <span className="hidden sm:inline">Filter</span>
                     {hasActiveFilters && <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Active</span>}
                     <img
                         src={getIcon('arrowDown')}
@@ -298,58 +299,51 @@ export function FilterWrapper({
                         )}
                     </div>
 
-                    {/* Tags Checkboxes*/}
+                    {/* Tags Checkboxes - Made responsive */}
                     {allTags.length > 0 && (
                         <div className="mt-6 pt-4 border-t border-neutral-600">
                             <label className="block text-sm font-medium text-neutral-300 mb-3">
                                 Tags ({allTags.length} available) {selectedTags.length > 0 && `- ${selectedTags.length} selected`}
                             </label>
 
-                            <div className="grid grid-cols-12 gap-2 max-h-80 overflow-y-auto p-1">
-                                {Array.from({ length: 12 }).map((_, colIndex) => {
-                                    const start = colIndex * 10;
-                                    const end = start + 10;
-                                    const colTags = allTags.slice(start, end);
-                                    return (
-                                        <div key={colIndex} className="flex flex-col gap-1">
-                                            {colTags.map((tag) => (
-                                                <label key={tag} className="flex items-center space-x-2 cursor-pointer group select-none">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedTags.includes(tag)}
-                                                        onChange={() => handleTagToggle(tag)}
-                                                        className="peer hidden"
-                                                    />
-                                                    <div className="relative">
-                                                        <div
-                                                            className={`w-4 h-4 flex items-center justify-center border rounded transition-colors
-                                                                ${
-                                                                    selectedTags.includes(tag)
-                                                                        ? 'bg-purple-600 border-purple-600'
-                                                                        : 'bg-white border-neutral-600'
-                                                                }`}
-                                                        >
-                                                            {selectedTags.includes(tag) && (
-                                                                <svg
-                                                                    className="w-3 h-3 text-white"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth="3"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">
-                                                        {tag}
-                                                    </span>
-                                                </label>
-                                            ))}
+                            {/* Responsive grid for tags */}
+                            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-12 gap-2 max-h-80 overflow-y-auto p-1">
+                                {allTags.map((tag) => (
+                                    <label key={tag} className="flex items-center space-x-2 cursor-pointer group select-none min-w-0">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTags.includes(tag)}
+                                            onChange={() => handleTagToggle(tag)}
+                                            className="peer hidden"
+                                        />
+                                        <div className="flex-shrink-0">
+                                            <div
+                                                className={`w-4 h-4 flex items-center justify-center border rounded transition-colors
+                                                    ${
+                                                        selectedTags.includes(tag)
+                                                            ? 'bg-purple-600 border-purple-600'
+                                                            : 'bg-white border-neutral-600'
+                                                    }`}
+                                            >
+                                                {selectedTags.includes(tag) && (
+                                                    <svg
+                                                        className="w-3 h-3 text-white"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                )}
+                                            </div>
                                         </div>
-                                    );
-                                })}
+                                        {/* Tag text with truncation to prevent overflow */}
+                                        <span className="text-sm text-neutral-300 group-hover:text-white transition-colors truncate min-w-0" title={tag}>
+                                            {tag}
+                                        </span>
+                                    </label>
+                                ))}
                             </div>
                         </div>
                     )}

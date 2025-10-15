@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { PostHeader } from '../components/PostComps/PostDetail/PostHeader';
 import { PostMain } from '../components/PostComps/PostDetail/PostMain';
 import { FeaturedPosts } from '../components/PostComps/PostFeatured';
+import { FadeIn } from '../components/AnimationComps/FadeIn';
 
 export function PostDetail() {
     const { slug } = useParams<{ slug: string }>();
@@ -37,7 +38,9 @@ export function PostDetail() {
 
                     {/* Featured posts */}
                     <div className="w-80 max-[1440px]:hidden flex-shrink-0">
-                        <FeaturedPosts />
+                        <FadeIn direction="left" duration={700} delay={1600}>
+                            <FeaturedPosts />
+                        </FadeIn>
                     </div>
                 </div>
             </div>
