@@ -433,4 +433,5 @@ const getReadingTime = (post: Post) => {
 
 13. Extract helpers and other things that could be used form global scope out of components
 14. Redo Edit and Create modal for admin so preview and content is in better view, with a way to select texts for markdown instead of writing it by hand.
-15. ...
+15. Fix keyboard navigation on some things, New Post doesn't have it, clickable titles doesn't get selected.
+16. ...

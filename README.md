@@ -31,9 +31,17 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Fixed new post detail page which fetches post data via slug
+- Fixed new post page 
 
-- Also added a featured posts component that will also be used on the posts page
+- But i have a scroll problem on the page and the page change messes up scroll, i will have to fix that
+
+- Also have to fix filter to cus it doesn't work on category's 
+
+* **TL;DR:**
+Post page is now functional with post listings. But...  
+- Scroll behavior has occasional jumps due to Lenis(i assume), not sure why.  
+- Pagination page resets view to top on page 1 but not 2(why?).  
+- Search/filter does not filter by categories yet.  
 
 #### Full Design Example (might not be final product)
 

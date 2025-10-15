@@ -49,7 +49,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('title author description category tags featuredImage createdAt updatedAt')
+            .select('title author description category tags featuredImage createdAt updatedAt slug')
             .lean();
 
         const totalPosts = await Post.countDocuments(filter);
