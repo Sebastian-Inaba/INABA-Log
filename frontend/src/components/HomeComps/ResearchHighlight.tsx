@@ -181,7 +181,7 @@ export function NewestResearch({
                         >
                             Subscribe
                         </a>  
-                        */} 
+                        */}
                         <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">•</span>
                         <button
                             onClick={() => navigate('/research')}

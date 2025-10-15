@@ -339,7 +339,10 @@ export function FilterWrapper({
                                             </div>
                                         </div>
                                         {/* Tag text with truncation to prevent overflow */}
-                                        <span className="text-sm text-neutral-300 group-hover:text-white transition-colors truncate min-w-0" title={tag}>
+                                        <span
+                                            className="text-sm text-neutral-300 group-hover:text-white transition-colors truncate min-w-0"
+                                            title={tag}
+                                        >
                                             {tag}
                                         </span>
                                     </label>

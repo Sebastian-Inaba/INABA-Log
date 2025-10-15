@@ -114,7 +114,7 @@ export default function PublicPostList({
         navigate(`/post/${slug}`);
     };
 
-    // Generate random colors for tags 
+    // Generate random colors for tags
     const postColorMaps = useMemo(() => {
         return filteredPosts.map((post) => {
             if (!post?.tags) return [] as string[];
@@ -184,7 +184,7 @@ export default function PublicPostList({
         );
     }
 
-    // Empty state 
+    // Empty state
     if (filteredPosts.length === 0) {
         return (
             <div className="w-full py-6 px-4">
@@ -238,12 +238,15 @@ export default function PublicPostList({
             </div>
 
             {/* Content Grid - Three column layout on desktop */}
-            <FadeIn direction="up" className="w-full max-w-[1040px] xl:max-w-none mx-auto grid grid-cols-1 xl:grid-cols-[minmax(280px,1fr)_minmax(0,1040px)_minmax(280px,1fr)] gap-6 hide-scrollbar">
+            <FadeIn
+                direction="up"
+                className="w-full max-w-[1040px] xl:max-w-none mx-auto grid grid-cols-1 xl:grid-cols-[minmax(280px,1fr)_minmax(0,1040px)_minmax(280px,1fr)] gap-6 hide-scrollbar"
+            >
                 {/* Left spacer */}
-                 <div className="hidden xl:flex items-center justify-end pl-6">
+                <div className="hidden xl:flex items-center justify-end pl-6">
                     <div className="w-1 h-full bg-gray-400 rounded-full" />
                 </div>
-                
+
                 {/* Posts Column */}
                 <div className="w-full flex flex-col">
                     {/* Individual post cards */}
@@ -254,7 +257,10 @@ export default function PublicPostList({
 
                         return (
                             <FadeIn key={post._id} direction="up" delay={postIndex * 60}>
-                                <article className="relative flex-1" style={{ marginBottom: postIndex < currentPosts.length - 1 ? '1.5rem' : '0' }}>
+                                <article
+                                    className="relative flex-1"
+                                    style={{ marginBottom: postIndex < currentPosts.length - 1 ? '1.5rem' : '0' }}
+                                >
                                     {/* Desktop date display */}
                                     <div className="hidden xl:flex xl:absolute xl:-ml-[150px] xl:w-28 xl:top-6 justify-center">
                                         <div className="text-center">
@@ -328,9 +334,7 @@ export default function PublicPostList({
                                                         style={fontStyles.tags}
                                                     >
                                                         {tag}
-                                                        {i !== visibleTags.length - 1 && (
-                                                            <span className="mx-2 text-gray-300">|</span>
-                                                        )}
+                                                        {i !== visibleTags.length - 1 && <span className="mx-2 text-gray-300">|</span>}
                                                     </span>
                                                 ))}
                                                 {post.tags && post.tags.length > 5 && (
@@ -369,9 +373,7 @@ export default function PublicPostList({
                                     </div>
 
                                     {/* Divider between posts */}
-                                    {postIndex < currentPosts.length - 1 && (
-                                        <div className="m-0 border-1 border-gray-400 rounded-2xl" />
-                                    )}
+                                    {postIndex < currentPosts.length - 1 && <div className="m-0 border-1 border-gray-400 rounded-2xl" />}
                                 </article>
                             </FadeIn>
                         );
@@ -422,9 +424,7 @@ export default function PublicPostList({
                                 {i + 1}
                             </button>
                         ))}
-                        {totalPages > 10 && (
-                            <span className="flex items-center text-gray-500 text-xs px-2">+{totalPages - 10} more</span>
-                        )}
+                        {totalPages > 10 && <span className="flex items-center text-gray-500 text-xs px-2">+{totalPages - 10} more</span>}
                     </div>
 
                     {/* Next button */}
