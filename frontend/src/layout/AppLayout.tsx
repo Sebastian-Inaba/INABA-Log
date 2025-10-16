@@ -1,14 +1,12 @@
 // src/layout/AppLayout.tsx
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Header } from '../components/GlobalComps/Header/Header';
 import { Footer } from '../components/GlobalComps/Footer/Footer';
 import { LenisScroll } from '../components/AnimationComps/Scroll/ScrollWrapper';
 
 export function AppLayout() {
-    const location = useLocation();
     const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
-    const [lastScroll, setLastScroll] = useState(0);
 
     // Disable browser scroll restoration
     useEffect(() => {
@@ -16,37 +14,6 @@ export function AppLayout() {
             history.scrollRestoration = 'manual';
         }
     }, []);
-
-    // Reset scroll position and state when route changes
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        setLastScroll(0);
-        setScrollDirection('up');
-    }, [location.pathname]);
-
-    // Initialize lastScroll with current position on mount
-    useEffect(() => {
-        setLastScroll(window.scrollY);
-    }, []);
-
-    // Track the user's scroll direction
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScroll = window.scrollY;
-            if (currentScroll > lastScroll) {
-                setScrollDirection('down'); // user scrolled down
-            } else {
-                setScrollDirection('up'); // user scrolled up
-            }
-            setLastScroll(currentScroll);
-        };
-
-        // Attach scroll listener
-        window.addEventListener('scroll', handleScroll);
-
-        // Cleanup on unmount
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastScroll]);
 
     return (
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
@@ -61,7 +28,8 @@ export function AppLayout() {
             </header>
 
             {/* Main content wrapped in Lenis smooth scroll */}
-            <LenisScroll>
+            {/* Pass setScrollDirection so Lenis can notify about direction changes */}
+            <LenisScroll onDirectionChange={setScrollDirection}>
                 <main className="flex-1 w-full pt-[60px]">
                     <Outlet />
                 </main>

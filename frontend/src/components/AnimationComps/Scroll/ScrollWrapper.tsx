@@ -5,9 +5,10 @@ import Lenis from 'lenis';
 
 interface LenisScrollProps {
     children: ReactNode;
+    onDirectionChange?: (dir: 'up' | 'down') => void;
 }
 
-export function LenisScroll({ children }: LenisScrollProps) {
+export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
     // Ref to store the Lenis instance
     const lenisRef = useRef<Lenis | null>(null);
     // Get current location to detect route changes
@@ -16,6 +17,10 @@ export function LenisScroll({ children }: LenisScrollProps) {
     const moRef = useRef<MutationObserver | null>(null);
     // debounced resize timer ref
     const resizeTimerRef = useRef<number | null>(null);
+
+    // track last scroll and last direction in refs to compute diffs cheaply
+    const lastScrollRef = useRef<number>(0);
+    const lastDirectionRef = useRef<'up' | 'down'>('up');
 
     // Prevents thrashing when many DOM mutations arrive at once.
     const scheduleResize = (ms = 120) => {
@@ -61,6 +66,40 @@ export function LenisScroll({ children }: LenisScrollProps) {
             // keep autoResize default — we'll still call resize explicitly where needed
         });
 
+        // wire a Lenis 'scroll' listener to compute direction and notify parent
+        const handleLenisScroll = (e: unknown) => {
+            let current = window.scrollY;
+
+            if (typeof e === 'number') {
+                current = e;
+            } else if (typeof e === 'object' && e !== null) {
+                // Narrow to a shape we can read safely
+                const ev = e as { scroll?: number; y?: number };
+                if (typeof ev.scroll === 'number') {
+                    current = ev.scroll;
+                } else if (typeof ev.y === 'number') {
+                    current = ev.y;
+                }
+            }
+
+            const last = lastScrollRef.current;
+            const dir: 'up' | 'down' = current > last ? 'down' : 'up';
+
+            if (dir !== lastDirectionRef.current) {
+                lastDirectionRef.current = dir;
+                onDirectionChange?.(dir);
+            }
+
+            lastScrollRef.current = current;
+        };
+
+        try {
+            // attach if API available
+            lenisRef.current?.on?.('scroll', handleLenisScroll);
+        } catch {
+            // If Lenis build doesn't support `.on`, we gracefully skip attaching.
+        }
+
         // Helps the first measurement after mount be accurate for pages with images.
         (async () => {
             await waitForImagesToLoad();
@@ -88,8 +127,15 @@ export function LenisScroll({ children }: LenisScrollProps) {
             moRef.current?.disconnect();
             moRef.current = null;
 
+            // remove Lenis listener if possible
+            try {
+                lenisRef.current?.off?.('scroll', handleLenisScroll);
+            } catch {
+                // ignore if not supported
+            }
+
             // destroy Lenis instance
-            lenisRef.current?.destroy();
+            lenisRef.current?.destroy?.();
             lenisRef.current = null;
 
             // clear any pending resize timers
@@ -98,13 +144,13 @@ export function LenisScroll({ children }: LenisScrollProps) {
                 resizeTimerRef.current = null;
             }
         };
-    }, []);
+    }, [onDirectionChange]);
 
     // Reset/scroll-to-top on route change and force Lenis to recalc.
     useEffect(() => {
         if (!lenisRef.current) return;
 
-        // Immediately put viewport at 0 using Lenis )
+        // Immediately put viewport at 0 using Lenis
         try {
             lenisRef.current.scrollTo(0, { immediate: true });
         } catch {
