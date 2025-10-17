@@ -1,6 +1,7 @@
 // src/components/AnimationComps/Scroll/ScrollWrapper.tsx
 import { useEffect, useRef, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ScrollBar } from './ScrollBar';
 import Lenis from 'lenis';
 
 // TypeScript declaration for window.lenis
@@ -50,7 +51,7 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
     useEffect(() => {
         // Initialize Lenis for smooth scrolling
         lenisRef.current = new Lenis({
-            lerp: 0.1, // smoothing factor
+            lerp: 0.07, // smoothing factor
             smoothWheel: true, // enable smooth wheel scroll
             wheelMultiplier: 1, // control wheel sensitivity
             autoRaf: true, // automatically hook into requestAnimationFrame
@@ -316,5 +317,11 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
         };
     }, []);
 
-    return <div className="h-full w-full">{children}</div>;
+    return (
+        <div className="h-full w-full">
+            {children}
+            {/** Custom scrollbar */}
+            <ScrollBar />
+        </div>
+    );
 }

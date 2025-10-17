@@ -1,3 +1,4 @@
+/* src/index.css */
 @import 'tailwindcss';
 
 html,
@@ -9,14 +10,16 @@ body {
 
 /* global.css or app's main stylesheet */
 
-/* Utility to hide native scrollbars but keep scroll behaviour */
-.hide-scrollbar {
+/* Utility to hide native scrollbar but keep scroll functionality */
+body {
+    overflow: auto;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
 
 /* WebKit browsers */
-.hide-scrollbar::-webkit-scrollbar {
+::-webkit-scrollbar {
+    display: none;
     width: 0;
     height: 0;
 }

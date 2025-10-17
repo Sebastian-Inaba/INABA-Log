@@ -1,0 +1,56 @@
+/* src/components/AnimationComps/Scroll/ScrollWrapper.module.css */
+
+/* Fixed to right side, full height */
+.scrollbarTrack {
+    position: fixed;
+    right: 1px;
+    top: 0;
+    height: 100vh;
+    width: 14px;
+    z-index: 99999;
+    pointer-events: auto;
+    opacity: 1;
+    transition:
+        opacity 220ms ease,
+        transform 220ms ease;
+    display: block;
+}
+
+/* Hidden state: keep mounted but partially visible */
+.hidden {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+}
+
+/* When hidden but hovered, show it more clearly */
+.hidden:hover {
+    opacity: 0.8;
+    pointer-events: auto;
+}
+
+/* Thumb */
+.scrollbarThumb {
+    position: absolute;
+    left: 2px;
+    width: 10px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    top: 0;
+    height: 40px;
+    transform: translateZ(0);
+    cursor: pointer;
+    transition: background-color 120ms ease;
+}
+
+/* Hover state for thumb */
+.scrollbarThumb:hover {
+    background: rgb(255, 255, 255);
+    transform: scaleX(1.2);
+}
+
+/* When dragging, we make the thumb respond immediately */
+.dragging .scrollbarThumb {
+    transform: scaleX(1.2);
+}
