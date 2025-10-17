@@ -47,7 +47,7 @@ export function AppLayout() {
             </LenisScroll>
 
             {/* Footer - it's a footer */}
-            <footer className="w-full mt-auto h-[300px] bg-neutral-800 flex items-center justify-center p-4 z-10">
+            <footer className="w-full mt-auto h-[300px] bg-neutral-800 flex items-center justify-center p-4 z-1000">
                 <Footer />
             </footer>
         </div>

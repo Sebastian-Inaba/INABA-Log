@@ -65,22 +65,12 @@ export function Home() {
         if (!section) return;
 
         const updateMeasurements = () => {
-            // Always update if sticky, but also check if we should BECOME sticky
+            // ONLY update measurements if already sticky - don't trigger state changes
             if (isStickyRef.current) {
                 const rect = section.getBoundingClientRect();
-                applyFixedStyles(Math.round(rect.top));
+                // Just update the inline styles, don't call applyFixedStyles
+                section.style.top = `${Math.round(rect.top)}px`;
                 setBottomSectionMargin(Math.ceil(rect.height));
-            } else {
-                // Check if we should become sticky due to zoom change
-                const bottomRect = bottomSectionRef.current?.getBoundingClientRect();
-                if (bottomRect && bottomRect.top <= window.innerHeight) {
-                    // Force re-evaluation of sticky state
-                    const topRect = section.getBoundingClientRect();
-                    const sectionHeight = Math.ceil(section.offsetHeight || topRect.height);
-                    setBottomSectionMargin(sectionHeight);
-                    applyFixedStyles(Math.round(topRect.top));
-                    setIsSticky(true);
-                }
             }
         };
 
@@ -111,7 +101,6 @@ export function Home() {
     /** Scroll handler for sticky top section */
     useEffect(() => {
         let scrollRafId: number | null = null;
-        let checkRafId: number | null = null;
 
         const handleScroll = () => {
             if (!topSectionRef.current || !bottomSectionRef.current) return;
@@ -119,7 +108,7 @@ export function Home() {
             const bottomRect = bottomSectionRef.current.getBoundingClientRect();
             const shouldBeSticky = bottomRect.top <= window.innerHeight;
 
-            // Enter sticky state
+            // Enter sticky state - ONCE
             if (shouldBeSticky && !isStickyRef.current) {
                 if (scrollRafId) cancelAnimationFrame(scrollRafId);
                 scrollRafId = requestAnimationFrame(() => {
@@ -133,7 +122,7 @@ export function Home() {
                 return;
             }
 
-            // Exit sticky state
+            // Exit sticky state - ONCE
             if (!shouldBeSticky && isStickyRef.current) {
                 if (scrollRafId) cancelAnimationFrame(scrollRafId);
                 scrollRafId = requestAnimationFrame(() => {
@@ -144,44 +133,15 @@ export function Home() {
             }
         };
 
-        // Force immediate check after layout changes (zoom, resize)
-        const handleLayoutChange = () => {
-            // If currently sticky, force un-stick first to get accurate measurements
-            if (isStickyRef.current) {
-                removeFixedStyles();
-                clearBottomSectionMargin();
-                setIsSticky(false);
-            }
-
-            if (checkRafId) cancelAnimationFrame(checkRafId);
-            checkRafId = requestAnimationFrame(() => {
-                // Double RAF to ensure layout is fully recalculated
-                requestAnimationFrame(() => {
-                    handleScroll();
-                });
-            });
-        };
-
         // Attach listeners
         window.addEventListener('scroll', handleScroll, { passive: true });
-        window.addEventListener('resize', handleLayoutChange);
-
-        // Add visual viewport change listener for zoom
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleLayoutChange);
-        }
 
         // Initial check
         handleScroll();
 
         return () => {
             if (scrollRafId) cancelAnimationFrame(scrollRafId);
-            if (checkRafId) cancelAnimationFrame(checkRafId);
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleLayoutChange);
-            if (window.visualViewport) {
-                window.visualViewport.removeEventListener('resize', handleLayoutChange);
-            }
             // Clean up any styles left behind
             removeFixedStyles();
             clearBottomSectionMargin();
@@ -234,7 +194,7 @@ export function Home() {
     }, []);
 
     return (
-        <div className="w-full mx-auto h-full overflow-x-hidden overflow-y-auto hide-scrollbar">
+        <div className="w-full mx-auto h-full">
             {/* Top section (newest post & research highlight) */}
             <div ref={topSectionRef} className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}>
                 <div className="max-w-11/12 mx-auto relative pt-10 pb-20">
@@ -256,7 +216,7 @@ export function Home() {
             {/* Bottom section (sticky heading + latest posts) */}
             <div ref={bottomSectionRef} className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}>
                 {/* Backdrop blur (instant, no fade) */}
-                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] backdrop-blur-2xl bg-black/40 shadow-lg -z-10" />
+                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] backdrop-blur-2xl bg-black/40 shadow-lg -z-100" />
 
                 {/* Fade in everything else */}
                 <FadeIn direction="up" threshold={0}>
