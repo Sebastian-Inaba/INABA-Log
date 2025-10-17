@@ -15,11 +15,22 @@ export function AppLayout() {
         }
     }, []);
 
+    // reflect header-hidden state on the root element so portaled elements can react
+    useEffect(() => {
+        if (typeof document !== 'undefined') {
+            if (scrollDirection === 'down') {
+                document.documentElement.setAttribute('data-header-hidden', 'true');
+            } else {
+                document.documentElement.setAttribute('data-header-hidden', 'false');
+            }
+        }
+    }, [scrollDirection]);
+
     return (
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
             {/* Header - hides when scrolling down */}
             <header
-                className={`fixed top-0 w-full bg-neutral-900 z-100 transition-transform duration-300 ${
+                className={`fixed top-0 w-full bg-neutral-900 z-[90] transition-transform duration-300 ${
                     scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'
                 }`}
                 role="banner"

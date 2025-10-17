@@ -9,6 +9,7 @@
 * [ ] Fix model validation if something is required or not on the front end.
 * [ ] Add tooltip? (maybe better for header nav instead of expanding text; reusable elsewhere).
 * [ ] Rename everything `"research"` related to `"deepDive"`.
+* [ ] Add category to search filter.
 * [ ] Add read time to posts.
 
   ```ts
