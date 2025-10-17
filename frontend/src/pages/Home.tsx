@@ -254,10 +254,12 @@ export function Home() {
             </div>
 
             {/* Bottom section (sticky heading + latest posts) */}
-            <FadeIn direction="up" threshold={0}>
-                <div ref={bottomSectionRef} className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}>
-                    {/* Backdrop blur */}
-                    <div className="absolute inset-0 w-full backdrop-blur-2xl bg-black/40 shadow-lg -z-10" />
+            <div ref={bottomSectionRef} className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}>
+                {/* Backdrop blur (instant, no fade) */}
+                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] backdrop-blur-2xl bg-black/40 shadow-lg -z-10" />
+
+                {/* Fade in everything else */}
+                <FadeIn direction="up" threshold={0}>
                     {/* Divider */}
                     <div className="w-full max-w-10/12 mx-auto border-2 rounded-2xl border-gray-400" />
 
@@ -275,8 +277,8 @@ export function Home() {
                             <LatestPosts className="w-full" apiUrl="/posts/latest-five" />
                         </div>
                     </div>
-                </div>
-            </FadeIn>
+                </FadeIn>
+            </div>
         </div>
     );
 }

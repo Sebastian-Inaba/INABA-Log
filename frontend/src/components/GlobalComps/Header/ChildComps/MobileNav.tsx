@@ -14,7 +14,7 @@ type MobileNavProps = {
 export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [headerHidden, setHeaderHidden] = useState<boolean>(() =>
-        typeof document !== 'undefined' ? document.documentElement.getAttribute('data-header-hidden') === 'true' : false
+        typeof document !== 'undefined' ? document.documentElement.getAttribute('data-header-hidden') === 'true' : false,
     );
 
     // observe attribute changes so the portaled nav reacts when header hides/shows
@@ -51,7 +51,9 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
     // Portal content so nav lives on document.body (avoid stacking-context issues)
     const portalContent = (
         // add responsive hide so portaled content is hidden on lg+ screens
-        <div className={`fixed inset-0 z-[1400] pointer-events-none transition-transform duration-300 lg:hidden ${headerHidden ? '-translate-y-[60px]' : 'translate-y-0'}`}>
+        <div
+            className={`fixed inset-0 z-[1400] pointer-events-none transition-transform duration-300 lg:hidden ${headerHidden ? '-translate-y-[60px]' : 'translate-y-0'}`}
+        >
             {/* Hamburger button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -116,9 +118,5 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
         </div>
     );
 
-    return (
-        <div className="lg:hidden">
-            {typeof document !== 'undefined' ? createPortal(portalContent, document.body) : null}
-        </div>
-    );
+    return <div className="lg:hidden">{typeof document !== 'undefined' ? createPortal(portalContent, document.body) : null}</div>;
 }
