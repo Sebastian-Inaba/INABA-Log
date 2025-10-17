@@ -82,10 +82,18 @@ export function useAuthLogic() {
         }
     };
 
-    // Run once on mount, check if user is logged in
+    // Run once on mount, check if user is logged in on /login and /admin routes
     useEffect(() => {
-        if (!initialized) {
+        const isProtectedRoute = 
+            window.location.pathname.startsWith('/admin') || 
+            window.location.pathname === '/login';
+        
+        if (!initialized && isProtectedRoute) {
             fetchUser();
+            setInitialized(true);
+        } else if (!isProtectedRoute) {
+            // Skip auth check on public pages
+            setLoading(false);
             setInitialized(true);
         }
     }, [initialized]);
