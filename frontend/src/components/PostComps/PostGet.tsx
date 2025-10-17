@@ -1,6 +1,6 @@
 // src/components/PostComps/PostGet.tsx
 import { useCallback, useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
 import type { Post, ContentItem } from '../../types';
@@ -28,14 +28,17 @@ export default function PublicPostList({
     dateFont = 'Poppins',
     imageHeight = 'h-64',
 }: PublicPostListProps = {}) {
-    // States
+    // Use URL search params for pagination
+    const [searchParams] = useSearchParams();
     const [posts, setPosts] = useState<Post[]>([]);
     const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [page, setPage] = useState(0);
     const navigate = useNavigate();
     const postsPerPage = 5;
+
+    // Get page from URL, default to 1 (1-indexed for users)
+    const page = parseInt(searchParams.get('page') || '1', 10);
 
     // Memoized font styles
     const fontStyles = useMemo(
@@ -53,7 +56,26 @@ export default function PublicPostList({
     // Fetch posts on component mount
     useEffect(() => {
         void fetchPosts();
+
+        // Initialize URL with page=1 if no page param exists
+        if (!searchParams.has('page')) {
+            navigate('/post?page=1', { replace: true });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Scroll to top when page changes
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        // Also trigger Lenis scroll if available
+        if (window.lenis) {
+            try {
+                window.lenis.scrollTo(0, { immediate: true });
+            } catch {
+                // ignore if lenis doesn't support this
+            }
+        }
+    }, [page]);
 
     // Fetch and normalize posts from API
     async function fetchPosts() {
@@ -93,7 +115,7 @@ export default function PublicPostList({
 
             setPosts(normalized);
             setFilteredPosts(normalized);
-            setPage(0);
+            // Don't reset page on initial fetch - preserve URL param
         } catch (err) {
             logError(err);
             setError(err instanceof Error ? err.message : String(err));
@@ -103,16 +125,28 @@ export default function PublicPostList({
     }
 
     // Handle filter changes from FilterWrapper
-    const handleFilter = useCallback((items: ContentItem[]) => {
-        setFilteredPosts(items as Post[]);
-        setPage(0);
-    }, []);
+    const handleFilter = useCallback(
+        (items: ContentItem[]) => {
+            setFilteredPosts(items as Post[]);
+            // Reset to page 1 when filtering using absolute path
+            navigate('/post?page=1', { replace: true });
+        },
+        [navigate],
+    );
 
     // Navigate to individual post page
     const handleReadMore = (slug: string) => {
         if (!slug) return;
         navigate(`/post/${slug}`);
     };
+
+    // Update page in URL using navigate with absolute path
+    const setPage = useCallback(
+        (newPage: number) => {
+            navigate(`/post?page=${newPage}`, { replace: false });
+        },
+        [navigate],
+    );
 
     // Generate random colors for tags
     const postColorMaps = useMemo(() => {
@@ -130,9 +164,9 @@ export default function PublicPostList({
         });
     }, [filteredPosts]);
 
-    // Pagination calculations
+    // Pagination calculations (convert 1-indexed page to 0-indexed for array slicing)
     const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-    const startIndex = page * postsPerPage;
+    const startIndex = (page - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
@@ -242,13 +276,15 @@ export default function PublicPostList({
                 direction="up"
                 className="w-full max-w-[1040px] xl:max-w-none mx-auto grid grid-cols-1 xl:grid-cols-[minmax(280px,1fr)_minmax(0,1040px)_minmax(280px,1fr)] gap-6 hide-scrollbar"
             >
-                {/* Left spacer */}
-                <div className="hidden xl:flex items-center justify-end pl-6">
-                    <div className="w-1 h-full bg-gray-400 rounded-full" />
+                {/* Left spacer with date line */}
+                <div className="hidden xl:flex justify-end pl-6">
+                    <div className="flex items-center">
+                        <div className="w-1 h-full bg-gray-400 rounded-full" />
+                    </div>
                 </div>
 
-                {/* Posts Column */}
-                <div className="w-full flex flex-col">
+                {/* Posts Column - centered when few posts */}
+                <div className="w-full flex flex-col justify-center">
                     {/* Individual post cards */}
                     {currentPosts.map((post, postIndex) => {
                         const visibleTags = post?.tags?.slice(0, 5) ?? [];
@@ -258,7 +294,7 @@ export default function PublicPostList({
                         return (
                             <FadeIn key={post._id} direction="up" delay={postIndex * 60}>
                                 <article
-                                    className="relative flex-1"
+                                    className="relative flex-1 w-full"
                                     style={{ marginBottom: postIndex < currentPosts.length - 1 ? '1.5rem' : '0' }}
                                 >
                                     {/* Desktop date display */}
@@ -380,15 +416,13 @@ export default function PublicPostList({
                     })}
                 </div>
 
-                {/* Featured Posts Column */}
-                <div className="hidden xl:flex w-full justify-end">
-                    {page === 0 && (
-                        <FadeIn direction="left" delay={300}>
-                            <div className="w-[280px]">
-                                <FeaturedPosts />
-                            </div>
-                        </FadeIn>
-                    )}
+                {/* Featured Posts Column - stays at top */}
+                <div className="hidden xl:flex w-full justify-end self-start">
+                    <FadeIn direction="left" delay={300}>
+                        <div className="w-[280px]">
+                            <FeaturedPosts />
+                        </div>
+                    </FadeIn>
                 </div>
             </FadeIn>
 
@@ -397,9 +431,9 @@ export default function PublicPostList({
                 <div className="flex items-center justify-center gap-4 pt-8 mt-8 border-t border-gray-700">
                     {/* Previous button */}
                     <button
-                        onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                        disabled={page === 0}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        onClick={() => setPage(Math.max(page - 1, 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
                         style={fontStyles.readMore}
                         aria-label="Previous page"
                     >
@@ -408,30 +442,33 @@ export default function PublicPostList({
 
                     {/* Page numbers */}
                     <div className="flex gap-2">
-                        {[...Array(Math.min(totalPages, 10))].map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setPage(i)}
-                                className={`w-10 h-10 rounded-lg transition-all duration-200 font-semibold ${
-                                    page === i
-                                        ? 'bg-purple-500 text-white scale-110'
-                                        : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
-                                }`}
-                                aria-label={`Go to page ${i + 1}`}
-                                aria-current={page === i ? 'page' : undefined}
-                                style={fontStyles.readMore}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
+                        {[...Array(Math.min(totalPages, 10))].map((_, i) => {
+                            const pageNumber = i + 1;
+                            return (
+                                <button
+                                    key={i}
+                                    onClick={() => setPage(pageNumber)}
+                                    className={`w-10 h-10 rounded-lg transition-all duration-200 font-semibold cursor-pointer ${
+                                        page === pageNumber
+                                            ? 'bg-purple-500 text-white scale-110'
+                                            : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
+                                    }`}
+                                    aria-label={`Go to page ${pageNumber}`}
+                                    aria-current={page === pageNumber ? 'page' : undefined}
+                                    style={fontStyles.readMore}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
                         {totalPages > 10 && <span className="flex items-center text-gray-500 text-xs px-2">+{totalPages - 10} more</span>}
                     </div>
 
                     {/* Next button */}
                     <button
-                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                        disabled={page === totalPages - 1}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        onClick={() => setPage(Math.min(page + 1, totalPages))}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
                         style={fontStyles.readMore}
                         aria-label="Next page"
                     >

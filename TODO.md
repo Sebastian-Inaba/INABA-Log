@@ -28,4 +28,5 @@ const getReadingTime = (post: Post) => {
 14. Redo Edit and Create modal for admin so preview and content is in better view, with a way to select texts for markdown instead of writing it by hand.
 15. Fix keyboard navigation on some things, New Post doesn't have it, clickable titles doesn't get selected.
 16. Make page pagination in to Server-Side pagination for true scalability with posts and deep dives.
-17. ...
+17. Make page refresh, refresh to last scroll position.
+18. ...

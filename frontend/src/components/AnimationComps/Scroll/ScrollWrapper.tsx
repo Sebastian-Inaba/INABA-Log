@@ -28,7 +28,7 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
     const lastDirectionRef = useRef<'up' | 'down'>('up');
     // track if user is actively scrolling
     const isScrollingRef = useRef<boolean>(false);
-    // timeout ref for debouncing scroll 
+    // timeout ref for debouncing scroll
     const scrollTimeoutRef = useRef<number | null>(null);
 
     // Returns once every image is either complete or has fired load/error.
