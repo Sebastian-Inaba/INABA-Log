@@ -4,7 +4,7 @@ import { log, error } from './logger';
 
 // Set the base URL for all API requests
 export const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api',
+    baseURL: import.meta.env.VITE_BACKEND_URL,
     withCredentials: true,
 });
 

@@ -8,4 +8,5 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    server: { host: true }, // Allow access from network (for mobile testing)
 })

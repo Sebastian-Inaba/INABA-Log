@@ -246,8 +246,8 @@
 - VITE_GOOGLE_CLIENT_ID= 
 - GOOGLE_CLIENT_ID=
 - ADMIN_EMAIL=
-- FRONTEND_URL=http://localhost:5173 (Change this to domain url)
-- VITE_BACKEND_URL=http://localhost:5000 (Change this to backend url)
+- FRONTEND_URL=http://localhost:5173 (Change this to domain url, for mobile testing change this to http://YOUR_IP:5173)
+- VITE_BACKEND_URL=http://localhost:5000 (Change this to backend url, for mobile testing change this to http://YOUR_IP:5000)
 
 ### Supabase Configuration
 - Supabase client initialization

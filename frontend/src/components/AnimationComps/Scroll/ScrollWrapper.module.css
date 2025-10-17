@@ -54,3 +54,11 @@
 .dragging .scrollbarThumb {
     transform: scaleX(1.2);
 }
+
+/* Adjust scrollbar thumb for screens 1280px and below */
+@media (max-width: 1280px) {
+    .scrollbarThumb {
+        width: 5px;      
+        left: 8px;        
+    }
+}
