@@ -4,13 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { ScrollBar } from './ScrollBar';
 import Lenis from 'lenis';
 
-// TypeScript declaration for window.lenis
-declare global {
-    interface Window {
-        lenis?: Lenis;
-    }
-}
-
 interface LenisScrollProps {
     children: ReactNode;
     onDirectionChange?: (dir: 'up' | 'down') => void;

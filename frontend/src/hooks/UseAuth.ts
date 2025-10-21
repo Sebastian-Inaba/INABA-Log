@@ -84,10 +84,8 @@ export function useAuthLogic() {
 
     // Run once on mount, check if user is logged in on /login and /admin routes
     useEffect(() => {
-        const isProtectedRoute = 
-            window.location.pathname.startsWith('/admin') || 
-            window.location.pathname === '/login';
-        
+        const isProtectedRoute = window.location.pathname.startsWith('/admin') || window.location.pathname === '/login';
+
         if (!initialized && isProtectedRoute) {
             fetchUser();
             setInitialized(true);
