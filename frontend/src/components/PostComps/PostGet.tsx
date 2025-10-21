@@ -252,7 +252,7 @@ export default function PublicPostList({
 
     // Default render
     return (
-        <div className="w-full py-6 px-4 hide-scrollbar">
+        <div className="w-full py-6 hide-scrollbar">
             {/* Filter Section */}
             <div className="w-full max-w-[1040px] xl:max-w-[1600px] mx-auto mb-6">
                 <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6">
@@ -419,7 +419,7 @@ export default function PublicPostList({
                 {/* Featured Posts Column - stays at top */}
                 <div className="hidden xl:flex w-full justify-end self-start">
                     <FadeIn direction="left" delay={300}>
-                        <div className="w-[280px]">
+                        <div className="">
                             <FeaturedPosts />
                         </div>
                     </FadeIn>

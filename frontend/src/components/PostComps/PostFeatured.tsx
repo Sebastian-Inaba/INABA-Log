@@ -88,7 +88,7 @@ export function FeaturedPosts() {
     }
 
     return (
-        <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
+        <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full flex flex-col gap-5 border border-purple-500">
             <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                 <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
             </div>
