@@ -68,7 +68,7 @@ export function PostMain({ slug }: PostMainProps) {
     // Loaded state
     return (
         <FadeIn direction="up" duration={700} delay={200}>
-            <section className="mb-8">
+            <section className="mb-8 px-3">
                 <MarkdownRenderer content={content} variant="preview" />
             </section>
         </FadeIn>
