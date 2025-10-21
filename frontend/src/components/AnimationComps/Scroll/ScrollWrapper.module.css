@@ -7,7 +7,7 @@
     top: 0;
     height: 100vh;
     width: 14px;
-    z-index: 100;
+    z-index: 500;
     pointer-events: auto;
     opacity: 1;
     transition:
@@ -19,7 +19,6 @@
 /* Hidden state: keep mounted but partially visible */
 .hidden {
     opacity: 0.3;
-    pointer-events: none;
     transition: opacity 220ms ease;
 }
 
@@ -55,10 +54,27 @@
     transform: scaleX(1.2);
 }
 
-/* Adjust scrollbar thumb for screens 1280px and below */
-@media (max-width: 1280px) {
+/* When dragging, we make the thumb respond immediately */
+.dragging .scrollbarThumb {
+    transform: scaleX(1.2);
+}
+
+/* Hide scrollbar when mobile menu is open */
+:global([data-mobile-menu-open='true']) .scrollbarTrack {
+    display: none;
+}
+
+/* Hide scrollbar on touch devices (tablets and phones) */
+@media (hover: none) and (pointer: coarse) {
+    .scrollbarTrack {
+        display: none;
+    }
+}
+
+/* Adjust scrollbar thumb for screens 1280px and below (non-touch devices) */
+@media (max-width: 1280px) and (hover: hover) and (pointer: fine) {
     .scrollbarThumb {
-        width: 5px;      
-        left: 8px;        
+        width: 5px;
+        left: 8px;
     }
 }
