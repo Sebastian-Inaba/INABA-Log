@@ -10,6 +10,7 @@
         "recalc",
         "robotoslab",
         "stylesheet",
-        "supabase"
+        "supabase",
+        "WCAG"
     ]
 }
