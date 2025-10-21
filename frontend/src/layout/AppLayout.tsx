@@ -28,9 +28,9 @@ export function AppLayout() {
 
     return (
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
-            {/* Header - hides when scrolling down */}
+            {/* Header */}
             <header
-                className={`fixed top-0 w-full bg-neutral-900 z-[90] transition-transform duration-300 ${
+                className={`fixed top-0 w-full bg-neutral-900 z-[100] transition-transform duration-300 ${
                     scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'
                 }`}
                 role="banner"
@@ -39,15 +39,14 @@ export function AppLayout() {
             </header>
 
             {/* Main content wrapped in Lenis smooth scroll */}
-            {/* Pass setScrollDirection so Lenis can notify about direction changes */}
             <LenisScroll onDirectionChange={setScrollDirection}>
-                <main className="flex-1 w-full pt-[60px]">
+                <main className="flex-1 w-full pt-[60px] relative z-10">
                     <Outlet />
                 </main>
             </LenisScroll>
 
-            {/* Footer - it's a footer */}
-            <footer className="w-full mt-auto h-[300px] bg-neutral-800 flex items-center justify-center p-4 z-1000">
+            {/* Footer */}
+            <footer className="w-full mt-auto h-[300px] bg-neutral-800 flex items-center justify-center p-4 relative z-50">
                 <Footer />
             </footer>
         </div>
