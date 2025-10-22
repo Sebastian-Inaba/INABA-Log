@@ -69,7 +69,7 @@ export const getTwoNewestResearch = async (req: Request, res: Response, next: Ne
         const researchList = await Research.find()
             .sort({ createdAt: -1 })
             .limit(2)
-            .select('title author abstract tags featuredImage createdAt') // Might get changed
+            .select('title author abstract tags featuredImage createdAt slug') // Might get changed
             .lean();
 
         if (!researchList.length) throw createHttpError(404, 'No research found');

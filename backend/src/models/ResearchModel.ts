@@ -6,9 +6,9 @@ export interface IResearch extends Document {
     slug: string;
     author: string;
     abstract: string;
-    introduction?: string;
-    method?: string;
-    keyFindings?: string;
+    introduction?: string; // markdown
+    method?: string; // markdown
+    keyFindings?: string; // markdown
     credibility?: string;
     content: string; // markdown
     references?: string[];

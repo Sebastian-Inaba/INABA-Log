@@ -76,9 +76,9 @@ export function NewestResearch({
         if (autoFetch) handleFetchNewestResearch();
     }, [autoFetch, handleFetchNewestResearch]);
 
-    const handleGoDeeperRedirect = () => {
-        if (!researchList) return;
-        navigate(`/research/`);
+    const handleGoDeeperRedirect = (slug: string) => {
+        if (!slug) return;
+        navigate(`/research/${slug}`);
     };
 
     const handleRetry = () => handleFetchNewestResearch();
@@ -203,11 +203,11 @@ export function NewestResearch({
                             <article
                                 role="button"
                                 tabIndex={0}
-                                onClick={handleGoDeeperRedirect}
+                                onClick={() => handleGoDeeperRedirect(research.slug)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
-                                        handleGoDeeperRedirect();
+                                        handleGoDeeperRedirect(research.slug);
                                     }
                                 }}
                                 className="
