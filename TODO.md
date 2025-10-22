@@ -10,7 +10,7 @@
 * [ ] Add tooltip? (maybe better for header nav instead of expanding text; reusable elsewhere).
 * [ ] Rename everything `"research"` related to `"deepDive"`.
 * [ ] Add category to search filter.
-* [ ] Add read time to posts.
+* [ ] Add read time to posts. Subject, subject date, page length and pdf view not only download(new page?).
 
   ```ts
   const getReadingTime = (post: Post) => {
@@ -34,7 +34,8 @@
 * [ ] Redo Edit and Create modal for admin: preview + content in better view, selectable markdown text.
 * [ ] Make page pagination server-side for true scalability.
 * [ ] Make page refresh maintain last scroll position.
-* [ ] Fix WCAG accessibility .
+* [ ] Fix WCAG accessibility.
+* [ ] Fix page printing.
 
 ---
 
@@ -42,7 +43,7 @@
 
 * [ ] Refresh tokens with server-side tracking.
 * [ ] Consider heavy endpoints for `GET all` if 500+ posts / deep dives exist.
-* [ ] Add identity for branding. Logo, colors, fonts, mascot?, backdrops, etc.. Right now its all over the place
+* [ ] Add identity for branding. Logo, colors, fonts, mascot?, backdrops, etc.. Right now its all over the place.
 
 ## Prioritized Follow-Up (highest to lowest)
 
@@ -65,7 +66,8 @@
 * [ ] Add read time to posts.
 * [ ] Rename everything `"research"` related to `"deepDive"`.
 * [ ] Remove all `memo` font maps and assign globally inside font CSS import.
-* [ ] Add identity for branding. Logo, colors, fonts, mascot?, backdrops, etc.. Right now its all over the place
+* [ ] Add identity for branding. Logo, colors, fonts, mascot?, backdrops, etc.. Right now its all over the place.
+* [ ] Fix page printing.
 
 ### Quick add of new todo's
 * Empty
