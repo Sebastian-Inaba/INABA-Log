@@ -101,7 +101,7 @@ export const getFeaturedPosts = async (req: Request, res: Response, next: NextFu
 export const getPostBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { slug } = req.params;
-        const post = await Post.findOne({ slug });
+        const post = await Post.findOne({ slug }).exec();
 
         if (!post) throw createHttpError(404, 'Post not found');
 

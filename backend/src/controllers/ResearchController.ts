@@ -83,11 +83,11 @@ export const getTwoNewestResearch = async (req: Request, res: Response, next: Ne
     }
 };
 
-// get research by id (deep dive)
-export const getResearchById = async (req: Request, res: Response, next: NextFunction) => {
+// get research by slug (deep dive)
+export const getResearchBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const deepDive = await Research.findById(id);
+        const { slug } = req.params;
+        const deepDive = await Research.findOne({ slug }).exec();
 
         if (!deepDive) throw createHttpError(404, 'Deep dive not found');
 

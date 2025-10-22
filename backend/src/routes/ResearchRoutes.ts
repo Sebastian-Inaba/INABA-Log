@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllResearch, getResearchById, getTwoNewestResearch } from '../controllers/ResearchController';
+import { getAllResearch, getResearchBySlug, getTwoNewestResearch } from '../controllers/ResearchController';
 
 const router = Router();
 
@@ -9,7 +9,7 @@ router.get('/', getAllResearch);
 // Get newest research (latest 2)
 router.get('/newest', getTwoNewestResearch);
 
-// Get research by ID
-router.get('/:id', getResearchById);
+// Get research by slug
+router.get('/:slug', getResearchBySlug);
 
 export default router;
