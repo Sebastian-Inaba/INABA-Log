@@ -31,11 +31,11 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-- Fixed new post page 
+# Update
 
-- But i have a scroll problem on the page and the page change messes up scroll, i will have to fix that
-
-- Also have to fix filter to cus it doesn't work on category's 
+- Created a **Research Detail** page, allowing full deep dives to be viewed along with their content.  
+- Added some items to the TODO list for future implementation.  
+- Encountered one CSS issue(idea i tried to implement): the main content blocks do not yet extend to full width under the sidebar on desktop, leaving empty space beneath it. This will be fixed in a future update. Also the copy card boxes are different sizes 
 
 * **TL;DR:**
 Post page is now functional with post listings. But...  

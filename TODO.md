@@ -10,7 +10,7 @@
 * [ ] Add tooltip? (maybe better for header nav instead of expanding text; reusable elsewhere).
 * [ ] Rename everything `"research"` related to `"deepDive"`.
 * [ ] Add category to search filter.
-* [ ] Add read time to posts. Subject, subject date, page length and pdf view not only download(new page?).
+* [ ] Add read time to posts. Subject, subject date, page length, language and pdf view not only download(new page?).
 
   ```ts
   const getReadingTime = (post: Post) => {

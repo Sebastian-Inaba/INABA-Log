@@ -8,6 +8,7 @@ import { Research } from '../pages/Research';
 import { Admin } from '../pages/Admin';
 import { Login } from '../pages/Login';
 import { PostDetail } from '../pages/PostDetail';
+import { ResearchDetail } from '../pages/ResearchDetail';
 import { NotFound } from '../pages/NotFound';
 import { navIcons } from '../assets/icons/icons';
 
@@ -57,6 +58,12 @@ export const routesConfig = [
                 path: '/post/:slug',
                 element: <PostDetail />,
                 label: 'Post Detail',
+                showInNav: false,
+            },
+            {
+                path: '/research/:slug',
+                element: <ResearchDetail />,
+                label: 'Research Detail',
                 showInNav: false,
             },
             {

@@ -52,11 +52,11 @@ export interface Post extends ContentBase {
 export interface Research extends ContentBase {
     type: 'research';
     abstract?: string;
-    introduction?: string;      
-    method?: string;            
-    keyFindings?: string;       
-    credibility?: string;       
-    content: string;    
+    introduction?: string;
+    method?: string;
+    keyFindings?: string;
+    credibility?: string;
+    content: string;
     pdfAttachment?: string | null;
     references: string[];
 }
