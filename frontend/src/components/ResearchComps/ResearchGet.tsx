@@ -1,5 +1,6 @@
 // src/components/ResearchComps/ResearchGet.tsx
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
 import type { Research, ContentItem } from '../../types';
@@ -9,6 +10,8 @@ import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 // TEST
 
 export default function PublicResearchList() {
+    const navigate = useNavigate();
+
     const [research, setResearch] = useState<Research[]>([]);
     const [filteredResearch, setFilteredResearch] = useState<Research[]>([]);
     const [loading, setLoading] = useState(true);
@@ -40,12 +43,19 @@ export default function PublicResearchList() {
                 const pdfAttachment = (obj.pdfAttachment as string) ?? null;
                 const category = (obj.category as string) ?? null;
                 const author = (obj.author as string) ?? null;
-                const createdAt = (obj.createdAt as string) ?? null;
-                const updatedAt = (obj.updatedAt as string) ?? null;
+
+                const createdAt = (obj.createdAt as string) ?? '';
+                const updatedAt = (obj.updatedAt as string) ?? '';
 
                 const references = Array.isArray(obj.references) ? (obj.references as string[]) : [];
                 const slug = (obj.slug as string) ?? '';
                 const type = (obj.type as string) ?? 'research';
+
+                const content = (obj.content as string) ?? '';
+                const introduction = (obj.introduction as string) ?? '';
+                const method = (obj.method as string) ?? '';
+                const keyFindings = (obj.keyFindings as string) ?? '';
+                const credibility = (obj.credibility as string) ?? '';
 
                 return {
                     ...obj,
@@ -62,6 +72,11 @@ export default function PublicResearchList() {
                     references,
                     slug,
                     type,
+                    content,
+                    introduction,
+                    method,
+                    keyFindings,
+                    credibility,
                 } as Research;
             });
 
@@ -81,6 +96,12 @@ export default function PublicResearchList() {
         setPage(0);
     }, []);
 
+    // Route handler
+    const handleRedirect = (slug: string) => {
+        if (!slug) return;
+        navigate(`/research/${slug}`);
+    };
+
     const currentItems = filteredResearch.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     if (loading) {
@@ -95,7 +116,7 @@ export default function PublicResearchList() {
         return (
             <div className="h-full min-h-0 flex items-center justify-center">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-4 rounded-lg max-w-lg w-full">
-                    <p className="break-words">Error: {error}</p>
+                    <p className="wrap-break-words">Error: {error}</p>
                     <button
                         onClick={() => void fetchResearch()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 mt-2"
@@ -138,7 +159,8 @@ export default function PublicResearchList() {
                                 return (
                                     <div
                                         key={item._id}
-                                        className="relative bg-neutral-800 rounded-lg p-4 min-w-0 shadow-md hover:shadow-lg transition"
+                                        onClick={() => handleRedirect(item.slug)}
+                                        className="relative bg-neutral-800 rounded-lg p-4 min-w-0 shadow-md hover:shadow-lg transition cursor-pointer"
                                     >
                                         <div className="flex flex-col min-w-0">
                                             <div className="flex items-center gap-2 mb-2">
