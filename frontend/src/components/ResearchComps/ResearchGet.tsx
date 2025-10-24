@@ -121,6 +121,25 @@ export default function PublicResearchList() {
         [navigate],
     );
 
+    // Helper that dispatch a small event so the scroll wrapper (Lenis) can re-measure the layout. Will put in global utilities later if needed elsewhere.
+    const notifyLenisOfContentChange = () => {
+        try {
+            // immediate notification
+            window.dispatchEvent(new Event('lenis:contentchange'));
+        } catch {
+            // ignore
+        }
+
+        // schedule another notification after CSS transition
+        setTimeout(() => {
+            try {
+                window.dispatchEvent(new Event('lenis:contentchange'));
+            } catch {
+                // ignore
+            }
+        }, 520);
+    };
+
     // Toggle abstract expansion
     const toggleAbstract = (id: string) => {
         setExpandedIds((prev) => {
@@ -132,6 +151,10 @@ export default function PublicResearchList() {
             }
             return next;
         });
+
+        // Inform Lenis/ScrollWrapper about the content height change so it can resize.
+        // We notify both immediately and after the CSS transition completes (see helper above).
+        notifyLenisOfContentChange();
     };
 
     // Pagination calculations (convert 1-indexed page to 0-indexed for array slicing)
@@ -232,7 +255,7 @@ export default function PublicResearchList() {
                                 <FadeIn key={item._id} direction="up" delay={index * 40}>
                                     <article className="group relative bg-neutral-900/50 hover:bg-neutral-900 border-l-4 border border-gray-700 hover:border-transparent hover:border-l-purple-500 transition-all duration-300 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:shadow-purple-900/20">
                                         {/* Main content row */}
-                                        <div className="p-6">
+                                        <div className="p-4 sm:p-6">
                                             {/* Title and badges row */}
                                             <div className="flex items-start gap-4 mb-3">
                                                 <div className="flex-1 min-w-0">
@@ -243,13 +266,13 @@ export default function PublicResearchList() {
                                                         </span>
                                                     </div>
 
-                                                    {/* Title - inline-block to fit content width */}
+                                                    {/* Title */}
                                                     <h2
-                                                        className="text-2xl text-white transition-colors cursor-pointer leading-tight mb-2 inline-block relative group/title"
+                                                        className="text-xl sm:text-2xl md:text-2xl text-white transition-colors cursor-pointer leading-tight mb-2 inline-block relative group/title"
                                                         style={fontStyles.title}
                                                         onClick={() => handleViewDetails(item.slug)}
                                                     >
-                                                        <span className="group-hover/title:text-purple-300 transition-colors">
+                                                        <span className="group-hover/title:text-purple-300 transition-colors wrap-break-words">
                                                             {item.title}
                                                         </span>
                                                         {/* Animated underline on title hover */}
@@ -259,7 +282,7 @@ export default function PublicResearchList() {
                                             </div>
 
                                             {/* Metadata row with author and date */}
-                                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-3 text-sm text-slate-400">
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-x-6 gap-y-2 mb-3 text-sm text-slate-400">
                                                 {item.author && (
                                                     <div className="flex items-center gap-1.5">
                                                         <svg
@@ -276,7 +299,9 @@ export default function PublicResearchList() {
                                                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                                             />
                                                         </svg>
-                                                        <span style={fontStyles.meta}>{item.author}</span>
+                                                        <span style={fontStyles.meta} className="truncate">
+                                                            {item.author}
+                                                        </span>
                                                     </div>
                                                 )}
                                                 <div className="flex items-center gap-1.5">
@@ -291,7 +316,7 @@ export default function PublicResearchList() {
                                                             strokeLinecap="round"
                                                             strokeLinejoin="round"
                                                             strokeWidth={2}
-                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 01-2-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                         />
                                                     </svg>
                                                     <span style={fontStyles.meta}>{item.createdAt ? formatDate(item.createdAt) : '—'}</span>
@@ -319,7 +344,7 @@ export default function PublicResearchList() {
                                             )}
 
                                             {/* Abstract toggle and action buttons */}
-                                            <div className="flex items-center justify-between gap-4 mt-4">
+                                            <div className="flex flex-col sm:flex-row sm:items-center items-stretch justify-between gap-3 mt-4">
                                                 {/* Show/Hide Abstract button */}
                                                 {item.abstract && (
                                                     <button
@@ -346,7 +371,7 @@ export default function PublicResearchList() {
                                                 )}
 
                                                 {/* Action buttons (PDF and View Details) */}
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex flex-wrap items-center gap-3 justify-end">
                                                     {item.pdfAttachment && (
                                                         <a
                                                             href={item.pdfAttachment}

@@ -174,7 +174,13 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 // For attributes, ONLY src/srcset (images loading)
                 if (mutation.type === 'attributes') {
                     const attrName = mutation.attributeName;
-                    return attrName === 'src' || attrName === 'srcset';
+                    return (
+                        attrName === 'src' ||
+                        attrName === 'srcset' ||
+                        attrName === 'style' ||
+                        attrName === 'class' ||
+                        attrName === 'aria-expanded'
+                    );
                 }
 
                 return false;
@@ -190,9 +196,27 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 childList: true,
                 subtree: true,
                 attributes: true,
-                attributeFilter: ['src', 'srcset'], // Only image sources
+                // Observe a larger set of attributes
+                attributeFilter: ['src', 'srcset', 'style', 'class', 'aria-expanded'],
             });
         }
+
+        // Custom listener for explicit content-change events from components
+        // Some UI changes (CSS height transitions) don't mutate the DOM tree.
+        let resizeDebounce: number | null = null;
+        const onExternalContentChange = () => {
+            if (resizeDebounce) {
+                window.clearTimeout(resizeDebounce);
+            }
+            resizeDebounce = window.setTimeout(() => {
+                if (lenisRef.current && !isScrollingRef.current) {
+                    lenisRef.current.resize();
+                }
+                resizeDebounce = null;
+            }, 60); // small debounce
+        };
+        window.addEventListener('lenis:contentchange', onExternalContentChange as EventListener);
+        // -----------------------------------------------------------------------------------
 
         // Cleanup
         return () => {
@@ -217,6 +241,9 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             lenisRef.current?.destroy?.();
             lenisRef.current = null;
             window.lenis = undefined;
+
+            // remove the custom listener
+            window.removeEventListener('lenis:contentchange', onExternalContentChange as EventListener);
         };
     }, [onDirectionChange]);
 
