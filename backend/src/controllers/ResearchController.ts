@@ -45,7 +45,7 @@ export const getAllResearch = async (req: Request, res: Response, next: NextFunc
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('title author abstract tags featuredImage createdAt updatedAt') // Might get changed
+            .select('title author abstract tags featuredImage createdAt updatedAt category slug') // Might get changed
             .lean();
 
         const total = await Research.countDocuments(filter);
