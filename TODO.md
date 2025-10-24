@@ -24,6 +24,7 @@
 * [ ] Extract helpers and shared utilities from components to global scope.
 * [ ] Fix keyboard navigation on new post forms and clickable titles.
 * [ ] Remove all `memo` font maps and assign globally inside font CSS import.
+* [ ] Make so content blocks on deep dives take up full width under the sidebar (tried before but failed)
 
 ---
 
