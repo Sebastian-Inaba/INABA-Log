@@ -141,7 +141,10 @@ export function NewestResearch({
         <section className={`${className}`} aria-labelledby="home-hero">
             <div id="home-hero" className="mb-4 sm:mb-6">
                 <FadeIn direction="right" delay={0}>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words" style={fontStyles.heroTitle}>
+                    <h1
+                        className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words"
+                        style={fontStyles.heroTitle}
+                    >
                         {heroTitle}
                     </h1>
                 </FadeIn>
