@@ -141,7 +141,7 @@ export function NewestResearch({
         <section className={`${className}`} aria-labelledby="home-hero">
             <div id="home-hero" className="mb-4 sm:mb-6">
                 <FadeIn direction="right" delay={0}>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white break-words" style={fontStyles.heroTitle}>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words" style={fontStyles.heroTitle}>
                         {heroTitle}
                     </h1>
                 </FadeIn>
@@ -220,12 +220,12 @@ export function NewestResearch({
                                 "
                                 style={{ willChange: 'transform' }}
                             >
-                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 mt-1 flex-shrink-0 transition-colors duration-200 group-hover:bg-indigo-500" />
+                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 mt-1 shrink-0 transition-colors duration-200 group-hover:bg-indigo-500" />
 
                                 <div className="flex-1 min-w-0">
                                     <div className="text-left w-full">
                                         <h3
-                                            className="text-base sm:text-lg text-gray-900 dark:text-white break-words line-clamp-2 transition-colors duration-200 group-hover:text-indigo-600"
+                                            className="text-base sm:text-lg text-gray-900 dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-indigo-600"
                                             style={fontStyles.researchTitle}
                                         >
                                             {research.title}
@@ -236,9 +236,9 @@ export function NewestResearch({
                                         className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300"
                                         style={fontStyles.researchMeta}
                                     >
-                                        <div className="flex-shrink-0">
+                                        <div className="shrink-0">
                                             {showAuthor && research.author ? (
-                                                <span className="break-words">By {research.author} • </span>
+                                                <span className="wrap-break-words">By {research.author} • </span>
                                             ) : (
                                                 ''
                                             )}
@@ -248,7 +248,7 @@ export function NewestResearch({
 
                                     {research.abstract && (
                                         <p
-                                            className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 break-words
+                                            className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 wrap-break-words
                     transition-opacity duration-200 group-hover:opacity-90"
                                             style={fontStyles.researchAbstract}
                                         >

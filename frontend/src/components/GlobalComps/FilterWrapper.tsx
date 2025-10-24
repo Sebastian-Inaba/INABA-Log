@@ -316,7 +316,7 @@ export function FilterWrapper({
                                             onChange={() => handleTagToggle(tag)}
                                             className="peer hidden"
                                         />
-                                        <div className="flex-shrink-0">
+                                        <div className="shrink-0">
                                             <div
                                                 className={`w-4 h-4 flex items-center justify-center border rounded transition-colors
                                                     ${

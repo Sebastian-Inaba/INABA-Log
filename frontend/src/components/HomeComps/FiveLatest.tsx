@@ -136,7 +136,7 @@ export function LatestPosts({
                         key={postIndex}
                         className="flex flex-col lg:flex-row bg-transparent border border-gray-700 rounded-lg animate-pulse"
                     >
-                        <div className="lg:w-28 flex-shrink-0 flex items-center justify-center p-4">
+                        <div className="lg:w-28 shrink-0 flex items-center justify-center p-4">
                             <div className="h-10 w-10 rounded bg-gray-700" />
                         </div>
                         <div className="hidden lg:flex items-stretch">
@@ -182,7 +182,7 @@ export function LatestPosts({
                                 <article className="flex flex-col xl:flex-row items-stretch bg-transparent xl:gap-0">
                                     {/* Date column, top on mobile/tablet, left sidebar on xl+ */}
                                     <FadeIn direction="up" delay={postIndex * 100}>
-                                        <div className="xl:absolute xl:-ml-[136px] xl:w-28 flex-shrink-0 flex flex-col items-start ls:items-center justify-center p-4">
+                                        <div className="xl:absolute xl:-ml-[136px] xl:w-28 shrink-0 flex flex-col items-start ls:items-center justify-center p-4">
                                             <div className="text-center">
                                                 <div className="text-xl text-gray-900 dark:text-white" style={fontStyles.dateDay}>
                                                     {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
@@ -278,7 +278,7 @@ export function LatestPosts({
 
                                             {/* Horizontal divider between posts */}
                                             {postIndex < posts.length - 1 && (
-                                                <div className="mb-12 border-t border-1 rounded-2xl border-gray-400" />
+                                                <div className="mb-12 border-t border rounded-2xl border-gray-400" />
                                             )}
                                         </article>
                                     </FadeIn>

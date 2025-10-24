@@ -78,7 +78,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                 <section className="rounded-2xl shadow-xl animate-pulse px-4">
                     <div className="flex justify-center items-center w-full">
                         <div className="flex flex-col md:flex-row gap-4 w-full max-w-6xl">
-                            <div className="w-full md:w-[28rem] h-72 md:h-[28rem] bg-purple-200" />
+                            <div className="w-full md:w-28rem h-72 md:h-28rem bg-purple-200" />
                             <div className="flex-1 space-y-4 max-w-xl">
                                 <div className="h-10 w-3/4 bg-purple-200" />
                                 <div className="h-6 w-1/2 bg-purple-300" />
@@ -253,7 +253,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             <img
                                                 src={post.featuredImage ?? undefined}
                                                 alt={post.title}
-                                                className="w-full h-full max-w-full max-h-[38rem] object-cover object-center block"
+                                                className="w-full h-full max-w-full max-h-38rem object-cover object-center block"
                                             />
                                         </FadeIn>
                                     </div>
@@ -461,7 +461,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                 </FadeIn>
                             </div>
 
-                            <div className="h-[40px] md:h-[72px]" />
+                            <div className="h-40px md:h-[72px]" />
                         </div>
                     )}
                 </div>

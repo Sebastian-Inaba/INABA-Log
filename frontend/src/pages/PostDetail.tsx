@@ -29,7 +29,7 @@ export function PostDetail() {
             <div className="w-full flex justify-center">
                 <div className="w-full flex gap-0 justify-between">
                     {/* Left spacer */}
-                    <div className="w-80 max-[1440px]:hidden flex-shrink-0" />
+                    <div className="w-80 max-[1440px]:hidden wrap-shrink-0" />
 
                     {/* Content */}
                     <div className="flex-1 lg:max-w-[1200px]">
@@ -37,7 +37,7 @@ export function PostDetail() {
                     </div>
 
                     {/* Featured posts */}
-                    <div className="w-80 max-[1440px]:hidden flex-shrink-0">
+                    <div className="w-80 max-[1440px]:hidden wrap-shrink-0">
                         <FadeIn direction="left" duration={700} delay={1600}>
                             <FeaturedPosts />
                         </FadeIn>

@@ -131,7 +131,7 @@ export function ContentList() {
         return (
             <div className="h-full min-h-0 flex items-center justify-center">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-4 rounded-lg max-w-lg w-full">
-                    <p className="break-words">Error: {error}</p>
+                    <p className="wrap-break-words">Error: {error}</p>
                     <button
                         onClick={() => void fetchContent()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 mt-2"

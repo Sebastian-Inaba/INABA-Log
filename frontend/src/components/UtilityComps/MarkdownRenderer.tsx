@@ -44,7 +44,7 @@ function CodeBlock({ children, className }: { children: string; className?: stri
             {/* language label */}
             <div className="text-xs text-gray-400 mb-1 px-4 pt-3 font-mono">{language}</div>
             {/* code content */}
-            <pre className="!pt-0">
+            <pre className="pt-0!">
                 <code className={className}>{children}</code>
             </pre>
         </div>
@@ -181,8 +181,8 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
                     <div className="p-4">
                         <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                                <h3 className="!m-0 text-lg font-semibold text-white mb-1">{preview.title}</h3>
-                                <p className="!m-0 text-sm text-gray-400 mb-2">{preview.description}</p>
+                                <h3 className="m-0! text-lg font-semibold text-white mb-1">{preview.title}</h3>
+                                <p className="m-0! text-sm text-gray-400 mb-2">{preview.description}</p>
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
                                     <span>🔗</span>
                                     <span>{preview.domain}</span>

@@ -55,7 +55,7 @@ export function DesktopNav({ navItems, navFont, onItemClick }: DesktopNavProps) 
                         >
                             {/* icon */}
                             {route.icon && (
-                                <img src={route.icon} alt={route.iconLabel} className="w-5 h-5 flex-shrink-0 ml-0.5" loading="lazy" />
+                                <img src={route.icon} alt={route.iconLabel} className="w-5 h-5 shrink-0 ml-0.5" loading="lazy" />
                             )}
                             {/* Label text */}
                             <span

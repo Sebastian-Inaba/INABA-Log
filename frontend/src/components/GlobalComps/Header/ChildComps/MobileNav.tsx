@@ -112,7 +112,7 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
             {/* Overlay covers entire viewport including scrollbar */}
             {isOpen && (
                 <div
-                    className="fixed top-0 left-0 right-0 bottom-0 bg-black/40 backdrop-blur-sm z-[1200]"
+                    className="fixed top-0 left-0 right-0 bottom-0 bg-black/40 backdrop-blur-sm z-1200"
                     style={{
                         width: '100vw',
                         height: '100vh',
@@ -137,7 +137,7 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                     borderRadius: isOpen ? '0.75rem' : '0.375rem',
                     padding: isOpen ? '1.5rem' : '0',
                 }}
-                className={`fixed top-3.5 right-4 bg-neutral-900 z-[1300] flex flex-col transition-all duration-500 ease-in-out origin-top-right overflow-hidden ${
+                className={`fixed top-3.5 right-4 bg-neutral-900 z-1300 flex flex-col transition-all duration-500 ease-in-out origin-top-right overflow-hidden ${
                     isOpen ? 'border border-purple-500' : 'border-0'
                 }`}
             >
@@ -149,7 +149,7 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                         top: isOpen ? '24px' : '0',
                         right: isOpen ? '24px' : '0',
                     }}
-                    className={`absolute w-10 h-10 z-[10] flex flex-col justify-center items-center gap-1.5 rounded-md shadow-md transition-all duration-500 ease-in-out ${
+                    className={`absolute w-10 h-10 z-10 flex flex-col justify-center items-center gap-1.5 rounded-md shadow-md transition-all duration-500 ease-in-out ${
                         isOpen ? 'bg-red-400 border-0' : 'bg-green-400 border border-purple-500'
                     }`}
                     aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -228,11 +228,11 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                     }}
                     className="transition-opacity duration-500 ease-in-out flex flex-col h-full"
                 >
-                    <div className="flex items-center justify-between mb-8 w-full flex-shrink-0">
+                    <div className="flex items-center justify-between mb-8 w-full shrink-0">
                         <Link
                             to="/"
                             style={{ fontFamily: logoFont, whiteSpace: 'nowrap' }}
-                            className="text-2xl text-purple-500 font-bold tracking-widest whitespace-nowrap z-[5]"
+                            className="text-2xl text-purple-500 font-bold tracking-widest whitespace-nowrap z-5"
                             onClick={() => setIsOpen(false)}
                             tabIndex={isOpen ? 0 : -1}
                         >
@@ -241,7 +241,7 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                     </div>
 
                     {/* NavList items respect isOpen state for tabbing */}
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         <NavList navItems={navItems} navFont={navFont} onItemClick={() => setIsOpen(false)} tabIndex={isOpen ? 0 : -1} />
                     </div>
                 </div>

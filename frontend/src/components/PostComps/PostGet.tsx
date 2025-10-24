@@ -204,7 +204,7 @@ export default function PublicPostList({
         return (
             <div className="h-full min-h-0 flex items-center justify-center p-6">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-6 rounded-lg max-w-lg w-full">
-                    <p className="break-words mb-4">Error: {error}</p>
+                    <p className="wrap-break-words mb-4">Error: {error}</p>
                     <button
                         onClick={() => void fetchPosts()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600"
@@ -409,7 +409,7 @@ export default function PublicPostList({
                                     </div>
 
                                     {/* Divider between posts */}
-                                    {postIndex < currentPosts.length - 1 && <div className="m-0 border-1 border-gray-400 rounded-2xl" />}
+                                    {postIndex < currentPosts.length - 1 && <div className="m-0 border border-gray-400 rounded-2xl" />}
                                 </article>
                             </FadeIn>
                         );

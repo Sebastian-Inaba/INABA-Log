@@ -30,7 +30,7 @@ export function AppLayout() {
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
             {/* Header */}
             <header
-                className={`fixed top-0 w-full bg-neutral-900 z-[100] transition-transform duration-300 ${
+                className={`fixed top-0 w-full bg-neutral-900 z-100 transition-transform duration-300 ${
                     scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'
                 }`}
                 role="banner"
