@@ -12,22 +12,10 @@ import { FeaturedPosts } from './PostFeatured';
 const COLOR_OPTIONS = ['text-yellow-500', 'text-green-500', 'text-blue-500', 'text-pink-500', 'text-red-500'];
 
 interface PublicPostListProps {
-    titleFont?: string;
-    bodyFont?: string;
-    ctaFont?: string;
-    tagFont?: string;
-    dateFont?: string;
     imageHeight?: string;
 }
 
-export default function PublicPostList({
-    titleFont = 'Poppins',
-    bodyFont = 'Roboto_Slab',
-    ctaFont = 'Poppins',
-    tagFont = 'Lato',
-    dateFont = 'Poppins',
-    imageHeight = 'h-64',
-}: PublicPostListProps = {}) {
+export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListProps = {}) {
     // Use URL search params for pagination
     const [searchParams] = useSearchParams();
     const [posts, setPosts] = useState<Post[]>([]);
@@ -39,19 +27,6 @@ export default function PublicPostList({
 
     // Get page from URL, default to 1 (1-indexed for users)
     const page = parseInt(searchParams.get('page') || '1', 10);
-
-    // Memoized font styles
-    const fontStyles = useMemo(
-        () => ({
-            dateDay: { fontFamily: dateFont, fontWeight: 800 },
-            dateMonth: { fontFamily: dateFont, fontWeight: 400 },
-            postTitle: { fontFamily: titleFont, fontWeight: 700 },
-            tags: { fontFamily: tagFont, fontWeight: 400 },
-            description: { fontFamily: bodyFont, fontWeight: 400 },
-            readMore: { fontFamily: ctaFont, fontWeight: 500 },
-        }),
-        [titleFont, bodyFont, ctaFont, tagFont, dateFont],
-    );
 
     // Fetch posts on component mount
     useEffect(() => {
@@ -208,7 +183,6 @@ export default function PublicPostList({
                     <button
                         onClick={() => void fetchPosts()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600"
-                        style={fontStyles.readMore}
                         aria-label="Retry fetching posts"
                     >
                         Try Again
@@ -242,9 +216,7 @@ export default function PublicPostList({
 
                 {/* Empty state message */}
                 <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 text-center max-w-[1040px] mx-auto">
-                    <p className="text-gray-300" style={fontStyles.description}>
-                        No posts found.
-                    </p>
+                    <p className="text-gray-300">No posts found.</p>
                 </div>
             </div>
         );
@@ -273,7 +245,7 @@ export default function PublicPostList({
 
             {/* Results count */}
             <div className="w-full max-w-[1040px] mx-auto mb-4 px-4">
-                <p className="text-sm text-slate-400" style={fontStyles.readMore}>
+                <p className="text-sm text-slate-400">
                     Showing {startIndex + 1}-{Math.min(endIndex, filteredPosts.length)} of {filteredPosts.length} results
                 </p>
             </div>
@@ -307,10 +279,10 @@ export default function PublicPostList({
                                     {/* Desktop date display */}
                                     <div className="hidden xl:flex xl:absolute xl:-ml-[150px] xl:w-28 xl:top-6 justify-center">
                                         <div className="text-center">
-                                            <div className="text-xl text-white" style={fontStyles.dateDay}>
+                                            <div className="text-xl text-white">
                                                 {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
                                             </div>
-                                            <div className="text-sm text-slate-300 mt-1" style={fontStyles.dateMonth}>
+                                            <div className="text-sm text-slate-300 mt-1">
                                                 {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                                             </div>
                                         </div>
@@ -319,10 +291,10 @@ export default function PublicPostList({
                                     {/* Mobile date display */}
                                     <div className="xl:hidden flex items-center gap-2 mb-4">
                                         <div className="text-center">
-                                            <div className="text-xl text-white" style={fontStyles.dateDay}>
+                                            <div className="text-xl text-white">
                                                 {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
                                             </div>
-                                            <div className="text-xs text-slate-300 mt-1" style={fontStyles.dateMonth}>
+                                            <div className="text-xs text-slate-300 mt-1">
                                                 {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                                             </div>
                                         </div>
@@ -349,12 +321,11 @@ export default function PublicPostList({
                                     )}
 
                                     {/* Post content */}
-                                    <div className="p-6 pb-0 flex flex-col gap-4">
+                                    <div className="p-0 md:p-6 pb-0 flex flex-col gap-4">
                                         {/* Title and category row */}
                                         <div className="flex justify-between items-center gap-4">
                                             <h2
                                                 className="text-2xl text-white line-clamp-2 cursor-pointer inline-flex relative group/title"
-                                                style={fontStyles.postTitle}
                                                 onClick={() => handleReadMore(post.slug)}
                                                 role="link"
                                                 tabIndex={0}
@@ -383,28 +354,20 @@ export default function PublicPostList({
                                         {visibleTags.length > 0 && (
                                             <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
                                                 {visibleTags.map((tag: string, i: number) => (
-                                                    <span
-                                                        key={i}
-                                                        className={`${tagColorMap[i] ?? 'text-blue-600'}`}
-                                                        style={fontStyles.tags}
-                                                    >
+                                                    <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`}>
                                                         {tag}
                                                         {i !== visibleTags.length - 1 && <span className="mx-2 text-gray-300">|</span>}
                                                     </span>
                                                 ))}
                                                 {post.tags && post.tags.length > 5 && (
-                                                    <span className="ml-3 text-gray-500 text-sm" style={fontStyles.tags}>
-                                                        +{post.tags.length - 5} more
-                                                    </span>
+                                                    <span className="ml-3 text-gray-500 text-sm">+{post.tags.length - 5} more</span>
                                                 )}
                                             </div>
                                         )}
 
                                         {/* Description */}
                                         {post.description && (
-                                            <p className="text-white line-clamp-3 tracking-wide mt-4" style={fontStyles.description}>
-                                                {post.description}
-                                            </p>
+                                            <p className="text-white line-clamp-3 tracking-wide mt-4">{post.description}</p>
                                         )}
 
                                         {/* Metadata (author and date) */}
@@ -417,9 +380,8 @@ export default function PublicPostList({
                                         <div className="mt-2 flex items-center justify-end relative">
                                             <button
                                                 onClick={() => handleReadMore(post.slug)}
-                                                className="relative left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
+                                                className="relative left-1 md:left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
                                                 aria-label={`Read more about ${post.title}`}
-                                                style={fontStyles.readMore}
                                             >
                                                 <span>Read More</span>
                                                 <span className="text-current text-xl">&gt;</span>
@@ -453,7 +415,6 @@ export default function PublicPostList({
                         onClick={() => setPage(Math.max(page - 1, 1))}
                         disabled={page === 1}
                         className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        style={fontStyles.readMore}
                         aria-label="Previous page"
                     >
                         &lt;
@@ -474,7 +435,6 @@ export default function PublicPostList({
                                     }`}
                                     aria-label={`Go to page ${pageNumber}`}
                                     aria-current={page === pageNumber ? 'page' : undefined}
-                                    style={fontStyles.readMore}
                                 >
                                     {pageNumber}
                                 </button>
@@ -488,7 +448,6 @@ export default function PublicPostList({
                         onClick={() => setPage(Math.min(page + 1, totalPages))}
                         disabled={page === totalPages}
                         className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        style={fontStyles.readMore}
                         aria-label="Next page"
                     >
                         &gt;

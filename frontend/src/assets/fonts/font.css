@@ -1,4 +1,95 @@
-/*Font imports*/
+/* Font imports */
 @import './Lato/stylesheet.css';
 @import './Poppins/stylesheet.css';
 @import './Roboto_Slab/static/stylesheet.css';
+
+/* Font-only defaults */
+body {
+    font-family:
+        'Lato',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family:
+        'Poppins',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+p,
+ul,
+ol,
+li,
+span,
+div,
+article,
+section {
+    font-family:
+        'Lato',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+}
+
+blockquote,
+q,
+cite {
+    font-family: 'Roboto Slab', Georgia, 'Times New Roman', serif;
+    line-height: 1.7;
+    letter-spacing: 0.005em;
+}
+
+input,
+textarea,
+select,
+button {
+    font-family:
+        'Lato',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+code,
+pre,
+kbd,
+samp {
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    letter-spacing: 0;
+}
+
+table,
+th,
+td,
+caption {
+    font-family:
+        'Lato',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}

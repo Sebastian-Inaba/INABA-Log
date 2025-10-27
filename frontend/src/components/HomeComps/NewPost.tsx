@@ -12,39 +12,14 @@ interface NewestPostProps {
     className?: string;
     imageHeight?: string;
     autoFetch?: boolean;
-    titleFont?: string;
-    pFont?: string;
-    ctaFont?: string;
-    tagFont?: string;
 }
 
-export function NewestPost({
-    apiUrl = '/posts/newest',
-    className = '',
-    imageHeight = 'h-64',
-    autoFetch = true,
-    titleFont = 'Poppins',
-    pFont = 'Roboto_Slab',
-    ctaFont = 'Poppins',
-    tagFont = 'Lato',
-}: NewestPostProps) {
+export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeight = 'h-64', autoFetch = true }: NewestPostProps) {
     // State
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(autoFetch); // <-- add loading state
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
-    // Simple font styles - just use the font family from props
-    const fontStyles = useMemo(
-        () => ({
-            h1: { fontFamily: titleFont, fontStyle: 'italic' },
-            h2: { fontFamily: titleFont, fontWeight: 500 },
-            tags: { fontFamily: tagFont, fontWeight: 400 },
-            p: { fontFamily: pFont, fontWeight: 500 },
-            cta: { fontFamily: ctaFont, fontWeight: 500, fontSize: '0.875rem' },
-        }),
-        [titleFont, pFont, ctaFont, tagFont],
-    );
 
     // Fetch newest post handler
     const handleFetchNewestPost = useCallback(
@@ -99,14 +74,10 @@ export function NewestPost({
     if (error) {
         return (
             <div className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}>
-                <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.p}>
+                <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
                     Something went wrong getting the latest post.
                 </p>
-                <button
-                    onClick={handleRetry}
-                    className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
-                    style={fontStyles.cta}
-                >
+                <button onClick={handleRetry} className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2">
                     Try Again
                 </button>
             </div>
@@ -132,25 +103,23 @@ export function NewestPost({
     if (!post) {
         return (
             <div className={`bg-gray-50 border border-gray-200 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-600 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.p}>
-                    No posts available
-                </p>
-                <button onClick={handleRetry} className="mt-3 text-blue-600 hover:text-blue-800 text-sm" style={fontStyles.cta}>
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed tracking-wide">No posts available</p>
+                <button onClick={handleRetry} className="mt-3 text-blue-600 hover:text-blue-800 text-sm">
                     Refresh
                 </button>
             </div>
         );
     }
 
-    // Main render with simple font application
+    // Default render
     return (
         <article
-            className="relative p-5 rounded-xl border border-gray-400 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out 
+            className="relative p-2 md:p-5 rounded-xl border border-gray-400 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out 
                     bg-neutral-950/70 backdrop-blur-lg"
         >
-            {/* H1 with italic titleFont */}
+            {/* H1*/}
             <div className="text-2xl md:text-3xl text-gray-900 dark:text-white mb-6 text-center">
-                <h1 style={fontStyles.h1}>New Post</h1>
+                <h1 className="italic">New Post</h1>
             </div>
 
             {post.featuredImage && (
@@ -169,11 +138,10 @@ export function NewestPost({
                 </div>
             )}
 
-            <div className="p-6 flex flex-col gap-4">
-                {/* H2 with medium titleFont */}
+            <div className="p-0 md:p-6 flex flex-col gap-4">
+                {/* H2 */}
                 <h2
                     className="group relative w-fit text-2xl text-white line-clamp-2 cursor-pointer pb-1"
-                    style={fontStyles.h2}
                     onClick={() => handleReadMore(post.slug)}
                     role="link"
                     tabIndex={0}
@@ -191,37 +159,30 @@ export function NewestPost({
                     </span>
                 </h2>
 
-                {/* Tags with regular tagFont */}
+                {/* Tags */}
                 {visibleTags.length > 0 && (
                     <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
                         {visibleTags.map((tag: string, i: number) => (
-                            <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`} style={fontStyles.tags}>
+                            <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`}>
                                 {tag}
                                 {i !== visibleTags.length - 1 && <span className="mx-2 text-gray-300">|</span>}
                             </span>
                         ))}
                         {post.tags && post.tags.length > 4 && (
-                            <span className="ml-3 text-gray-500 text-sm" style={fontStyles.tags}>
-                                +{post.tags.length - 4} more
-                            </span>
+                            <span className="ml-3 text-gray-500 text-sm">+{post.tags.length - 4} more</span>
                         )}
                     </div>
                 )}
 
-                {/* Body text with medium bodyFont */}
-                {post.description && (
-                    <p className="text-white line-clamp-3 tracking-wide mt-4" style={fontStyles.p}>
-                        {post.description}
-                    </p>
-                )}
+                {/* Body text */}
+                {post.description && <p className="text-white line-clamp-3 tracking-wide mt-4">{post.description}</p>}
 
                 <div className="mt-2 flex items-center justify-center">
-                    {/* CTA with medium ctaFont and smaller size */}
+                    {/* CTA */}
                     <button
                         onClick={() => handleReadMore(post.slug)}
                         className="cursor-pointer inline-flex items-center gap-2 bg-transparent text-[#9162CB] border border-gray-400 px-6 py-3 rounded-full tracking-wide transition-all transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_#9162CB]"
                         aria-label="Read more about this post"
-                        style={fontStyles.cta}
                     >
                         <span>Read More</span>
                     </button>

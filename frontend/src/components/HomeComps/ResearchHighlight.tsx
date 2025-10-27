@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
@@ -13,11 +13,6 @@ interface NewestResearchProps {
     heroTitle?: string;
     heroText?: string;
     heroCtaText?: string;
-    // Font props
-    titleFont?: string;
-    bodyFont?: string;
-    ctaFont?: string;
-    metaFont?: string;
 }
 
 export function NewestResearch({
@@ -28,30 +23,11 @@ export function NewestResearch({
     heroTitle = 'The person behind it all',
     heroText = 'You have come to the right place if you are interested in web development, gaming, or Sebastian Inaba(me). Feel free to look around my posts; and if something catches your eye, check out my latest deep dives or some of my other projects.',
     heroCtaText = 'or go deeper.',
-    // Fonts
-    titleFont = 'Poppins',
-    bodyFont = 'Roboto_Slab',
-    ctaFont = 'Poppins',
-    metaFont = 'Lato',
 }: NewestResearchProps) {
     const [researchList, setResearchList] = useState<Research[]>([]);
     const [loading, setLoading] = useState(autoFetch);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
-    // Simple font styles
-    const fontStyles = useMemo(
-        () => ({
-            heroTitle: { fontFamily: titleFont, fontWeight: 800 },
-            heroText: { fontFamily: bodyFont, fontWeight: 400 },
-            heroCta: { fontFamily: ctaFont, fontWeight: 500 },
-            researchTitle: { fontFamily: titleFont, fontWeight: 600 },
-            researchMeta: { fontFamily: metaFont, fontWeight: 400 },
-            researchAbstract: { fontFamily: bodyFont, fontWeight: 400 },
-            researchCta: { fontFamily: ctaFont, fontWeight: 500 },
-        }),
-        [titleFont, bodyFont, ctaFont, metaFont],
-    );
 
     // Fetch newest research handler
     const handleFetchNewestResearch = useCallback(
@@ -88,14 +64,10 @@ export function NewestResearch({
         return (
             <section className={`p-3 sm:p-4 md:p-6 ${className}`}>
                 <div className="rounded-lg p-6 text-center bg-transparent border border-gray-700">
-                    <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.heroText}>
+                    <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
                         Something went wrong getting research highlights.
                     </p>
-                    <button
-                        onClick={handleRetry}
-                        className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
-                        style={fontStyles.researchCta}
-                    >
+                    <button onClick={handleRetry} className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2">
                         Try Again
                     </button>
                 </div>
@@ -127,10 +99,8 @@ export function NewestResearch({
     if (!loading && researchList.length === 0) {
         return (
             <section className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-300" style={fontStyles.heroText}>
-                    No research highlights available.
-                </p>
-                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm" style={fontStyles.researchCta}>
+                <p className="text-gray-300">No research highlights available.</p>
+                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm">
                     Refresh
                 </button>
             </section>
@@ -141,21 +111,11 @@ export function NewestResearch({
         <section className={`${className}`} aria-labelledby="home-hero">
             <div id="home-hero" className="mb-4 sm:mb-6">
                 <FadeIn direction="right" delay={0}>
-                    <h1
-                        className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words"
-                        style={fontStyles.heroTitle}
-                    >
-                        {heroTitle}
-                    </h1>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words">{heroTitle}</h1>
                 </FadeIn>
 
                 <FadeIn direction="right" delay={100}>
-                    <p
-                        className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300"
-                        style={fontStyles.heroText}
-                    >
-                        {heroText}
-                    </p>
+                    <p className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300">{heroText}</p>
                 </FadeIn>
 
                 <FadeIn direction="right" delay={200}>
@@ -163,7 +123,6 @@ export function NewestResearch({
                         <a
                             href="/portfolio"
                             className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
-                            style={fontStyles.heroCta}
                         >
                             View Portfolio
                         </a>
@@ -172,7 +131,6 @@ export function NewestResearch({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
-                            style={fontStyles.heroCta}
                         >
                             GitHub
                         </a>
@@ -180,7 +138,6 @@ export function NewestResearch({
                         <a
                             href="/newsletter"
                             className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap"
-                            style={fontStyles.heroCta}
                         >
                             Subscribe
                         </a>  
@@ -190,7 +147,6 @@ export function NewestResearch({
                             onClick={() => navigate('/research')}
                             className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer"
                             aria-label={heroCtaText}
-                            style={fontStyles.heroCta}
                         >
                             {heroCtaText}
                         </button>
@@ -227,18 +183,12 @@ export function NewestResearch({
 
                                 <div className="flex-1 min-w-0">
                                     <div className="text-left w-full">
-                                        <h3
-                                            className="text-base sm:text-lg text-white dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-purple-300"
-                                            style={fontStyles.researchTitle}
-                                        >
+                                        <h3 className="text-base sm:text-lg text-white dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-purple-300">
                                             {research.title}
                                         </h3>
                                     </div>
 
-                                    <div
-                                        className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300"
-                                        style={fontStyles.researchMeta}
-                                    >
+                                    <div className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300">
                                         <div className="shrink-0">
                                             {showAuthor && research.author ? (
                                                 <span className="wrap-break-words">By {research.author} • </span>
@@ -253,7 +203,6 @@ export function NewestResearch({
                                         <p
                                             className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 wrap-break-words
                     transition-opacity duration-200 group-hover:opacity-90"
-                                            style={fontStyles.researchAbstract}
                                         >
                                             {research.abstract}
                                         </p>
@@ -269,9 +218,7 @@ export function NewestResearch({
                     Array.from({ length: 2 - researchList.length }).map((_, i) => (
                         <FadeIn direction="right" delay={300 + researchList.length * 100 + i * 100} key={`empty-${i}`}>
                             <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
-                                <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400" style={fontStyles.researchMeta}>
-                                    More deep dives coming soon.
-                                </p>
+                                <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">More deep dives coming soon.</p>
                             </div>
                         </FadeIn>
                     ))}

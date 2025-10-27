@@ -373,7 +373,7 @@ export function MarkdownRenderer({ content, className = '', variant = 'public' }
       .markdown-content h4 { font-size: 1.25rem; font-weight: 600; }
       .markdown-content h5 { font-size: 1.1rem; font-weight: 600; }
       .markdown-content h6 { font-size: 1rem; font-weight: 600; }
-      .markdown-content { color: #e5e7eb; }
+      .markdown-content { color: #ffffff; }
       .markdown-content code { color: #fbbf24; }
       .markdown-content pre code { color: #e5e7eb; }
     `,

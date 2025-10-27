@@ -1,5 +1,5 @@
 // src/components/ResearchComps/ResearchGet.tsx
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { formatDate } from '../../utilities/helpers';
@@ -22,17 +22,6 @@ export default function PublicResearchList() {
     // Pagination
     const itemsPerPage = 4;
     const page = parseInt(searchParams.get('page') || '1', 10);
-
-    // Memoized font styles
-    const fontStyles = useMemo(
-        () => ({
-            title: { fontFamily: 'Poppins', fontWeight: 700 },
-            body: { fontFamily: 'Roboto_Slab', fontWeight: 400 },
-            meta: { fontFamily: 'Lato', fontWeight: 400 },
-            cta: { fontFamily: 'Poppins', fontWeight: 500 },
-        }),
-        [],
-    );
 
     // Initialize page URL param on mount
     useEffect(() => {
@@ -188,7 +177,6 @@ export default function PublicResearchList() {
                     <button
                         onClick={() => void fetchResearch()}
                         className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 cursor-pointer"
-                        style={fontStyles.cta}
                     >
                         Try Again
                     </button>
@@ -212,9 +200,7 @@ export default function PublicResearchList() {
                     />
                 </div>
                 <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 text-center max-w-[1200px] mx-auto">
-                    <p className="text-gray-300" style={fontStyles.body}>
-                        No research found.
-                    </p>
+                    <p className="text-gray-300">No research found.</p>
                 </div>
             </div>
         );
@@ -237,7 +223,7 @@ export default function PublicResearchList() {
 
             {/* Results count */}
             <div className="w-full max-w-[1200px] mx-auto mb-4 px-4">
-                <p className="text-sm text-slate-400" style={fontStyles.meta}>
+                <p className="text-sm text-slate-400">
                     Showing {startIndex + 1}-{Math.min(endIndex, filteredResearch.length)} of {filteredResearch.length} results
                 </p>
             </div>
@@ -270,7 +256,6 @@ export default function PublicResearchList() {
                                                     {/* Title */}
                                                     <h2
                                                         className="text-xl sm:text-2xl md:text-2xl text-white transition-colors cursor-pointer leading-tight mb-2 inline-block relative group/title"
-                                                        style={fontStyles.title}
                                                         onClick={() => handleViewDetails(item.slug)}
                                                     >
                                                         <span className="group-hover/title:text-purple-300 transition-colors wrap-break-words">
@@ -300,9 +285,7 @@ export default function PublicResearchList() {
                                                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                                             />
                                                         </svg>
-                                                        <span style={fontStyles.meta} className="truncate">
-                                                            {item.author}
-                                                        </span>
+                                                        <span className="truncate">{item.author}</span>
                                                     </div>
                                                 )}
                                                 <div className="flex items-center gap-1.5">
@@ -320,7 +303,7 @@ export default function PublicResearchList() {
                                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 01-2-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                         />
                                                     </svg>
-                                                    <span style={fontStyles.meta}>{item.createdAt ? formatDate(item.createdAt) : '—'}</span>
+                                                    <span>{item.createdAt ? formatDate(item.createdAt) : '—'}</span>
                                                 </div>
                                             </div>
 
@@ -331,27 +314,25 @@ export default function PublicResearchList() {
                                                         <span
                                                             key={i}
                                                             className="px-2.5 py-1 bg-neutral-800/80 text-purple-300 rounded-full text-xs border border-purple-700/30 hover:bg-purple-900/30 transition-colors cursor-default"
-                                                            style={fontStyles.meta}
                                                         >
                                                             {tag}
                                                         </span>
                                                     ))}
                                                     {tags.length > 6 && (
-                                                        <span className="px-2.5 py-1 text-neutral-500 text-xs" style={fontStyles.meta}>
+                                                        <span className="px-2.5 py-1 text-neutral-500 text-xs">
                                                             +{tags.length - 6} more
                                                         </span>
                                                     )}
                                                 </div>
                                             )}
 
-                                            {/* Abstract toggle and action buttons */}
-                                            <div className="flex flex-col sm:flex-row sm:items-center items-stretch justify-between gap-3 mt-4">
+                                            {/* Abstract toggle button */}
+                                            <div className="mt-4">
                                                 {/* Show/Hide Abstract button */}
                                                 {item.abstract && (
                                                     <button
                                                         onClick={() => toggleAbstract(item._id)}
                                                         className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
-                                                        style={fontStyles.cta}
                                                         aria-expanded={isExpanded}
                                                     >
                                                         <svg
@@ -370,70 +351,75 @@ export default function PublicResearchList() {
                                                         <span>{isExpanded ? 'Hide' : 'Show'} Abstract</span>
                                                     </button>
                                                 )}
+                                            </div>
 
-                                                {/* Action buttons (PDF and View Details) */}
-                                                <div className="flex flex-wrap items-center gap-3 justify-end">
-                                                    {item.pdfAttachment && (
-                                                        <a
-                                                            href={item.pdfAttachment}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="px-4 py-2 bg-red-700/80 text-red-100 rounded-lg hover:bg-red-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
-                                                            style={fontStyles.cta}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={2}
-                                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                                                />
-                                                            </svg>
-                                                            PDF
-                                                        </a>
+                                            {/* Separator line with expansion area */}
+                                            <div className="mt-3">
+                                                <div className="border-t border-neutral-700/50"></div>
+
+                                                {/* Expandable abstract with smooth animation */}
+                                                <div
+                                                    className="overflow-hidden transition-all duration-500 ease-in-out"
+                                                    style={{
+                                                        maxHeight: isExpanded ? '500px' : '0px',
+                                                        opacity: isExpanded ? 1 : 0,
+                                                    }}
+                                                >
+                                                    {item.abstract && (
+                                                        <div className="py-4">
+                                                            <div className="bg-neutral-950/50 rounded-lg p-4 border-l-4 border-purple-600">
+                                                                <h3 className="text-xs font-semibold uppercase tracking-wide text-purple-300 mb-2">
+                                                                    Abstract
+                                                                </h3>
+                                                                <p className="text-sm text-slate-300 leading-relaxed">{item.abstract}</p>
+                                                            </div>
+                                                        </div>
                                                     )}
-                                                    <button
-                                                        onClick={() => handleViewDetails(item.slug)}
-                                                        className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg group-hover:translate-x-1 cursor-pointer"
-                                                        style={fontStyles.cta}
+                                                </div>
+
+                                                <div className="border-t border-neutral-700/50"></div>
+                                            </div>
+
+                                            {/* Action buttons (PDF and View Details) */}
+                                            <div className="flex flex-wrap items-center gap-3 justify-end mt-3">
+                                                {item.pdfAttachment && (
+                                                    <a
+                                                        href={item.pdfAttachment}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="px-4 py-2 bg-red-700/80 text-red-100 rounded-lg hover:bg-red-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                                                        onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <span>Dive In</span>
                                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path
                                                                 strokeLinecap="round"
                                                                 strokeLinejoin="round"
                                                                 strokeWidth={2}
-                                                                d="M9 5l7 7-7 7"
+                                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                                             />
                                                         </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Expandable abstract with smooth animation */}
-                                            <div
-                                                className="overflow-hidden transition-all duration-500 ease-in-out"
-                                                style={{
-                                                    maxHeight: isExpanded ? '500px' : '0px',
-                                                    opacity: isExpanded ? 1 : 0,
-                                                }}
-                                            >
-                                                {item.abstract && (
-                                                    <div className="mt-4 pt-4 border-t border-neutral-700/50">
-                                                        <div className="bg-neutral-950/50 rounded-lg p-4 border-l-4 border-purple-600">
-                                                            <h3
-                                                                className="text-xs font-semibold uppercase tracking-wide text-purple-300 mb-2"
-                                                                style={fontStyles.meta}
-                                                            >
-                                                                Abstract
-                                                            </h3>
-                                                            <p className="text-sm text-slate-300 leading-relaxed" style={fontStyles.body}>
-                                                                {item.abstract}
-                                                            </p>
-                                                        </div>
-                                                    </div>
+                                                        PDF
+                                                    </a>
                                                 )}
+                                                <button
+                                                    onClick={() => handleViewDetails(item.slug)}
+                                                    className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg group-hover:translate-x-1 cursor-pointer"
+                                                >
+                                                    <span>Dive In</span>
+                                                    <svg
+                                                        className="w-4 h-4 translate-y-0.5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M9 5l7 7-7 7"
+                                                        />
+                                                    </svg>
+                                                </button>
                                             </div>
                                         </div>
                                     </article>
@@ -451,7 +437,6 @@ export default function PublicResearchList() {
                         onClick={() => setPage(Math.max(page - 1, 1))}
                         disabled={page === 1}
                         className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        style={fontStyles.cta}
                     >
                         &lt;
                     </button>
@@ -468,7 +453,6 @@ export default function PublicResearchList() {
                                             ? 'bg-purple-500 text-white scale-110'
                                             : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
                                     }`}
-                                    style={fontStyles.cta}
                                 >
                                     {pageNumber}
                                 </button>
@@ -481,7 +465,6 @@ export default function PublicResearchList() {
                         onClick={() => setPage(Math.min(page + 1, totalPages))}
                         disabled={page === totalPages}
                         className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        style={fontStyles.cta}
                     >
                         &gt;
                     </button>

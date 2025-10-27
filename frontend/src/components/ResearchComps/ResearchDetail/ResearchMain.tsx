@@ -263,7 +263,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Introduction */}
                             {research.introduction && (
                                 <section className="py-6">
-                                    <h2 className="text-2xl font-bold mb-4 text-slate-50">Introduction</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Introduction</h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
                                         <MarkdownRenderer content={research.introduction} variant="preview" />
                                     </div>
@@ -273,7 +273,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Methods */}
                             {research.method && (
                                 <section className="py-6">
-                                    <h2 className="text-2xl font-bold mb-4 text-slate-50">Methods &amp; Approach</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Methods &amp; Approach</h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
                                         <MarkdownRenderer content={research.method} variant="preview" />
                                     </div>
@@ -283,7 +283,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Key Findings */}
                             {research.keyFindings && (
                                 <section className="py-6">
-                                    <h2 className="text-2xl font-bold mb-4 text-slate-50">Key Findings</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Key Findings</h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
                                         <MarkdownRenderer content={research.keyFindings} variant="preview" />
                                     </div>
@@ -293,7 +293,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Discussion */}
                             {research.content && (
                                 <section className="py-6">
-                                    <h2 className="text-2xl font-bold mb-4 text-slate-50">Discussion &amp; Analysis</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Discussion &amp; Analysis</h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
                                         <MarkdownRenderer content={research.content} variant="preview" />
                                     </div>
@@ -303,7 +303,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* References */}
                             {research.references && research.references.length > 0 && (
                                 <section className="py-6">
-                                    <h2 className="text-2xl font-bold mb-4 text-slate-50">References</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">References</h2>
                                     <ol className="space-y-2 list-decimal list-inside text-slate-300 text-sm">
                                         {research.references.map((ref, idx) => (
                                             <li key={idx} className="pl-2">

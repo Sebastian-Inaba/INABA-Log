@@ -22,16 +22,6 @@ export function PostHeader({ slug }: PostHeaderProps) {
     // whether we have a featured image (controls which layout to render)
     const hasImage = Boolean(post?.featuredImage);
 
-    // inline font styles used across the header
-    const fontStyles = useMemo(
-        () => ({
-            title: { fontFamily: 'Poppins', fontWeight: 800 },
-            description: { fontFamily: 'Roboto_Slab', fontWeight: 500 },
-            meta: { fontFamily: 'Lato', fontWeight: 400 },
-        }),
-        [],
-    );
-
     // fetch the post when slug changes
     useEffect(() => {
         const handleFetchPost = async () => {
@@ -151,14 +141,9 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     {/* Title & Category */}
                                     <FadeIn direction="up" duration={700} distance={50} delay={400}>
                                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                                            <h1 className="text-3xl md:text-4xl text-gray-900" style={fontStyles.title}>
-                                                {post.title}
-                                            </h1>
+                                            <h1 className="text-3xl md:text-4xl text-gray-900">{post.title}</h1>
                                             {post.category && (
-                                                <span
-                                                    className="text-base md:text-lg text-gray-900 whitespace-nowrap"
-                                                    style={fontStyles.meta}
-                                                >
+                                                <span className="text-base md:text-lg text-gray-900 whitespace-nowrap">
                                                     {post.category}
                                                 </span>
                                             )}
@@ -174,10 +159,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                     const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
                                                     return (
                                                         <div key={idx} className="flex items-center">
-                                                            <span
-                                                                className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
-                                                                style={fontStyles.meta}
-                                                            >
+                                                            <span className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}>
                                                                 {tag}
                                                             </span>
                                                             {idx !== post.tags.slice(0, 5).length - 1 && (
@@ -187,10 +169,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                     );
                                                 })}
                                                 {post.tags.length > 5 && (
-                                                    <span
-                                                        className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm"
-                                                        style={fontStyles.meta}
-                                                    >
+                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
                                                         +{post.tags.length - 5} more
                                                     </span>
                                                 )}
@@ -201,21 +180,15 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     {/* Description */}
                                     {post.description && (
                                         <FadeIn direction="up" duration={700} distance={50} delay={800}>
-                                            <p className="text-lg md:text-xl text-gray-900 mb-6" style={fontStyles.description}>
-                                                {post.description}
-                                            </p>
+                                            <p className="text-lg md:text-xl text-gray-900 mb-6">{post.description}</p>
                                         </FadeIn>
                                     )}
 
                                     {/* Author & Date */}
                                     <FadeIn direction="up" duration={700} distance={0} delay={1100}>
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-base md:text-lg text-gray-900 pt-4 border-t border-gray-900/20">
-                                            <span className="truncate" style={fontStyles.meta}>
-                                                {post.author || ''}
-                                            </span>
-                                            <span className="truncate" style={fontStyles.meta}>
-                                                {formattedDate}
-                                            </span>
+                                            <span className="truncate">{post.author || ''}</span>
+                                            <span className="truncate">{formattedDate}</span>
                                         </div>
                                     </FadeIn>
                                 </div>
@@ -274,15 +247,9 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             delay={400}
                                             className="flex items-center justify-between w-full"
                                         >
-                                            <h1 className="text-4xl text-gray-900 p-5" style={fontStyles.title}>
-                                                {post.title}
-                                            </h1>
+                                            <h1 className="text-4xl text-gray-900 p-5">{post.title}</h1>
 
-                                            {post.category && (
-                                                <span className="p-5 text-lg text-gray-900" style={fontStyles.meta}>
-                                                    {post.category}
-                                                </span>
-                                            )}
+                                            {post.category && <span className="p-5 text-lg text-gray-900">{post.category}</span>}
                                         </FadeIn>
                                     </div>
 
@@ -301,10 +268,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                     const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
                                                     return (
                                                         <div key={idx} className="flex items-center">
-                                                            <span
-                                                                className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
-                                                                style={fontStyles.meta}
-                                                            >
+                                                            <span className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}>
                                                                 {tag}
                                                             </span>
                                                             {idx !== post.tags.slice(0, 5).length - 1 && (
@@ -314,10 +278,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                     );
                                                 })}
                                                 {post.tags.length > 5 && (
-                                                    <span
-                                                        className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm"
-                                                        style={fontStyles.meta}
-                                                    >
+                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
                                                         +{post.tags.length - 5} more
                                                     </span>
                                                 )}
@@ -335,9 +296,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                 delay={800}
                                                 className="flex flex-col h-full"
                                             >
-                                                <p className="flex-1 text-xl text-gray-900 p-5 w-full" style={fontStyles.description}>
-                                                    {post.description}
-                                                </p>
+                                                <p className="flex-1 text-xl text-gray-900 p-5 w-full">{post.description}</p>
                                             </FadeIn>
                                         </div>
                                     )}
@@ -354,16 +313,8 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                         delay={1100}
                                         className="flex justify-between items-center px-4 pt-1"
                                     >
-                                        {post.author ? (
-                                            <span className="truncate" style={fontStyles.meta}>
-                                                {post.author}
-                                            </span>
-                                        ) : (
-                                            <span />
-                                        )}
-                                        <span className="truncate" style={fontStyles.meta}>
-                                            {formattedDate}
-                                        </span>
+                                        {post.author ? <span className="truncate">{post.author}</span> : <span />}
+                                        <span className="truncate">{formattedDate}</span>
                                     </FadeIn>
                                 </div>
 
@@ -381,17 +332,13 @@ export function PostHeader({ slug }: PostHeaderProps) {
                             <div className="flex flex-col items-center w-full">
                                 {/* Title */}
                                 <FadeIn direction="up" duration={700} distance={50} delay={200} className="w-full">
-                                    <h1 className="text-3xl md:text-4xl text-gray-900 p-5 text-center" style={fontStyles.title}>
-                                        {post.title}
-                                    </h1>
+                                    <h1 className="text-3xl md:text-4xl text-gray-900 p-5 text-center">{post.title}</h1>
                                 </FadeIn>
 
                                 {/* Category */}
                                 {post.category && (
                                     <FadeIn direction="up" duration={700} distance={50} delay={400} className="w-full flex justify-center">
-                                        <span className="p-5 text-base md:text-lg text-gray-900 text-center" style={fontStyles.meta}>
-                                            {post.category}
-                                        </span>
+                                        <span className="p-5 text-base md:text-lg text-gray-900 text-center">{post.category}</span>
                                     </FadeIn>
                                 )}
 
@@ -407,7 +354,6 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                         <div key={idx} className="flex items-center max-[425px]:m-0 max-[425px]:p-0">
                                                             <span
                                                                 className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm max-[425px]:p-2 max-[425px]:m-0`}
-                                                                style={fontStyles.meta}
                                                             >
                                                                 {tag}
                                                             </span>
@@ -418,10 +364,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                     );
                                                 })}
                                                 {post.tags.length > 5 && (
-                                                    <span
-                                                        className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm max-[425px]:p-0 max-[425px]:m-0"
-                                                        style={fontStyles.meta}
-                                                    >
+                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm max-[425px]:p-0 max-[425px]:m-0">
                                                         +{post.tags.length - 5} more
                                                     </span>
                                                 )}
@@ -433,10 +376,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                 {/* Description */}
                                 {post.description && (
                                     <FadeIn direction="up" duration={700} distance={50} delay={800} className="w-full flex justify-center">
-                                        <p
-                                            className="text-lg md:text-xl text-gray-900 p-5 w-full max-w-prose text-center"
-                                            style={fontStyles.description}
-                                        >
+                                        <p className="text-lg md:text-xl text-gray-900 p-5 w-full max-w-prose text-center">
                                             {post.description}
                                         </p>
                                     </FadeIn>
@@ -452,12 +392,8 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     delay={1100}
                                     className="flex flex-col sm:flex-row justify-between w-full gap-2"
                                 >
-                                    <div className="flex-1 text-center sm:text-left" style={fontStyles.meta}>
-                                        {post.author ?? ''}
-                                    </div>
-                                    <div className="flex-1 text-center sm:text-right" style={fontStyles.meta}>
-                                        {formattedDate}
-                                    </div>
+                                    <div className="flex-1 text-center sm:text-left">{post.author ?? ''}</div>
+                                    <div className="flex-1 text-center sm:text-right">{formattedDate}</div>
                                 </FadeIn>
                             </div>
 

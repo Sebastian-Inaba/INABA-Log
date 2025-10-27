@@ -181,7 +181,7 @@ export function Home() {
                     <div className="relative z-50 w-full mx-auto flex flex-col items-center h-fit">
                         {/* Sticky heading*/}
                         <div ref={stickyHeaderRef} className="flex top-0 items-center justify-center w-full lg:pr-150 py-4 z-80">
-                            <h2 className="text-3xl font-bold">Recent Posts</h2>
+                            <h1 className="text-3xl italic">Recent Posts</h1>
                         </div>
 
                         {/* Latest posts wrapper*/}

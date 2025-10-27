@@ -14,12 +14,6 @@ interface LatestPostsProps {
     imageHeight?: string;
     autoFetch?: boolean;
     maxPosts?: number;
-    // Font props
-    titleFont?: string;
-    bodyFont?: string;
-    ctaFont?: string;
-    tagFont?: string;
-    dateFont?: string;
 }
 
 export function LatestPosts({
@@ -28,30 +22,11 @@ export function LatestPosts({
     imageHeight = 'h-64',
     autoFetch = true,
     maxPosts = 5,
-    // Font defaults
-    titleFont = 'Poppins',
-    bodyFont = 'Roboto_Slab',
-    ctaFont = 'Poppins',
-    tagFont = 'Lato',
-    dateFont = 'Poppins',
 }: LatestPostsProps) {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(autoFetch);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
-    // Simple font styles
-    const fontStyles = useMemo(
-        () => ({
-            dateDay: { fontFamily: dateFont, fontWeight: 800 },
-            dateMonth: { fontFamily: dateFont, fontWeight: 400 },
-            postTitle: { fontFamily: titleFont, fontWeight: 700 },
-            tags: { fontFamily: tagFont, fontWeight: 400 },
-            description: { fontFamily: bodyFont, fontWeight: 400 },
-            readMore: { fontFamily: ctaFont, fontWeight: 500 },
-        }),
-        [titleFont, bodyFont, ctaFont, tagFont, dateFont],
-    );
 
     // Fetch latest posts handler
     const handleFetchLatestPosts = useCallback(
@@ -113,14 +88,10 @@ export function LatestPosts({
     if (error) {
         return (
             <div className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}>
-                <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide" style={fontStyles.description}>
+                <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
                     Something went wrong getting recent posts.
                 </p>
-                <button
-                    onClick={handleRetry}
-                    className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
-                    style={fontStyles.readMore}
-                >
+                <button onClick={handleRetry} className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2">
                     Try Again
                 </button>
             </div>
@@ -159,10 +130,8 @@ export function LatestPosts({
     if (!loading && posts.length === 0) {
         return (
             <div className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-300" style={fontStyles.description}>
-                    No recent posts available.
-                </p>
-                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm" style={fontStyles.readMore}>
+                <p className="text-gray-300">No recent posts available.</p>
+                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm">
                     Refresh
                 </button>
             </div>
@@ -184,13 +153,10 @@ export function LatestPosts({
                                     <FadeIn direction="up" delay={postIndex * 100}>
                                         <div className="xl:absolute xl:-ml-[136px] xl:w-28 shrink-0 flex flex-col items-start ls:items-center justify-center p-0 pb-2 lg:p-4">
                                             <div className="text-center">
-                                                <div className="text-xl text-gray-900 dark:text-white" style={fontStyles.dateDay}>
+                                                <div className="text-xl text-gray-900 dark:text-white">
                                                     {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
                                                 </div>
-                                                <div
-                                                    className="text-xs text-gray-500 dark:text-slate-300 mt-1"
-                                                    style={fontStyles.dateMonth}
-                                                >
+                                                <div className="text-xs text-gray-500 dark:text-slate-300 mt-1">
                                                     {new Date(post.createdAt).toLocaleDateString('en-US', {
                                                         month: 'short',
                                                         year: 'numeric',
@@ -226,7 +192,6 @@ export function LatestPosts({
                                             <div className="p-0 pt-2 lg:p-6 flex flex-col gap-4">
                                                 <h2
                                                     className="group relative text-2xl text-white line-clamp-2 cursor-pointer pb-1"
-                                                    style={fontStyles.postTitle}
                                                     onClick={() => handleReadMore(post.slug)}
                                                     role="link"
                                                     tabIndex={0}
@@ -247,11 +212,7 @@ export function LatestPosts({
                                                 {visibleTags.length > 0 && (
                                                     <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
                                                         {visibleTags.map((tag: string, i: number) => (
-                                                            <span
-                                                                key={i}
-                                                                className={`${tagColorMap[i] ?? 'text-blue-600'}`}
-                                                                style={fontStyles.tags}
-                                                            >
+                                                            <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`}>
                                                                 {tag}
                                                                 {i !== visibleTags.length - 1 && (
                                                                     <span className="mx-2 text-gray-300">|</span>
@@ -259,20 +220,13 @@ export function LatestPosts({
                                                             </span>
                                                         ))}
                                                         {post.tags && post.tags.length > 4 && (
-                                                            <span className="ml-3 text-gray-500 text-sm" style={fontStyles.tags}>
-                                                                +{post.tags.length - 4} more
-                                                            </span>
+                                                            <span className="ml-3 text-gray-500 text-sm">+{post.tags.length - 4} more</span>
                                                         )}
                                                     </div>
                                                 )}
 
                                                 {post.description && (
-                                                    <p
-                                                        className="text-white line-clamp-3 tracking-wide mt-4"
-                                                        style={fontStyles.description}
-                                                    >
-                                                        {post.description}
-                                                    </p>
+                                                    <p className="text-white line-clamp-3 tracking-wide mt-4">{post.description}</p>
                                                 )}
 
                                                 <div className="mt-2 flex items-center justify-end relative">
@@ -280,7 +234,6 @@ export function LatestPosts({
                                                         onClick={() => handleReadMore(post.slug)}
                                                         className="relative left-2 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
                                                         aria-label="Read more about this post"
-                                                        style={fontStyles.readMore}
                                                     >
                                                         <span>Read More</span>
                                                         <span className="text-current text-xl">&gt;</span>
