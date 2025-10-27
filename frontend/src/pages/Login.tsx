@@ -75,7 +75,7 @@ export function Login() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-start my-20">
+        <div className="flex flex-col items-center justify-start my-20 pt-[70px]">
             <h1 className="text-xl font-semibold mb-4">Login</h1>
             <div id="google-signin" className="mx-auto" />
         </div>

@@ -3,7 +3,7 @@ import PublicPostList from '../components/PostComps/PostGet';
 
 export function Post() {
     return (
-        <div className="w-full flex flex-col text-white gap-6 flex-1 overflow-y-auto bg-neutral-950/70 hide-scrollbar">
+        <div className="w-full flex flex-col text-white gap-6 flex-1 overflow-y-auto bg-neutral-950/70 backdrop-blur-lg hide-scrollbar pt-[70px]">
             {/* List / Content */}
             <section className="flex-1 overflow-y-auto hide-scrollbar">
                 <PublicPostList />

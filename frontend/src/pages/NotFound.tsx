@@ -1,7 +1,7 @@
 // src/pages/NotFound.tsx
 export function NotFound() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-8 font-sans">
+        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-8 font-sans pt-[70px]">
             {/* Animated number */}
             <div className="text-6xl md:text-8xl font-bold text-purple-600 mb-4 animate-bounce">404</div>
 

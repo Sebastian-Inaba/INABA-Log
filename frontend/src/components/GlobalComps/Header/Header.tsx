@@ -15,7 +15,10 @@ export function Header({ logoFont = 'Poppins', navFont = 'Lato' }: HeaderProps) 
     const navItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
 
     return (
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-between px-4 py-4 relative">
+        <div
+            className="w-full max-w-6xl mx-auto flex items-center justify-between px-4 py-4 relative
+             bg-neutral-900/40 backdrop-blur-lg rounded-lg border border-neutral-800 shadow-md"
+        >
             {/* Logo */}
             <Link
                 to="/"

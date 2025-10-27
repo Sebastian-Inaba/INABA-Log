@@ -213,22 +213,22 @@ export function NewestResearch({
                                         handleGoDeeperRedirect(research.slug);
                                     }
                                 }}
-                                className="
-                                    group transform transition-transform duration-200 ease-out
+                                className={`group transform transition-transform duration-200 ease-out
                                     hover:scale-101 hover:-translate-y-1 hover:shadow-xl
-                                    bg-white/0 hover:bg-white/5 dark:hover:bg-slate-800/60
-                                    rounded-lg border border-gray-100 dark:border-slate-700
+                                    bg-neutral-900/50 hover:bg-neutral-900
+                                    rounded-lg border border-gray-700 dark:border-slate-700 border-l-4
+                                    hover:border-transparent hover:border-l-purple-500
                                     p-3 sm:p-4 flex items-start gap-2 sm:gap-4 cursor-pointer
-                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500
-                                "
+                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500
+                                `}
                                 style={{ willChange: 'transform' }}
                             >
-                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 mt-1 shrink-0 transition-colors duration-200 group-hover:bg-indigo-500" />
+                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-purple-600 dark:bg-purple-400 mt-1 shrink-0 transition-colors duration-200 group-hover:bg-purple-500" />
 
                                 <div className="flex-1 min-w-0">
                                     <div className="text-left w-full">
                                         <h3
-                                            className="text-base sm:text-lg text-gray-900 dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-indigo-600"
+                                            className="text-base sm:text-lg text-white dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-purple-300"
                                             style={fontStyles.researchTitle}
                                         >
                                             {research.title}

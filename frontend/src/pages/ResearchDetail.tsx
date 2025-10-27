@@ -16,7 +16,7 @@ export function ResearchDetail() {
     }
 
     return (
-        <div className="w-full h-full overflow-x-hidden overflow-y-auto">
+        <div className="w-full h-full overflow-x-hidden overflow-y-auto pt-[70px]">
             <div className="w-full flex justify-center px-4 lg:px-8 py-8">
                 <div className="w-full max-w-[1400px]">
                     {/* ResearchMain */}

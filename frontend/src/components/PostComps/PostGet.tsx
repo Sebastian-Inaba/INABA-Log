@@ -252,7 +252,7 @@ export default function PublicPostList({
 
     // Default render
     return (
-        <div className="w-full py-6 hide-scrollbar">
+        <div className="w-full px-4 py-6 hide-scrollbar">
             {/* Filter Section */}
             <div className="w-full max-w-[1040px] xl:max-w-[1600px] mx-auto mb-6">
                 <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6">
@@ -269,6 +269,13 @@ export default function PublicPostList({
                     </div>
                     <div className="hidden xl:block" /> {/* Right spacer */}
                 </div>
+            </div>
+
+            {/* Results count */}
+            <div className="w-full max-w-[1040px] mx-auto mb-4 px-4">
+                <p className="text-sm text-slate-400" style={fontStyles.readMore}>
+                    Showing {startIndex + 1}-{Math.min(endIndex, filteredPosts.length)} of {filteredPosts.length} results
+                </p>
             </div>
 
             {/* Content Grid - Three column layout on desktop */}
@@ -344,13 +351,25 @@ export default function PublicPostList({
                                     {/* Post content */}
                                     <div className="p-6 pb-0 flex flex-col gap-4">
                                         {/* Title and category row */}
-                                        <div className="flex flex-wrap items-center gap-4">
+                                        <div className="flex justify-between items-center gap-4">
                                             <h2
-                                                className="text-2xl text-white hover:text-gray-200 hover:underline line-clamp-2 cursor-pointer flex-1"
+                                                className="text-2xl text-white line-clamp-2 cursor-pointer inline-flex relative group/title"
                                                 style={fontStyles.postTitle}
                                                 onClick={() => handleReadMore(post.slug)}
+                                                role="link"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        handleReadMore(post.slug);
+                                                    }
+                                                }}
                                             >
-                                                {post.title}
+                                                <span className="relative inline-block wrap-break-words">
+                                                    {post.title}
+                                                    {/* Animated underline on title hover */}
+                                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-400 group-hover/title:w-full transition-all duration-300" />
+                                                </span>
                                             </h2>
 
                                             {post.category && (

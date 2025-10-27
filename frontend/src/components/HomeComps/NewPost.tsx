@@ -144,7 +144,10 @@ export function NewestPost({
 
     // Main render with simple font application
     return (
-        <article className={`${className}`}>
+        <article
+            className="relative p-5 rounded-xl border border-gray-400 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out 
+                    bg-neutral-950/70 backdrop-blur-lg"
+        >
             {/* H1 with italic titleFont */}
             <div className="text-2xl md:text-3xl text-gray-900 dark:text-white mb-6 text-center">
                 <h1 style={fontStyles.h1}>New Post</h1>
@@ -169,11 +172,23 @@ export function NewestPost({
             <div className="p-6 flex flex-col gap-4">
                 {/* H2 with medium titleFont */}
                 <h2
-                    className="w-fit text-2xl text-white line-clamp-2 cursor-pointer hover:text-gray-200 hover:underline"
+                    className="group relative w-fit text-2xl text-white line-clamp-2 cursor-pointer pb-1"
                     style={fontStyles.h2}
                     onClick={() => handleReadMore(post.slug)}
+                    role="link"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleReadMore(post.slug);
+                        }
+                    }}
                 >
-                    {post.title}
+                    <span className="relative inline-block">
+                        {post.title}
+                        {/* Animated underline on title hover */}
+                        <span className="absolute left-0 bottom-0 h-0.5 w-full bg-purple-400 transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                    </span>
                 </h2>
 
                 {/* Tags with regular tagFont */}
@@ -204,7 +219,7 @@ export function NewestPost({
                     {/* CTA with medium ctaFont and smaller size */}
                     <button
                         onClick={() => handleReadMore(post.slug)}
-                        className="cursor-pointer inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white border border-blue-100 shadow-md hover:shadow-lg px-6 py-3 rounded-full tracking-wide transition-transform transform hover:-translate-y-0.5"
+                        className="cursor-pointer inline-flex items-center gap-2 bg-transparent text-[#9162CB] border border-gray-400 px-6 py-3 rounded-full tracking-wide transition-all transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_#9162CB]"
                         aria-label="Read more about this post"
                         style={fontStyles.cta}
                     >

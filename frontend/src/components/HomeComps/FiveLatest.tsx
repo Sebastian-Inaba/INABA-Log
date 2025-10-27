@@ -182,7 +182,7 @@ export function LatestPosts({
                                 <article className="flex flex-col xl:flex-row items-stretch bg-transparent xl:gap-0">
                                     {/* Date column, top on mobile/tablet, left sidebar on xl+ */}
                                     <FadeIn direction="up" delay={postIndex * 100}>
-                                        <div className="xl:absolute xl:-ml-[136px] xl:w-28 shrink-0 flex flex-col items-start ls:items-center justify-center p-4">
+                                        <div className="xl:absolute xl:-ml-[136px] xl:w-28 shrink-0 flex flex-col items-start ls:items-center justify-center p-0 pb-2 lg:p-4">
                                             <div className="text-center">
                                                 <div className="text-xl text-gray-900 dark:text-white" style={fontStyles.dateDay}>
                                                     {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
@@ -223,13 +223,25 @@ export function LatestPosts({
                                                 </div>
                                             )}
 
-                                            <div className="p-6 flex flex-col gap-4">
+                                            <div className="p-0 pt-2 lg:p-6 flex flex-col gap-4">
                                                 <h2
-                                                    className="w-fit text-2xl text-white hover:text-gray-200 hover:underline line-clamp-2 cursor-pointer"
+                                                    className="group relative text-2xl text-white line-clamp-2 cursor-pointer pb-1"
                                                     style={fontStyles.postTitle}
                                                     onClick={() => handleReadMore(post.slug)}
+                                                    role="link"
+                                                    tabIndex={0}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' || e.key === ' ') {
+                                                            e.preventDefault();
+                                                            handleReadMore(post.slug);
+                                                        }
+                                                    }}
                                                 >
-                                                    {post.title}
+                                                    <span className="relative inline-block wrap-break-words">
+                                                        {post.title}
+                                                        {/* Animated underline on title hover */}
+                                                        <span className="absolute left-0 bottom-0 h-0.5 w-full bg-purple-400 transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                                                    </span>
                                                 </h2>
 
                                                 {visibleTags.length > 0 && (
@@ -266,7 +278,7 @@ export function LatestPosts({
                                                 <div className="mt-2 flex items-center justify-end relative">
                                                     <button
                                                         onClick={() => handleReadMore(post.slug)}
-                                                        className="relative left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
+                                                        className="relative left-2 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
                                                         aria-label="Read more about this post"
                                                         style={fontStyles.readMore}
                                                     >

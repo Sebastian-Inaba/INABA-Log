@@ -1,12 +1,13 @@
 // src/layout/AppLayout.tsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/GlobalComps/Header/Header';
 import { Footer } from '../components/GlobalComps/Footer/Footer';
 import { LenisScroll } from '../components/AnimationComps/Scroll/ScrollWrapper';
 
 export function AppLayout() {
-    const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+    const lastScrollY = useRef(0);
 
     // Disable browser scroll restoration
     useEffect(() => {
@@ -15,23 +16,44 @@ export function AppLayout() {
         }
     }, []);
 
+    // Handle scroll direction
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY.current) {
+                // Scrolling down - hide header
+                setIsHeaderVisible(false);
+            } else if (currentScrollY < lastScrollY.current) {
+                // Scrolling up - show header
+                setIsHeaderVisible(true);
+            }
+            // When scroll stops, state stays as is
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     // reflect header-hidden state on the root element so portaled elements can react
     useEffect(() => {
         if (typeof document !== 'undefined') {
-            if (scrollDirection === 'down') {
+            if (!isHeaderVisible) {
                 document.documentElement.setAttribute('data-header-hidden', 'true');
             } else {
                 document.documentElement.setAttribute('data-header-hidden', 'false');
             }
         }
-    }, [scrollDirection]);
+    }, [isHeaderVisible]);
 
     return (
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
             {/* Header */}
             <header
-                className={`fixed top-0 w-full bg-neutral-900 z-100 transition-transform duration-300 ${
-                    scrollDirection === 'down' ? '-translate-y-full' : 'translate-y-0'
+                className={`fixed top-0 w-full z-100 transition-transform duration-300 ${
+                    !isHeaderVisible ? '-translate-y-full' : 'translate-y-0'
                 }`}
                 role="banner"
             >
@@ -39,8 +61,8 @@ export function AppLayout() {
             </header>
 
             {/* Main content wrapped in Lenis smooth scroll */}
-            <LenisScroll onDirectionChange={setScrollDirection}>
-                <main className="flex-1 w-full pt-[60px] relative z-10">
+            <LenisScroll>
+                <main className="flex-1 w-full relative z-10">
                     <Outlet />
                 </main>
             </LenisScroll>

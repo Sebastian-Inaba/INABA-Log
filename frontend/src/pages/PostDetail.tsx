@@ -19,7 +19,7 @@ export function PostDetail() {
     }
 
     return (
-        <div className="w-full h-full overflow-x-hidden overflow-y-auto hide-scrollbar">
+        <div className="w-full h-full overflow-x-hidden overflow-y-auto hide-scrollbar pt-[70px]">
             {/* Header */}
             <div className="w-full mb-8">
                 <PostHeader slug={slug} />
@@ -37,7 +37,7 @@ export function PostDetail() {
                     </div>
 
                     {/* Featured posts */}
-                    <div className="w-80 max-[1440px]:hidden wrap-shrink-0">
+                    <div className="w-80 max-[1440px]:hidden wrap-shrink-0 px-4">
                         <FadeIn direction="left" duration={700} delay={1600}>
                             <FeaturedPosts />
                         </FadeIn>

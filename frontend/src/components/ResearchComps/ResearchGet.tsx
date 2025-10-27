@@ -259,10 +259,11 @@ export default function PublicResearchList() {
                                             {/* Title and badges row */}
                                             <div className="flex items-start gap-4 mb-3">
                                                 <div className="flex-1 min-w-0">
-                                                    {/* Research badge */}
+                                                    {/* Deep dive badge */}
+                                                    {/* // SHOULD CHANGE TO CATEGORY LATER*/}
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <span className="px-2.5 py-0.5 bg-linear-to-r from-purple-700 to-purple-600 text-purple-100 rounded text-xs font-bold uppercase tracking-wide shadow-md">
-                                                            Research
+                                                            Deep Dive
                                                         </span>
                                                     </div>
 

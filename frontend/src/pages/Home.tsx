@@ -148,53 +148,8 @@ export function Home() {
         };
     }, []);
 
-    /** Clip-path adjustment for latest posts section to prevent overlap */
-    useEffect(() => {
-        const stickyHeader = stickyHeaderRef.current;
-        const latestPostsWrapper = latestPostsWrapperRef.current;
-        if (!stickyHeader || !latestPostsWrapper) return;
-
-        let clipRafId: number | null = null;
-
-        const updateClipPath = () => {
-            clipRafId = requestAnimationFrame(() => {
-                const stickyRect = stickyHeader.getBoundingClientRect();
-                const latestRect = latestPostsWrapper.getBoundingClientRect();
-
-                // Calculate overlap between sticky header bottom and latest posts top
-                const overlap = Math.max(0, stickyRect.bottom - latestRect.top);
-
-                if (overlap > 0) {
-                    // Clip the top of the latest posts wrapper to avoid visual overlap
-                    const inset = `${Math.ceil(overlap)}px 0px 0px 0px`;
-                    latestPostsWrapper.style.clipPath = `inset(${inset})`;
-                    latestPostsWrapper.style.setProperty('-webkit-clip-path', `inset(${inset})`);
-                } else {
-                    // No overlap, clear clipping
-                    latestPostsWrapper.style.clipPath = 'none';
-                    latestPostsWrapper.style.removeProperty('-webkit-clip-path');
-                }
-            });
-        };
-
-        // Run initially
-        updateClipPath();
-
-        window.addEventListener('scroll', updateClipPath, { passive: true });
-        window.addEventListener('resize', updateClipPath);
-
-        return () => {
-            if (clipRafId) cancelAnimationFrame(clipRafId);
-            window.removeEventListener('scroll', updateClipPath);
-            window.removeEventListener('resize', updateClipPath);
-            // Ensure clipping is cleared on unmount
-            latestPostsWrapper.style.clipPath = 'none';
-            latestPostsWrapper.style.removeProperty('-webkit-clip-path');
-        };
-    }, []);
-
     return (
-        <div className="w-full mx-auto h-full">
+        <div className="w-full mx-auto h-full pt-[70px]">
             {/* Top section (newest post & research highlight) */}
             <div ref={topSectionRef} className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}>
                 <div className="max-w-11/12 mx-auto relative pt-10 pb-20">
@@ -204,9 +159,9 @@ export function Home() {
                             <NewestPost apiUrl="/posts/newest" />
                         </FadeIn>
                         {/* Latest research wrapper*/}
-                        <FadeIn direction="up" delay={100} className="flex mt-10 lg:mt-0">
+                        <FadeIn direction="up" delay={100} className="flex items-center mt-10 lg:mt-0">
                             {/* Divider */}
-                            <div className="border-2 border-gray-400 mx-0 mr-4 lg:mx-6 rounded-2xl" />
+                            <div className="border-2 border-gray-400 mx-0 mr-4 lg:mx-6 rounded-2xl h-full" />
                             <NewestResearch apiUrl="/research/newest" />
                         </FadeIn>
                     </div>
@@ -225,7 +180,7 @@ export function Home() {
 
                     <div className="relative z-50 w-full mx-auto flex flex-col items-center h-fit">
                         {/* Sticky heading*/}
-                        <div ref={stickyHeaderRef} className="flex sticky top-0 items-center justify-center w-full lg:pr-150 py-4 z-80">
+                        <div ref={stickyHeaderRef} className="flex top-0 items-center justify-center w-full lg:pr-150 py-4 z-80">
                             <h2 className="text-3xl font-bold">Recent Posts</h2>
                         </div>
 
