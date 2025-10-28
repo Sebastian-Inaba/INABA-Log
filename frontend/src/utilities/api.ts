@@ -34,3 +34,26 @@ apiClient.interceptors.response.use(
         return Promise.reject(err);
     },
 );
+
+// Ping function to keep services alive
+export const pingBackend = async () => {
+    try {
+        const response = await apiClient.get('/health');
+        log('[PING] Backend health check:', response.data);
+        return response.data;
+    } catch (err) {
+        error('[PING] Backend health check failed:', err);
+        throw err;
+    }
+};
+
+// Auto-ping every 5 days (432000000 ms)
+setInterval(() => {
+    pingBackend().catch(() => {
+        // Silent fail - just log it
+        console.warn('Scheduled ping failed');
+    });
+}, 5 * 24 * 60 * 60 * 1000); // 5 days in milliseconds
+
+// Initial ping on load
+pingBackend().catch(() => {});

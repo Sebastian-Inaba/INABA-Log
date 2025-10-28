@@ -12,6 +12,7 @@ import cookieParser from 'cookie-parser';
 import { connectDB, disconnectDB } from './config/DB';
 import { errorHandler } from './middleware/ErrorMiddleware';
 import { requestLogger } from './middleware/LoggingMiddleware';
+import healthRouter from './routes/HealthRoutes';
 
 dotenv.config();
 const app = express();
@@ -64,6 +65,9 @@ app.use('/api/research', globalLimiter, researchRoutes);
 
 // Admin routes (protected)
 app.use('/api/admin', adminRoutes);
+
+// Health check route
+app.use('/api', healthRouter);
 
 // Custom error middleware (should be after routes)
 app.use(errorHandler);
