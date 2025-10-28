@@ -10,7 +10,10 @@ export interface UploadResult {
 }
 
 // Upload file (returns info)
-export const uploadFile = async (file: Express.Multer.File, bucketName: keyof typeof buckets): Promise<UploadResult> => {
+export const uploadFile = async (
+    file: Express.Multer.File,
+    bucketName: keyof typeof buckets,
+): Promise<UploadResult> => {
     if (!file) throw createHttpError(400, 'No file uploaded');
 
     const { originalname, mimetype, buffer } = file;
@@ -36,17 +39,22 @@ export const uploadFile = async (file: Express.Multer.File, bucketName: keyof ty
 
     if (!buckets[bucketName]) throw createHttpError(400, 'Invalid bucket');
 
-    const { error } = await supabase.storage.from(buckets[bucketName]).upload(finalName, finalBuffer, {
-        contentType,
-        cacheControl: '3600',
-        upsert: true,
-    });
+    const { error } = await supabase.storage
+        .from(buckets[bucketName])
+        .upload(finalName, finalBuffer, {
+            contentType,
+            cacheControl: '3600',
+            upsert: true,
+        });
 
     if (error) throw createHttpError(500, error.message);
 
-    const { data } = supabase.storage.from(buckets[bucketName]).getPublicUrl(finalName);
+    const { data } = supabase.storage
+        .from(buckets[bucketName])
+        .getPublicUrl(finalName);
 
-    if (!data?.publicUrl) throw createHttpError(500, 'Failed to get public URL');
+    if (!data?.publicUrl)
+        throw createHttpError(500, 'Failed to get public URL');
 
     return {
         publicUrl: data.publicUrl,
@@ -56,10 +64,15 @@ export const uploadFile = async (file: Express.Multer.File, bucketName: keyof ty
 };
 
 // Remove file from Supabase
-export const removeFile = async (bucket: keyof typeof buckets, filename: string) => {
+export const removeFile = async (
+    bucket: keyof typeof buckets,
+    filename: string,
+) => {
     if (!buckets[bucket]) throw createHttpError(400, 'Invalid bucket');
 
-    const { error } = await supabase.storage.from(buckets[bucket]).remove([filename]);
+    const { error } = await supabase.storage
+        .from(buckets[bucket])
+        .remove([filename]);
 
     if (error) throw createHttpError(500, error.message);
 };

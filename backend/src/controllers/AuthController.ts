@@ -9,7 +9,11 @@ const COOKIE_NAME = 'inaba_admin';
 const COOKIE_MAX_AGE = 60 * 60 * 1000; // 1 hour in ms
 
 // get admin
-export const getCurrentUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const getCurrentUser = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         if (!req.user) throw createHttpError(401, 'Not authenticated');
 
@@ -24,7 +28,11 @@ export const getCurrentUser = async (req: AuthenticatedRequest, res: Response, n
 
 // login
 // Since Google token is verified by the frontend + middleware, login can just return user info
-export const login = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const login = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         if (!req.user) throw createHttpError(401, 'Not authenticated');
 
@@ -46,7 +54,11 @@ export const login = async (req: AuthenticatedRequest, res: Response, next: Next
 };
 
 // logout
-export const logout = async (_req: Request, res: Response, next: NextFunction) => {
+export const logout = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         res.clearCookie(COOKIE_NAME, {
             httpOnly: true,
@@ -55,7 +67,10 @@ export const logout = async (_req: Request, res: Response, next: NextFunction) =
             path: '/',
         });
 
-        res.status(200).json({ success: true, message: 'Logged out successfully' });
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully',
+        });
     } catch (err) {
         next(err);
     }

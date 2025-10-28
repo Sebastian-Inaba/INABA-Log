@@ -112,8 +112,11 @@ export function Home() {
             if (shouldBeSticky && !isStickyRef.current) {
                 if (scrollRafId) cancelAnimationFrame(scrollRafId);
                 scrollRafId = requestAnimationFrame(() => {
-                    const topRect = topSectionRef.current!.getBoundingClientRect();
-                    const sectionHeight = Math.ceil(topSectionRef.current!.offsetHeight || topRect.height);
+                    const topRect =
+                        topSectionRef.current!.getBoundingClientRect();
+                    const sectionHeight = Math.ceil(
+                        topSectionRef.current!.offsetHeight || topRect.height,
+                    );
 
                     setBottomSectionMargin(sectionHeight);
                     applyFixedStyles(Math.round(topRect.top));
@@ -151,15 +154,25 @@ export function Home() {
     return (
         <div className="w-full mx-auto h-full pt-[70px]">
             {/* Top section (newest post & research highlight) */}
-            <div ref={topSectionRef} className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}>
+            <div
+                ref={topSectionRef}
+                className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}
+            >
                 <div className="max-w-11/12 mx-auto relative pt-10 pb-20">
                     <div className="grid grid-cols-1 lg:grid-cols-2">
                         {/* Newest post wrapper */}
-                        <FadeIn direction="up" className="flex justify-center items-center">
+                        <FadeIn
+                            direction="up"
+                            className="flex justify-center items-center"
+                        >
                             <NewestPost apiUrl="/posts/newest" />
                         </FadeIn>
                         {/* Latest research wrapper*/}
-                        <FadeIn direction="up" delay={100} className="flex items-center mt-10 lg:mt-0">
+                        <FadeIn
+                            direction="up"
+                            delay={100}
+                            className="flex items-center mt-10 lg:mt-0"
+                        >
                             {/* Divider */}
                             <div className="border-2 border-gray-400 mx-0 mr-4 lg:mx-6 rounded-2xl h-full" />
                             <NewestResearch apiUrl="/research/newest" />
@@ -169,7 +182,10 @@ export function Home() {
             </div>
 
             {/* Bottom section (sticky heading + latest posts) */}
-            <div ref={bottomSectionRef} className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}>
+            <div
+                ref={bottomSectionRef}
+                className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}
+            >
                 {/* Backdrop blur (instant, no fade) */}
                 <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] backdrop-blur-2xl bg-black/40 shadow-lg -z-100" />
 
@@ -180,7 +196,10 @@ export function Home() {
 
                     <div className="relative z-50 w-full mx-auto flex flex-col items-center h-fit">
                         {/* Sticky heading*/}
-                        <div ref={stickyHeaderRef} className="flex top-0 items-center justify-center w-full lg:pr-150 py-4 z-80">
+                        <div
+                            ref={stickyHeaderRef}
+                            className="flex top-0 items-center justify-center w-full lg:pr-150 py-4 z-80"
+                        >
                             <h1 className="text-3xl italic">Recent Posts</h1>
                         </div>
 
@@ -189,7 +208,10 @@ export function Home() {
                             ref={latestPostsWrapperRef}
                             className="w-full xl:w-1/2 flex justify-center mt-10 mb-15 relative z-10 px-4 xl:px-0"
                         >
-                            <LatestPosts className="w-full" apiUrl="/posts/latest-five" />
+                            <LatestPosts
+                                className="w-full"
+                                apiUrl="/posts/latest-five"
+                            />
                         </div>
                     </div>
                 </FadeIn>

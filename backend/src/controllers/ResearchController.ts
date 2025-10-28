@@ -4,7 +4,11 @@ import createHttpError from 'http-errors';
 import { Research, IResearch } from '../models/ResearchModel';
 
 // get all research (deep dives)
-export const getAllResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const tag = req.query.tag as string | undefined;
         const author = req.query.author as string | undefined;
@@ -22,19 +26,29 @@ export const getAllResearch = async (req: Request, res: Response, next: NextFunc
             filter.createdAt = {};
             switch (dateFilter) {
                 case 'newest':
-                    filter.createdAt.$gte = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'week':
-                    filter.createdAt.$gte = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 7 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'month':
-                    filter.createdAt.$gte = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 30 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'year':
-                    filter.createdAt.$gte = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'older':
-                    filter.createdAt.$lt = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$lt = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
             }
         }
@@ -45,7 +59,9 @@ export const getAllResearch = async (req: Request, res: Response, next: NextFunc
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('title author abstract tags featuredImage createdAt updatedAt category slug') // Might get changed
+            .select(
+                'title author abstract tags featuredImage createdAt updatedAt category slug',
+            ) // Might get changed
             .lean();
 
         const total = await Research.countDocuments(filter);
@@ -64,7 +80,11 @@ export const getAllResearch = async (req: Request, res: Response, next: NextFunc
 };
 
 // get two newest research papers (deep dives)
-export const getTwoNewestResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const getTwoNewestResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const researchList = await Research.find()
             .sort({ createdAt: -1 })
@@ -72,7 +92,8 @@ export const getTwoNewestResearch = async (req: Request, res: Response, next: Ne
             .select('title author abstract tags featuredImage createdAt slug') // Might get changed
             .lean();
 
-        if (!researchList.length) throw createHttpError(404, 'No research found');
+        if (!researchList.length)
+            throw createHttpError(404, 'No research found');
 
         res.status(200).json({
             success: true,
@@ -84,7 +105,11 @@ export const getTwoNewestResearch = async (req: Request, res: Response, next: Ne
 };
 
 // get research by slug (deep dive)
-export const getResearchBySlug = async (req: Request, res: Response, next: NextFunction) => {
+export const getResearchBySlug = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { slug } = req.params;
         const deepDive = await Research.findOne({ slug }).exec();

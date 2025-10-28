@@ -50,31 +50,39 @@ export default function PublicResearchList() {
         setLoading(true);
         try {
             const res = await apiClient.get('/research');
-            const raw = Array.isArray(res.data) ? res.data : (res.data?.research ?? []);
+            const raw = Array.isArray(res.data)
+                ? res.data
+                : (res.data?.research ?? []);
 
-            const normalized: Research[] = (raw || []).filter(Boolean).map((r: unknown, i: number) => {
-                const obj = r as Record<string, unknown>;
-                return {
-                    ...obj,
-                    _id: String(obj._id ?? obj.id ?? `fallback-${i}`),
-                    title: (obj.title as string) ?? '',
-                    abstract: (obj.abstract as string) ?? '',
-                    tags: Array.isArray(obj.tags) ? (obj.tags as string[]) : [],
-                    featured: Boolean(obj.featured),
-                    pdfAttachment: (obj.pdfAttachment as string) ?? null,
-                    author: (obj.author as string) ?? null,
-                    createdAt: (obj.createdAt as string) ?? '',
-                    updatedAt: (obj.updatedAt as string) ?? '',
-                    references: Array.isArray(obj.references) ? (obj.references as string[]) : [],
-                    slug: (obj.slug as string) ?? '',
-                    type: (obj.type as string) ?? 'research',
-                    content: (obj.content as string) ?? '',
-                    introduction: (obj.introduction as string) ?? '',
-                    method: (obj.method as string) ?? '',
-                    keyFindings: (obj.keyFindings as string) ?? '',
-                    credibility: (obj.credibility as string) ?? '',
-                } as Research;
-            });
+            const normalized: Research[] = (raw || [])
+                .filter(Boolean)
+                .map((r: unknown, i: number) => {
+                    const obj = r as Record<string, unknown>;
+                    return {
+                        ...obj,
+                        _id: String(obj._id ?? obj.id ?? `fallback-${i}`),
+                        title: (obj.title as string) ?? '',
+                        abstract: (obj.abstract as string) ?? '',
+                        tags: Array.isArray(obj.tags)
+                            ? (obj.tags as string[])
+                            : [],
+                        featured: Boolean(obj.featured),
+                        pdfAttachment: (obj.pdfAttachment as string) ?? null,
+                        author: (obj.author as string) ?? null,
+                        createdAt: (obj.createdAt as string) ?? '',
+                        updatedAt: (obj.updatedAt as string) ?? '',
+                        references: Array.isArray(obj.references)
+                            ? (obj.references as string[])
+                            : [],
+                        slug: (obj.slug as string) ?? '',
+                        type: (obj.type as string) ?? 'research',
+                        content: (obj.content as string) ?? '',
+                        introduction: (obj.introduction as string) ?? '',
+                        method: (obj.method as string) ?? '',
+                        keyFindings: (obj.keyFindings as string) ?? '',
+                        credibility: (obj.credibility as string) ?? '',
+                    } as Research;
+                });
 
             setResearch(normalized);
             setFilteredResearch(normalized);
@@ -161,7 +169,10 @@ export default function PublicResearchList() {
                 </div>
                 <div className="w-full max-w-[1200px] mx-auto space-y-4">
                     {[...Array(5)].map((_, idx) => (
-                        <div key={idx} className="bg-neutral-800 rounded-lg h-32 animate-pulse" />
+                        <div
+                            key={idx}
+                            className="bg-neutral-800 rounded-lg h-32 animate-pulse"
+                        />
                     ))}
                 </div>
             </div>
@@ -224,7 +235,9 @@ export default function PublicResearchList() {
             {/* Results count */}
             <div className="w-full max-w-[1200px] mx-auto mb-4 px-4">
                 <p className="text-sm text-slate-400">
-                    Showing {startIndex + 1}-{Math.min(endIndex, filteredResearch.length)} of {filteredResearch.length} results
+                    Showing {startIndex + 1}-
+                    {Math.min(endIndex, filteredResearch.length)} of{' '}
+                    {filteredResearch.length} results
                 </p>
             </div>
 
@@ -238,7 +251,11 @@ export default function PublicResearchList() {
                             const tags = item.tags ?? [];
 
                             return (
-                                <FadeIn key={item._id} direction="up" delay={index * 40}>
+                                <FadeIn
+                                    key={item._id}
+                                    direction="up"
+                                    delay={index * 40}
+                                >
                                     <article className="group relative bg-neutral-900/50 hover:bg-neutral-900 border-l-4 border border-gray-700 hover:border-transparent hover:border-l-purple-500 transition-all duration-300 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:shadow-purple-900/20">
                                         {/* Main content row */}
                                         <div className="p-4 sm:p-6">
@@ -256,7 +273,11 @@ export default function PublicResearchList() {
                                                     {/* Title */}
                                                     <h2
                                                         className="text-xl sm:text-2xl md:text-2xl text-white transition-colors cursor-pointer leading-tight mb-2 inline-block relative group/title"
-                                                        onClick={() => handleViewDetails(item.slug)}
+                                                        onClick={() =>
+                                                            handleViewDetails(
+                                                                item.slug,
+                                                            )
+                                                        }
                                                     >
                                                         <span className="group-hover/title:text-purple-300 transition-colors wrap-break-words">
                                                             {item.title}
@@ -285,7 +306,9 @@ export default function PublicResearchList() {
                                                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                                             />
                                                         </svg>
-                                                        <span className="truncate">{item.author}</span>
+                                                        <span className="truncate">
+                                                            {item.author}
+                                                        </span>
                                                     </div>
                                                 )}
                                                 <div className="flex items-center gap-1.5">
@@ -303,24 +326,33 @@ export default function PublicResearchList() {
                                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 01-2-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                         />
                                                     </svg>
-                                                    <span>{item.createdAt ? formatDate(item.createdAt) : '—'}</span>
+                                                    <span>
+                                                        {item.createdAt
+                                                            ? formatDate(
+                                                                  item.createdAt,
+                                                              )
+                                                            : '—'}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             {/* Tags */}
                                             {tags.length > 0 && (
                                                 <div className="flex flex-wrap gap-2 mb-4">
-                                                    {tags.slice(0, 6).map((tag, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="px-2.5 py-1 bg-neutral-800/80 text-purple-300 rounded-full text-xs border border-purple-700/30 hover:bg-purple-900/30 transition-colors cursor-default"
-                                                        >
-                                                            {tag}
-                                                        </span>
-                                                    ))}
+                                                    {tags
+                                                        .slice(0, 6)
+                                                        .map((tag, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className="px-2.5 py-1 bg-neutral-800/80 text-purple-300 rounded-full text-xs border border-purple-700/30 hover:bg-purple-900/30 transition-colors cursor-default"
+                                                            >
+                                                                {tag}
+                                                            </span>
+                                                        ))}
                                                     {tags.length > 6 && (
                                                         <span className="px-2.5 py-1 text-neutral-500 text-xs">
-                                                            +{tags.length - 6} more
+                                                            +{tags.length - 6}{' '}
+                                                            more
                                                         </span>
                                                     )}
                                                 </div>
@@ -331,9 +363,15 @@ export default function PublicResearchList() {
                                                 {/* Show/Hide Abstract button */}
                                                 {item.abstract && (
                                                     <button
-                                                        onClick={() => toggleAbstract(item._id)}
+                                                        onClick={() =>
+                                                            toggleAbstract(
+                                                                item._id,
+                                                            )
+                                                        }
                                                         className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors cursor-pointer"
-                                                        aria-expanded={isExpanded}
+                                                        aria-expanded={
+                                                            isExpanded
+                                                        }
                                                     >
                                                         <svg
                                                             className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
@@ -348,7 +386,12 @@ export default function PublicResearchList() {
                                                                 d="M19 9l-7 7-7-7"
                                                             />
                                                         </svg>
-                                                        <span>{isExpanded ? 'Hide' : 'Show'} Abstract</span>
+                                                        <span>
+                                                            {isExpanded
+                                                                ? 'Hide'
+                                                                : 'Show'}{' '}
+                                                            Abstract
+                                                        </span>
                                                     </button>
                                                 )}
                                             </div>
@@ -361,8 +404,12 @@ export default function PublicResearchList() {
                                                 <div
                                                     className="overflow-hidden transition-all duration-500 ease-in-out"
                                                     style={{
-                                                        maxHeight: isExpanded ? '500px' : '0px',
-                                                        opacity: isExpanded ? 1 : 0,
+                                                        maxHeight: isExpanded
+                                                            ? '500px'
+                                                            : '0px',
+                                                        opacity: isExpanded
+                                                            ? 1
+                                                            : 0,
                                                     }}
                                                 >
                                                     {item.abstract && (
@@ -371,7 +418,11 @@ export default function PublicResearchList() {
                                                                 <h3 className="text-xs font-semibold uppercase tracking-wide text-purple-300 mb-2">
                                                                     Abstract
                                                                 </h3>
-                                                                <p className="text-sm text-slate-300 leading-relaxed">{item.abstract}</p>
+                                                                <p className="text-sm text-slate-300 leading-relaxed">
+                                                                    {
+                                                                        item.abstract
+                                                                    }
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     )}
@@ -384,13 +435,22 @@ export default function PublicResearchList() {
                                             <div className="flex flex-wrap items-center gap-3 justify-end mt-3">
                                                 {item.pdfAttachment && (
                                                     <a
-                                                        href={item.pdfAttachment}
+                                                        href={
+                                                            item.pdfAttachment
+                                                        }
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="px-4 py-2 bg-red-700/80 text-red-100 rounded-lg hover:bg-red-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
-                                                        onClick={(e) => e.stopPropagation()}
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
                                                     >
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <svg
+                                                            className="w-4 h-4"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
                                                             <path
                                                                 strokeLinecap="round"
                                                                 strokeLinejoin="round"
@@ -402,7 +462,11 @@ export default function PublicResearchList() {
                                                     </a>
                                                 )}
                                                 <button
-                                                    onClick={() => handleViewDetails(item.slug)}
+                                                    onClick={() =>
+                                                        handleViewDetails(
+                                                            item.slug,
+                                                        )
+                                                    }
                                                     className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg group-hover:translate-x-1 cursor-pointer"
                                                 >
                                                     <span>Dive In</span>
@@ -458,7 +522,11 @@ export default function PublicResearchList() {
                                 </button>
                             );
                         })}
-                        {totalPages > 10 && <span className="flex items-center text-gray-500 text-xs px-2">+{totalPages - 10} more</span>}
+                        {totalPages > 10 && (
+                            <span className="flex items-center text-gray-500 text-xs px-2">
+                                +{totalPages - 10} more
+                            </span>
+                        )}
                     </div>
 
                     <button

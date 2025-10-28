@@ -14,7 +14,9 @@ export function Checkbox({ label, checked, onChange }: CheckboxProps) {
                 onChange={(e) => onChange(e.target.checked)}
                 className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
             />
-            <label className="ml-2 block text-sm text-purple-300">{label}</label>
+            <label className="ml-2 block text-sm text-purple-300">
+                {label}
+            </label>
         </div>
     );
 }

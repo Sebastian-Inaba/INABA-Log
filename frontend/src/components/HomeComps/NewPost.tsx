@@ -5,7 +5,13 @@ import { error as logError } from '../../utilities/logger';
 import type { Post } from '../../types/';
 
 // Keep the color options at module scope
-const COLOR_OPTIONS = ['text-yellow-500', 'text-green-500', 'text-blue-500', 'text-pink-500', 'text-red-500'];
+const COLOR_OPTIONS = [
+    'text-yellow-500',
+    'text-green-500',
+    'text-blue-500',
+    'text-pink-500',
+    'text-red-500',
+];
 
 interface NewestPostProps {
     apiUrl?: string;
@@ -14,7 +20,12 @@ interface NewestPostProps {
     autoFetch?: boolean;
 }
 
-export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeight = 'h-64', autoFetch = true }: NewestPostProps) {
+export function NewestPost({
+    apiUrl = '/posts/newest',
+    className = '',
+    imageHeight = 'h-64',
+    autoFetch = true,
+}: NewestPostProps) {
     // State
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(autoFetch); // <-- add loading state
@@ -27,10 +38,14 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get<{ success: boolean; post: Post }>(url);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    post: Post;
+                }>(url);
                 setPost(response.data.post);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch post';
+                const errorMessage =
+                    err instanceof Error ? err.message : 'Failed to fetch post';
                 setError(errorMessage);
                 logError('NewestPost component error:', errorMessage, err);
             } finally {
@@ -65,7 +80,9 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
             if (availableColors.length === 0) {
                 availableColors.push(...COLOR_OPTIONS);
             }
-            const randomIndex = Math.floor(Math.random() * availableColors.length);
+            const randomIndex = Math.floor(
+                Math.random() * availableColors.length,
+            );
             return availableColors.splice(randomIndex, 1)[0];
         });
     }, [post]);
@@ -73,11 +90,16 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
     /** Error state */
     if (error) {
         return (
-            <div className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}>
+            <div
+                className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}
+            >
                 <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
                     Something went wrong getting the latest post.
                 </p>
-                <button onClick={handleRetry} className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2">
+                <button
+                    onClick={handleRetry}
+                    className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
+                >
                     Try Again
                 </button>
             </div>
@@ -87,7 +109,9 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
     /** Loading skeleton */
     if (loading) {
         return (
-            <div className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}>
+            <div
+                className={`rounded-lg p-6 text-center bg-transparent border border-gray-700 ${className}`}
+            >
                 <div className="animate-pulse space-y-4">
                     <div className="h-8 w-1/2 mx-auto rounded bg-gray-700 mb-4" />
                     <div className="h-64 w-full rounded bg-gray-800 mb-4" />
@@ -102,9 +126,16 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
     /** Empty state */
     if (!post) {
         return (
-            <div className={`bg-gray-50 border border-gray-200 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-600 text-base md:text-lg leading-relaxed tracking-wide">No posts available</p>
-                <button onClick={handleRetry} className="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+            <div
+                className={`bg-gray-50 border border-gray-200 rounded-lg p-8 text-center ${className}`}
+            >
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed tracking-wide">
+                    No posts available
+                </p>
+                <button
+                    onClick={handleRetry}
+                    className="mt-3 text-blue-600 hover:text-blue-800 text-sm"
+                >
                     Refresh
                 </button>
             </div>
@@ -129,7 +160,8 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
                         alt={post.title}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                         onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).style.display =
+                                'none';
                         }}
                     />
                 </div>
@@ -160,19 +192,32 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
                 {visibleTags.length > 0 && (
                     <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
                         {visibleTags.map((tag: string, i: number) => (
-                            <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`}>
+                            <span
+                                key={i}
+                                className={`${tagColorMap[i] ?? 'text-blue-600'}`}
+                            >
                                 {tag}
-                                {i !== visibleTags.length - 1 && <span className="mx-2 text-gray-300">|</span>}
+                                {i !== visibleTags.length - 1 && (
+                                    <span className="mx-2 text-gray-300">
+                                        |
+                                    </span>
+                                )}
                             </span>
                         ))}
                         {post.tags && post.tags.length > 4 && (
-                            <span className="ml-3 text-gray-500 text-sm">+{post.tags.length - 4} more</span>
+                            <span className="ml-3 text-gray-500 text-sm">
+                                +{post.tags.length - 4} more
+                            </span>
                         )}
                     </div>
                 )}
 
                 {/* Body text */}
-                {post.description && <p className="text-white line-clamp-3 tracking-wide mt-4">{post.description}</p>}
+                {post.description && (
+                    <p className="text-white line-clamp-3 tracking-wide mt-4">
+                        {post.description}
+                    </p>
+                )}
 
                 <div className="mt-2 flex items-center justify-center">
                     {/* CTA */}

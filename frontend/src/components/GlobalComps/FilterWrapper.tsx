@@ -24,26 +24,46 @@ export function FilterWrapper({
     const [isOpen, setIsOpen] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [selectedType, setSelectedType] = useState<'post' | 'research' | 'all'>('all');
-    const [selectedDate, setSelectedDate] = useState<'all' | 'week' | 'month' | 'year' | 'oldest' | 'newest'>('all');
-    const [selectedFeatured, setSelectedFeatured] = useState<'all' | 'featured' | 'non-featured'>('all');
+    const [selectedType, setSelectedType] = useState<
+        'post' | 'research' | 'all'
+    >('all');
+    const [selectedDate, setSelectedDate] = useState<
+        'all' | 'week' | 'month' | 'year' | 'oldest' | 'newest'
+    >('all');
+    const [selectedFeatured, setSelectedFeatured] = useState<
+        'all' | 'featured' | 'non-featured'
+    >('all');
     const [searchTerm, setSearchTerm] = useState('');
 
     // Local array
     const FilterIconList = [
         { key: 'search', icon: filterIcons.search, label: 'Search icon' },
         { key: 'filter', icon: filterIcons.filter, label: 'Filter icon' },
-        { key: 'arrowDown', icon: filterIcons.arrowDown, label: 'Arrow down icon' },
+        {
+            key: 'arrowDown',
+            icon: filterIcons.arrowDown,
+            label: 'Arrow down icon',
+        },
     ];
 
     // Array helper
-    const getIcon = (key: string) => FilterIconList.find((i) => i.key === key)?.icon || '';
-    const getLabel = (key: string) => FilterIconList.find((i) => i.key === key)?.label || '';
+    const getIcon = (key: string) =>
+        FilterIconList.find((i) => i.key === key)?.icon || '';
+    const getLabel = (key: string) =>
+        FilterIconList.find((i) => i.key === key)?.label || '';
 
     // Extract unique values from items for filter options
-    const allTags = Array.from(new Set(items.flatMap((item) => item.tags || [])));
+    const allTags = Array.from(
+        new Set(items.flatMap((item) => item.tags || [])),
+    );
     const allCategories = Array.from(
-        new Set(items.map((item) => ('category' in item && item.category ? item.category : '')).filter(Boolean)),
+        new Set(
+            items
+                .map((item) =>
+                    'category' in item && item.category ? item.category : '',
+                )
+                .filter(Boolean),
+        ),
     ) as string[];
 
     // Filtering logic
@@ -57,12 +77,17 @@ export function FilterWrapper({
 
         // Filter by tags
         if (selectedTags.length > 0) {
-            filtered = filtered.filter((item) => selectedTags.every((tag) => item.tags?.includes(tag)));
+            filtered = filtered.filter((item) =>
+                selectedTags.every((tag) => item.tags?.includes(tag)),
+            );
         }
 
         // Filter by category
         if (selectedCategory) {
-            filtered = filtered.filter((item) => 'category' in item && item.category === selectedCategory);
+            filtered = filtered.filter(
+                (item) =>
+                    'category' in item && item.category === selectedCategory,
+            );
         }
 
         // Filter by featured status
@@ -80,11 +105,23 @@ export function FilterWrapper({
 
                 switch (selectedDate) {
                     case 'week':
-                        return (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24) <= 7;
+                        return (
+                            (now.getTime() - created.getTime()) /
+                                (1000 * 60 * 60 * 24) <=
+                            7
+                        );
                     case 'month':
-                        return (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24) <= 30;
+                        return (
+                            (now.getTime() - created.getTime()) /
+                                (1000 * 60 * 60 * 24) <=
+                            30
+                        );
                     case 'year':
-                        return (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24) <= 365;
+                        return (
+                            (now.getTime() - created.getTime()) /
+                                (1000 * 60 * 60 * 24) <=
+                            365
+                        );
                     default:
                         return true;
                 }
@@ -95,7 +132,9 @@ export function FilterWrapper({
                 filtered.sort((a, b) => {
                     const dateA = new Date(a.createdAt || 0);
                     const dateB = new Date(b.createdAt || 0);
-                    return selectedDate === 'oldest' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+                    return selectedDate === 'oldest'
+                        ? dateA.getTime() - dateB.getTime()
+                        : dateB.getTime() - dateA.getTime();
                 });
             }
         }
@@ -119,11 +158,23 @@ export function FilterWrapper({
         }
 
         onFilter(filtered);
-    }, [items, selectedTags, selectedCategory, selectedType, selectedDate, selectedFeatured, searchTerm, isAdmin, onFilter]);
+    }, [
+        items,
+        selectedTags,
+        selectedCategory,
+        selectedType,
+        selectedDate,
+        selectedFeatured,
+        searchTerm,
+        isAdmin,
+        onFilter,
+    ]);
 
     // Handle tag selection
     const handleTagToggle = (tag: string) => {
-        setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+        setSelectedTags((prev) =>
+            prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+        );
     };
 
     // Clear all filters
@@ -177,13 +228,23 @@ export function FilterWrapper({
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={`flex items-center gap-2 px-4 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white hover:bg-neutral-700 transition ${
-                        hasActiveFilters ? 'border-purple-500 bg-purple-900/20' : ''
+                        hasActiveFilters
+                            ? 'border-purple-500 bg-purple-900/20'
+                            : ''
                     }`}
                 >
-                    <img src={getIcon('filter')} alt={getLabel('filter')} className="w-4 h-4" />
+                    <img
+                        src={getIcon('filter')}
+                        alt={getLabel('filter')}
+                        className="w-4 h-4"
+                    />
                     {/* Hide "Filter" text on mobile */}
                     <span className="hidden sm:inline">Filter</span>
-                    {hasActiveFilters && <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Active</span>}
+                    {hasActiveFilters && (
+                        <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">
+                            Active
+                        </span>
+                    )}
                     <img
                         src={getIcon('arrowDown')}
                         alt={getLabel('arrowDown')}
@@ -199,20 +260,41 @@ export function FilterWrapper({
                         {/* Content Type Select Filter - Admin only */}
                         {isAdmin && (
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-2">Content Type</label>
+                                <label className="block text-sm font-medium text-neutral-300 mb-2">
+                                    Content Type
+                                </label>
                                 <div className="relative">
                                     <select
                                         value={selectedType}
-                                        onChange={(e) => setSelectedType(e.target.value as 'post' | 'research' | 'all')}
+                                        onChange={(e) =>
+                                            setSelectedType(
+                                                e.target.value as
+                                                    | 'post'
+                                                    | 'research'
+                                                    | 'all',
+                                            )
+                                        }
                                         className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:border-purple-500 focus:outline-none transition appearance-none pr-10"
                                     >
                                         <option value="all">All Content</option>
                                         <option value="post">Posts Only</option>
-                                        <option value="research">Research Only</option>
+                                        <option value="research">
+                                            Research Only
+                                        </option>
                                     </select>
                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-neutral-400">
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        <svg
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
                                         </svg>
                                     </div>
                                 </div>
@@ -228,7 +310,9 @@ export function FilterWrapper({
                                 <div className="relative">
                                     <select
                                         value={selectedCategory}
-                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        onChange={(e) =>
+                                            setSelectedCategory(e.target.value)
+                                        }
                                         className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:border-purple-500 focus:outline-none transition appearance-none pr-10"
                                     >
                                         <option value="">All Categories</option>
@@ -239,8 +323,18 @@ export function FilterWrapper({
                                         ))}
                                     </select>
                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-neutral-400">
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        <svg
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
                                         </svg>
                                     </div>
                                 </div>
@@ -250,20 +344,43 @@ export function FilterWrapper({
                         {/* Featured Select Filter */}
                         {showFeaturedFilter && (
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-2">Featured Status</label>
+                                <label className="block text-sm font-medium text-neutral-300 mb-2">
+                                    Featured Status
+                                </label>
                                 <div className="relative">
                                     <select
                                         value={selectedFeatured}
-                                        onChange={(e) => setSelectedFeatured(e.target.value as 'all' | 'featured' | 'non-featured')}
+                                        onChange={(e) =>
+                                            setSelectedFeatured(
+                                                e.target.value as
+                                                    | 'all'
+                                                    | 'featured'
+                                                    | 'non-featured',
+                                            )
+                                        }
                                         className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:border-purple-500 focus:outline-none transition appearance-none pr-10"
                                     >
                                         <option value="all">All Items</option>
-                                        <option value="featured">Featured Only</option>
-                                        <option value="non-featured">Non-Featured Only</option>
+                                        <option value="featured">
+                                            Featured Only
+                                        </option>
+                                        <option value="non-featured">
+                                            Non-Featured Only
+                                        </option>
                                     </select>
                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-neutral-400">
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        <svg
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
                                         </svg>
                                     </div>
                                 </div>
@@ -273,25 +390,51 @@ export function FilterWrapper({
                         {/* Date Select Filter */}
                         {showDateFilter && (
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-2">Date Range</label>
+                                <label className="block text-sm font-medium text-neutral-300 mb-2">
+                                    Date Range
+                                </label>
                                 <div className="relative">
                                     <select
                                         value={selectedDate}
                                         onChange={(e) =>
-                                            setSelectedDate(e.target.value as 'all' | 'week' | 'month' | 'year' | 'oldest' | 'newest')
+                                            setSelectedDate(
+                                                e.target.value as
+                                                    | 'all'
+                                                    | 'week'
+                                                    | 'month'
+                                                    | 'year'
+                                                    | 'oldest'
+                                                    | 'newest',
+                                            )
                                         }
                                         className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:border-purple-500 focus:outline-none transition appearance-none pr-10"
                                     >
                                         <option value="all">All Time</option>
                                         <option value="week">This Week</option>
-                                        <option value="month">This Month</option>
+                                        <option value="month">
+                                            This Month
+                                        </option>
                                         <option value="year">This Year</option>
-                                        <option value="newest">Newest First</option>
-                                        <option value="oldest">Oldest First</option>
+                                        <option value="newest">
+                                            Newest First
+                                        </option>
+                                        <option value="oldest">
+                                            Oldest First
+                                        </option>
                                     </select>
                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-neutral-400">
-                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        <svg
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
                                         </svg>
                                     </div>
                                 </div>
@@ -303,24 +446,33 @@ export function FilterWrapper({
                     {allTags.length > 0 && (
                         <div className="mt-6 pt-4 border-t border-neutral-600">
                             <label className="block text-sm font-medium text-neutral-300 mb-3">
-                                Tags ({allTags.length} available) {selectedTags.length > 0 && `- ${selectedTags.length} selected`}
+                                Tags ({allTags.length} available){' '}
+                                {selectedTags.length > 0 &&
+                                    `- ${selectedTags.length} selected`}
                             </label>
 
                             {/* Responsive grid for tags */}
                             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-12 gap-2 max-h-80 overflow-y-auto p-1">
                                 {allTags.map((tag) => (
-                                    <label key={tag} className="flex items-center space-x-2 cursor-pointer group select-none min-w-0">
+                                    <label
+                                        key={tag}
+                                        className="flex items-center space-x-2 cursor-pointer group select-none min-w-0"
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={selectedTags.includes(tag)}
-                                            onChange={() => handleTagToggle(tag)}
+                                            onChange={() =>
+                                                handleTagToggle(tag)
+                                            }
                                             className="peer hidden"
                                         />
                                         <div className="shrink-0">
                                             <div
                                                 className={`w-4 h-4 flex items-center justify-center border rounded transition-colors
                                                     ${
-                                                        selectedTags.includes(tag)
+                                                        selectedTags.includes(
+                                                            tag,
+                                                        )
                                                             ? 'bg-purple-600 border-purple-600'
                                                             : 'bg-white border-neutral-600'
                                                     }`}
@@ -333,7 +485,11 @@ export function FilterWrapper({
                                                         strokeWidth="3"
                                                         viewBox="0 0 24 24"
                                                     >
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M5 13l4 4L19 7"
+                                                        />
                                                     </svg>
                                                 )}
                                             </div>
@@ -354,11 +510,20 @@ export function FilterWrapper({
                     {/* Filter actions*/}
                     <div className="flex justify-between items-center mt-4 pt-4 border-t border-neutral-600">
                         <div className="text-sm text-neutral-400">
-                            {hasActiveFilters ? <span className="text-purple-300">Filters applied</span> : 'No filters applied'}
+                            {hasActiveFilters ? (
+                                <span className="text-purple-300">
+                                    Filters applied
+                                </span>
+                            ) : (
+                                'No filters applied'
+                            )}
                         </div>
                         <div className="flex gap-2">
                             {hasActiveFilters && (
-                                <button onClick={clearFilters} className="px-4 py-2 text-neutral-300 hover:text-white transition">
+                                <button
+                                    onClick={clearFilters}
+                                    className="px-4 py-2 text-neutral-300 hover:text-white transition"
+                                >
                                     Clear All
                                 </button>
                             )}

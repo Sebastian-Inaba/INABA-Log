@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getAllPosts, getPostBySlug, getNewestPost, getFeaturedPosts, getLatestFivePosts } from '../controllers/PostController';
+import {
+    getAllPosts,
+    getPostBySlug,
+    getNewestPost,
+    getFeaturedPosts,
+    getLatestFivePosts,
+} from '../controllers/PostController';
 
 const router = Router();
 

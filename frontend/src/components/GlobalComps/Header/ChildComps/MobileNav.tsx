@@ -10,7 +10,11 @@ type MobileNavProps = {
     logoFont?: string;
 };
 
-export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNavProps) {
+export function MobileNav({
+    navItems,
+    navFont,
+    logoFont = 'Poppins',
+}: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
     const buttonRef = useRef<HTMLButtonElement | null>(null);
     const menuRef = useRef<HTMLDivElement | null>(null);
@@ -30,8 +34,13 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
 
         const getFocusableElements = () => {
             if (!menuRef.current) return [];
-            const focusableSelectors = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-            return Array.from(menuRef.current.querySelectorAll<HTMLElement>(focusableSelectors));
+            const focusableSelectors =
+                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            return Array.from(
+                menuRef.current.querySelectorAll<HTMLElement>(
+                    focusableSelectors,
+                ),
+            );
         };
 
         focusableElementsRef.current = getFocusableElements();
@@ -74,7 +83,10 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
             document.body.style.paddingRight = 'var(--scrollbar-width, 0px)';
 
             // Add attribute to hide custom scrollbar
-            document.documentElement.setAttribute('data-mobile-menu-open', 'true');
+            document.documentElement.setAttribute(
+                'data-mobile-menu-open',
+                'true',
+            );
 
             // Disable Lenis scrolling
             if (window.lenis) {
@@ -150,9 +162,15 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                         right: isOpen ? '24px' : '0',
                     }}
                     className={`absolute w-10 h-10 z-10 flex flex-col justify-center items-center gap-1.5 rounded-md shadow-md transition-all duration-500 ease-in-out ${
-                        isOpen ? 'bg-red-400 border-0' : 'bg-green-400 border border-purple-500'
+                        isOpen
+                            ? 'bg-red-400 border-0'
+                            : 'bg-green-400 border border-purple-500'
                     }`}
-                    aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                    aria-label={
+                        isOpen
+                            ? 'Close navigation menu'
+                            : 'Open navigation menu'
+                    }
                     aria-expanded={isOpen}
                     aria-controls="mobile-menu"
                 >
@@ -167,7 +185,8 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                                 background: 'black',
                                 borderRadius: '9999px',
                                 transformOrigin: 'center',
-                                transition: 'left 240ms ease, top 240ms ease, width 240ms ease, opacity 180ms linear',
+                                transition:
+                                    'left 240ms ease, top 240ms ease, width 240ms ease, opacity 180ms linear',
                                 opacity: 1,
                                 display: 'block',
                             }}
@@ -182,8 +201,11 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                                 background: 'black',
                                 borderRadius: '9999px',
                                 transformOrigin: 'center',
-                                transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
-                                transition: 'transform 300ms cubic-bezier(.4,0,.2,1)',
+                                transform: isOpen
+                                    ? 'rotate(45deg)'
+                                    : 'rotate(0deg)',
+                                transition:
+                                    'transform 300ms cubic-bezier(.4,0,.2,1)',
                                 display: 'block',
                             }}
                         />
@@ -197,8 +219,11 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                                 background: 'black',
                                 borderRadius: '9999px',
                                 transformOrigin: 'center',
-                                transform: isOpen ? 'rotate(-45deg)' : 'rotate(0deg)',
-                                transition: 'transform 300ms cubic-bezier(.4,0,.2,1)',
+                                transform: isOpen
+                                    ? 'rotate(-45deg)'
+                                    : 'rotate(0deg)',
+                                transition:
+                                    'transform 300ms cubic-bezier(.4,0,.2,1)',
                                 display: 'block',
                             }}
                         />
@@ -212,7 +237,8 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                                 background: 'black',
                                 borderRadius: '9999px',
                                 transformOrigin: 'center',
-                                transition: 'left 240ms ease, top 240ms ease, width 240ms ease, opacity 180ms linear',
+                                transition:
+                                    'left 240ms ease, top 240ms ease, width 240ms ease, opacity 180ms linear',
                                 opacity: 1,
                                 display: 'block',
                             }}
@@ -231,7 +257,10 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
                     <div className="flex items-center justify-between mb-8 w-full shrink-0">
                         <Link
                             to="/"
-                            style={{ fontFamily: logoFont, whiteSpace: 'nowrap' }}
+                            style={{
+                                fontFamily: logoFont,
+                                whiteSpace: 'nowrap',
+                            }}
                             className="text-2xl text-purple-500 font-bold tracking-widest whitespace-nowrap z-5"
                             onClick={() => setIsOpen(false)}
                             tabIndex={isOpen ? 0 : -1}
@@ -242,7 +271,12 @@ export function MobileNav({ navItems, navFont, logoFont = 'Poppins' }: MobileNav
 
                     {/* NavList items respect isOpen state for tabbing */}
                     <div className="shrink-0">
-                        <NavList navItems={navItems} navFont={navFont} onItemClick={() => setIsOpen(false)} tabIndex={isOpen ? 0 : -1} />
+                        <NavList
+                            navItems={navItems}
+                            navFont={navFont}
+                            onItemClick={() => setIsOpen(false)}
+                            tabIndex={isOpen ? 0 : -1}
+                        />
                     </div>
                 </div>
             </div>

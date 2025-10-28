@@ -6,7 +6,13 @@ import { error as logError } from '../../../utilities/logger';
 import type { Post } from '../../../types';
 
 // color options for tag
-const COLOR_OPTIONS = ['text-yellow-300', 'text-green-300', 'text-blue-300', 'text-pink-300', 'text-red-300'];
+const COLOR_OPTIONS = [
+    'text-yellow-300',
+    'text-green-300',
+    'text-blue-300',
+    'text-pink-300',
+    'text-red-300',
+];
 
 interface PostHeaderProps {
     slug: string;
@@ -28,10 +34,14 @@ export function PostHeader({ slug }: PostHeaderProps) {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get<{ success: boolean; post: Post }>(`/posts/${slug}`);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    post: Post;
+                }>(`/posts/${slug}`);
                 setPost(response.data.post);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch post';
+                const errorMessage =
+                    err instanceof Error ? err.message : 'Failed to fetch post';
                 setError(errorMessage);
                 logError('PostHeader error:', errorMessage, err);
             } finally {
@@ -55,8 +65,11 @@ export function PostHeader({ slug }: PostHeaderProps) {
         if (!post?.tags) return [];
         const availableColors = [...COLOR_OPTIONS];
         return post.tags.slice(0, 5).map(() => {
-            if (availableColors.length === 0) availableColors.push(...COLOR_OPTIONS);
-            const randomIndex = Math.floor(Math.random() * availableColors.length);
+            if (availableColors.length === 0)
+                availableColors.push(...COLOR_OPTIONS);
+            const randomIndex = Math.floor(
+                Math.random() * availableColors.length,
+            );
             return availableColors.splice(randomIndex, 1)[0];
         });
     }, [post]);
@@ -109,7 +122,9 @@ export function PostHeader({ slug }: PostHeaderProps) {
             <FadeIn direction="up" duration={500} distance={100}>
                 <section className="p-6 md:p-10">
                     <div className="flex justify-center items-center w-full">
-                        <div className="text-center text-gray-500 text-lg w-full max-w-6xl">Post not found.</div>
+                        <div className="text-center text-gray-500 text-lg w-full max-w-6xl">
+                            Post not found.
+                        </div>
                     </div>
                 </section>
             </FadeIn>
@@ -127,9 +142,16 @@ export function PostHeader({ slug }: PostHeaderProps) {
                             <div className="lg:hidden">
                                 {/* Image*/}
                                 <div className="w-full h-64 md:h-80 overflow-hidden flex items-center justify-center bg-[#9162CB]">
-                                    <FadeIn direction="up" duration={700} distance={0} delay={200}>
+                                    <FadeIn
+                                        direction="up"
+                                        duration={700}
+                                        distance={0}
+                                        delay={200}
+                                    >
                                         <img
-                                            src={post.featuredImage ?? undefined}
+                                            src={
+                                                post.featuredImage ?? undefined
+                                            }
                                             alt={post.title}
                                             className="w-full h-full object-cover object-center"
                                         />
@@ -139,9 +161,16 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                 {/* Content */}
                                 <div className="bg-[#9162CB] p-6 md:p-8">
                                     {/* Title & Category */}
-                                    <FadeIn direction="up" duration={700} distance={50} delay={400}>
+                                    <FadeIn
+                                        direction="up"
+                                        duration={700}
+                                        distance={50}
+                                        delay={400}
+                                    >
                                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                                            <h1 className="text-3xl md:text-4xl text-gray-900">{post.title}</h1>
+                                            <h1 className="text-3xl md:text-4xl text-gray-900">
+                                                {post.title}
+                                            </h1>
                                             {post.category && (
                                                 <span className="text-base md:text-lg text-gray-900 whitespace-nowrap">
                                                     {post.category}
@@ -152,25 +181,51 @@ export function PostHeader({ slug }: PostHeaderProps) {
 
                                     {/* Tags */}
                                     {post.tags?.length > 0 && (
-                                        <FadeIn direction="up" duration={700} distance={50} delay={600}>
+                                        <FadeIn
+                                            direction="up"
+                                            duration={700}
+                                            distance={50}
+                                            delay={600}
+                                        >
                                             <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-lg bg-neutral-900">
-                                                {post.tags.slice(0, 5).map((tag, idx) => {
-                                                    const textColor = tagColorMap[idx] ?? 'text-white';
-                                                    const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
-                                                    return (
-                                                        <div key={idx} className="flex items-center">
-                                                            <span className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}>
-                                                                {tag}
-                                                            </span>
-                                                            {idx !== post.tags.slice(0, 5).length - 1 && (
-                                                                <span className="mx-2 text-white">|</span>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
+                                                {post.tags
+                                                    .slice(0, 5)
+                                                    .map((tag, idx) => {
+                                                        const textColor =
+                                                            tagColorMap[idx] ??
+                                                            'text-white';
+                                                        const bgColor =
+                                                            textColor.replace(
+                                                                /^text-/,
+                                                                'bg-',
+                                                            ) + '/30';
+                                                        return (
+                                                            <div
+                                                                key={idx}
+                                                                className="flex items-center"
+                                                            >
+                                                                <span
+                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                                {idx !==
+                                                                    post.tags.slice(
+                                                                        0,
+                                                                        5,
+                                                                    ).length -
+                                                                        1 && (
+                                                                    <span className="mx-2 text-white">
+                                                                        |
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 {post.tags.length > 5 && (
                                                     <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
-                                                        +{post.tags.length - 5} more
+                                                        +{post.tags.length - 5}{' '}
+                                                        more
                                                     </span>
                                                 )}
                                             </div>
@@ -179,16 +234,32 @@ export function PostHeader({ slug }: PostHeaderProps) {
 
                                     {/* Description */}
                                     {post.description && (
-                                        <FadeIn direction="up" duration={700} distance={50} delay={800}>
-                                            <p className="text-lg md:text-xl text-gray-900 mb-6">{post.description}</p>
+                                        <FadeIn
+                                            direction="up"
+                                            duration={700}
+                                            distance={50}
+                                            delay={800}
+                                        >
+                                            <p className="text-lg md:text-xl text-gray-900 mb-6">
+                                                {post.description}
+                                            </p>
                                         </FadeIn>
                                     )}
 
                                     {/* Author & Date */}
-                                    <FadeIn direction="up" duration={700} distance={0} delay={1100}>
+                                    <FadeIn
+                                        direction="up"
+                                        duration={700}
+                                        distance={0}
+                                        delay={1100}
+                                    >
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-base md:text-lg text-gray-900 pt-4 border-t border-gray-900/20">
-                                            <span className="truncate">{post.author || ''}</span>
-                                            <span className="truncate">{formattedDate}</span>
+                                            <span className="truncate">
+                                                {post.author || ''}
+                                            </span>
+                                            <span className="truncate">
+                                                {formattedDate}
+                                            </span>
                                         </div>
                                     </FadeIn>
                                 </div>
@@ -212,9 +283,15 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     `,
                                 }}
                             >
-                                <div style={{ gridArea: 'emptyTop' }} className="bg-transparent" />
+                                <div
+                                    style={{ gridArea: 'emptyTop' }}
+                                    className="bg-transparent"
+                                />
                                 {/* Image*/}
-                                <div style={{ gridArea: 'imageColumn' }} className="flex justify-center items-center">
+                                <div
+                                    style={{ gridArea: 'imageColumn' }}
+                                    className="flex justify-center items-center"
+                                >
                                     <div className="bg-[#9162CB] w-full h-full">
                                         <FadeIn
                                             direction="up"
@@ -224,7 +301,10 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             className="bg-[#9162CB] p-5 w-full h-full flex justify-center items-center"
                                         >
                                             <img
-                                                src={post.featuredImage ?? undefined}
+                                                src={
+                                                    post.featuredImage ??
+                                                    undefined
+                                                }
                                                 alt={post.title}
                                                 className="w-full h-full max-w-full max-h-38rem object-cover object-center block"
                                             />
@@ -232,11 +312,23 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     </div>
                                 </div>
 
-                                <div style={{ gridArea: 'emptyTopRight' }} className="bg-transparent" />
-                                <div style={{ gridArea: 'emptyTopFar' }} className="bg-transparent" />
-                                <div style={{ gridArea: 'purpleLeft' }} className="bg-[#9162CB]" />
+                                <div
+                                    style={{ gridArea: 'emptyTopRight' }}
+                                    className="bg-transparent"
+                                />
+                                <div
+                                    style={{ gridArea: 'emptyTopFar' }}
+                                    className="bg-transparent"
+                                />
+                                <div
+                                    style={{ gridArea: 'purpleLeft' }}
+                                    className="bg-[#9162CB]"
+                                />
 
-                                <div style={{ gridArea: 'mainContent' }} className="flex flex-col justify-start w-full h-full bg-[#9162CB]">
+                                <div
+                                    style={{ gridArea: 'mainContent' }}
+                                    className="flex flex-col justify-start w-full h-full bg-[#9162CB]"
+                                >
                                     {/* Content */}
                                     <div className="flex items-center justify-between w-full bg-[#9162CB]">
                                         {/* Title & Category */}
@@ -247,9 +339,15 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             delay={400}
                                             className="flex items-center justify-between w-full"
                                         >
-                                            <h1 className="text-4xl text-gray-900 p-5">{post.title}</h1>
+                                            <h1 className="text-4xl text-gray-900 p-5">
+                                                {post.title}
+                                            </h1>
 
-                                            {post.category && <span className="p-5 text-lg text-gray-900">{post.category}</span>}
+                                            {post.category && (
+                                                <span className="p-5 text-lg text-gray-900">
+                                                    {post.category}
+                                                </span>
+                                            )}
                                         </FadeIn>
                                     </div>
 
@@ -263,23 +361,44 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                 delay={600}
                                                 className="flex items-center rounded-lg bg-neutral-900"
                                             >
-                                                {post.tags.slice(0, 5).map((tag, idx) => {
-                                                    const textColor = tagColorMap[idx] ?? 'text-white';
-                                                    const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
-                                                    return (
-                                                        <div key={idx} className="flex items-center">
-                                                            <span className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}>
-                                                                {tag}
-                                                            </span>
-                                                            {idx !== post.tags.slice(0, 5).length - 1 && (
-                                                                <span className="mx-2 text-white">|</span>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
+                                                {post.tags
+                                                    .slice(0, 5)
+                                                    .map((tag, idx) => {
+                                                        const textColor =
+                                                            tagColorMap[idx] ??
+                                                            'text-white';
+                                                        const bgColor =
+                                                            textColor.replace(
+                                                                /^text-/,
+                                                                'bg-',
+                                                            ) + '/30';
+                                                        return (
+                                                            <div
+                                                                key={idx}
+                                                                className="flex items-center"
+                                                            >
+                                                                <span
+                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                                {idx !==
+                                                                    post.tags.slice(
+                                                                        0,
+                                                                        5,
+                                                                    ).length -
+                                                                        1 && (
+                                                                    <span className="mx-2 text-white">
+                                                                        |
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 {post.tags.length > 5 && (
                                                     <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
-                                                        +{post.tags.length - 5} more
+                                                        +{post.tags.length - 5}{' '}
+                                                        more
                                                     </span>
                                                 )}
                                             </FadeIn>
@@ -296,16 +415,24 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                                 delay={800}
                                                 className="flex flex-col h-full"
                                             >
-                                                <p className="flex-1 text-xl text-gray-900 p-5 w-full">{post.description}</p>
+                                                <p className="flex-1 text-xl text-gray-900 p-5 w-full">
+                                                    {post.description}
+                                                </p>
                                             </FadeIn>
                                         </div>
                                     )}
                                 </div>
 
-                                <div style={{ gridArea: 'purpleRight' }} className="bg-[#9162CB]" />
+                                <div
+                                    style={{ gridArea: 'purpleRight' }}
+                                    className="bg-[#9162CB]"
+                                />
 
                                 {/* Author and Date */}
-                                <div style={{ gridArea: 'authorArea' }} className="bg-[#8452C2] text-lg text-gray-900 w-full">
+                                <div
+                                    style={{ gridArea: 'authorArea' }}
+                                    className="bg-[#8452C2] text-lg text-gray-900 w-full"
+                                >
                                     <FadeIn
                                         direction="up"
                                         duration={700}
@@ -313,15 +440,35 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                         delay={1100}
                                         className="flex justify-between items-center px-4 pt-1"
                                     >
-                                        {post.author ? <span className="truncate">{post.author}</span> : <span />}
-                                        <span className="truncate">{formattedDate}</span>
+                                        {post.author ? (
+                                            <span className="truncate">
+                                                {post.author}
+                                            </span>
+                                        ) : (
+                                            <span />
+                                        )}
+                                        <span className="truncate">
+                                            {formattedDate}
+                                        </span>
                                     </FadeIn>
                                 </div>
 
-                                <div style={{ gridArea: 'emptyRight' }} className="bg-transparent" />
-                                <div style={{ gridArea: 'emptyBottom' }} className="bg-transparent" />
-                                <div style={{ gridArea: 'emptyBottomRight' }} className="bg-transparent" />
-                                <div style={{ gridArea: 'emptyBottomFar' }} className="bg-transparent" />
+                                <div
+                                    style={{ gridArea: 'emptyRight' }}
+                                    className="bg-transparent"
+                                />
+                                <div
+                                    style={{ gridArea: 'emptyBottom' }}
+                                    className="bg-transparent"
+                                />
+                                <div
+                                    style={{ gridArea: 'emptyBottomRight' }}
+                                    className="bg-transparent"
+                                />
+                                <div
+                                    style={{ gridArea: 'emptyBottomFar' }}
+                                    className="bg-transparent"
+                                />
                             </div>
                         </>
                     ) : (
@@ -331,41 +478,81 @@ export function PostHeader({ slug }: PostHeaderProps) {
 
                             <div className="flex flex-col items-center w-full">
                                 {/* Title */}
-                                <FadeIn direction="up" duration={700} distance={50} delay={200} className="w-full">
-                                    <h1 className="text-3xl md:text-4xl text-gray-900 p-5 text-center">{post.title}</h1>
+                                <FadeIn
+                                    direction="up"
+                                    duration={700}
+                                    distance={50}
+                                    delay={200}
+                                    className="w-full"
+                                >
+                                    <h1 className="text-3xl md:text-4xl text-gray-900 p-5 text-center">
+                                        {post.title}
+                                    </h1>
                                 </FadeIn>
 
                                 {/* Category */}
                                 {post.category && (
-                                    <FadeIn direction="up" duration={700} distance={50} delay={400} className="w-full flex justify-center">
-                                        <span className="p-5 text-base md:text-lg text-gray-900 text-center">{post.category}</span>
+                                    <FadeIn
+                                        direction="up"
+                                        duration={700}
+                                        distance={50}
+                                        delay={400}
+                                        className="w-full flex justify-center"
+                                    >
+                                        <span className="p-5 text-base md:text-lg text-gray-900 text-center">
+                                            {post.category}
+                                        </span>
                                     </FadeIn>
                                 )}
 
                                 {/* Tags */}
                                 {post.tags?.length > 0 && (
                                     <div className="flex items-center justify-center gap-2 p-3">
-                                        <FadeIn direction="up" duration={700} distance={50} delay={600}>
+                                        <FadeIn
+                                            direction="up"
+                                            duration={700}
+                                            distance={50}
+                                            delay={600}
+                                        >
                                             <div className="flex flex-wrap items-center justify-center rounded-lg bg-neutral-900 max-[425px]:p-0 max-[425px]:m-0">
-                                                {post.tags.slice(0, 5).map((tag, idx) => {
-                                                    const textColor = tagColorMap[idx] ?? 'text-white';
-                                                    const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
-                                                    return (
-                                                        <div key={idx} className="flex items-center max-[425px]:m-0 max-[425px]:p-0">
-                                                            <span
-                                                                className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm max-[425px]:p-2 max-[425px]:m-0`}
+                                                {post.tags
+                                                    .slice(0, 5)
+                                                    .map((tag, idx) => {
+                                                        const textColor =
+                                                            tagColorMap[idx] ??
+                                                            'text-white';
+                                                        const bgColor =
+                                                            textColor.replace(
+                                                                /^text-/,
+                                                                'bg-',
+                                                            ) + '/30';
+                                                        return (
+                                                            <div
+                                                                key={idx}
+                                                                className="flex items-center max-[425px]:m-0 max-[425px]:p-0"
                                                             >
-                                                                {tag}
-                                                            </span>
-                                                            {idx !== post.tags.slice(0, 5).length - 1 && (
-                                                                <span className="mx-2 text-white max-[425px]:mx-0">|</span>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
+                                                                <span
+                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm max-[425px]:p-2 max-[425px]:m-0`}
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                                {idx !==
+                                                                    post.tags.slice(
+                                                                        0,
+                                                                        5,
+                                                                    ).length -
+                                                                        1 && (
+                                                                    <span className="mx-2 text-white max-[425px]:mx-0">
+                                                                        |
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 {post.tags.length > 5 && (
                                                     <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm max-[425px]:p-0 max-[425px]:m-0">
-                                                        +{post.tags.length - 5} more
+                                                        +{post.tags.length - 5}{' '}
+                                                        more
                                                     </span>
                                                 )}
                                             </div>
@@ -375,7 +562,13 @@ export function PostHeader({ slug }: PostHeaderProps) {
 
                                 {/* Description */}
                                 {post.description && (
-                                    <FadeIn direction="up" duration={700} distance={50} delay={800} className="w-full flex justify-center">
+                                    <FadeIn
+                                        direction="up"
+                                        duration={700}
+                                        distance={50}
+                                        delay={800}
+                                        className="w-full flex justify-center"
+                                    >
                                         <p className="text-lg md:text-xl text-gray-900 p-5 w-full max-w-prose text-center">
                                             {post.description}
                                         </p>
@@ -392,8 +585,12 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                     delay={1100}
                                     className="flex flex-col sm:flex-row justify-between w-full gap-2"
                                 >
-                                    <div className="flex-1 text-center sm:text-left">{post.author ?? ''}</div>
-                                    <div className="flex-1 text-center sm:text-right">{formattedDate}</div>
+                                    <div className="flex-1 text-center sm:text-left">
+                                        {post.author ?? ''}
+                                    </div>
+                                    <div className="flex-1 text-center sm:text-right">
+                                        {formattedDate}
+                                    </div>
                                 </FadeIn>
                             </div>
 

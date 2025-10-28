@@ -18,7 +18,13 @@ interface LinkPreviewData {
 }
 
 // Code block with copy button
-function CodeBlock({ children, className }: { children: string; className?: string }) {
+function CodeBlock({
+    children,
+    className,
+}: {
+    children: string;
+    className?: string;
+}) {
     const [copied, setCopied] = useState(false);
     const language = className?.replace('language-', '') || 'text';
 
@@ -42,7 +48,9 @@ function CodeBlock({ children, className }: { children: string; className?: stri
                 </button>
             </div>
             {/* language label */}
-            <div className="text-xs text-gray-400 mb-1 px-4 pt-3 font-mono">{language}</div>
+            <div className="text-xs text-gray-400 mb-1 px-4 pt-3 font-mono">
+                {language}
+            </div>
             {/* code content */}
             <pre className="pt-0!">
                 <code className={className}>{children}</code>
@@ -52,7 +60,13 @@ function CodeBlock({ children, className }: { children: string; className?: stri
 }
 
 // Link preview banner for special URLs
-function LinkPreview({ href, children }: { href: string; children: React.ReactNode }) {
+function LinkPreview({
+    href,
+    children,
+}: {
+    href: string;
+    children: React.ReactNode;
+}) {
     const [preview, setPreview] = useState<LinkPreviewData | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -73,7 +87,10 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
 
     // extract YouTube video ID
     const getYouTubeVideoId = (url: string): string | null => {
-        const patterns = [/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/, /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/];
+        const patterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+            /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+        ];
 
         for (const pattern of patterns) {
             const match = url.match(pattern);
@@ -91,31 +108,42 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
                 let mockData: LinkPreviewData;
 
                 // Twitter/X
-                if (domain.includes('twitter.com') || domain.includes('x.com')) {
+                if (
+                    domain.includes('twitter.com') ||
+                    domain.includes('x.com')
+                ) {
                     mockData = {
                         title: 'Twitter Post',
-                        description: 'Check out this interesting tweet about web development and modern JavaScript frameworks.',
+                        description:
+                            'Check out this interesting tweet about web development and modern JavaScript frameworks.',
                         image: '',
                         domain: domain,
                     };
                 }
                 // GitHub
                 else if (domain.includes('github.com')) {
-                    const username = href.split('github.com/')[1]?.split('/')[0] || 'user';
+                    const username =
+                        href.split('github.com/')[1]?.split('/')[0] || 'user';
                     mockData = {
                         title: `${username} - GitHub`,
-                        description: 'Check out this GitHub profile and their amazing projects.',
+                        description:
+                            'Check out this GitHub profile and their amazing projects.',
                         image: `https://github.com/${username}.png?size=400`,
                         domain: domain,
                     };
                 }
                 // YouTube
-                else if (domain.includes('youtube.com') || domain.includes('youtu.be')) {
+                else if (
+                    domain.includes('youtube.com') ||
+                    domain.includes('youtu.be')
+                ) {
                     const videoId = getYouTubeVideoId(href);
                     mockData = {
                         title: 'YouTube Video',
                         description: 'Watch this interesting video on YouTube.',
-                        image: videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '',
+                        image: videoId
+                            ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                            : '',
                         domain: domain,
                     };
                 }
@@ -123,7 +151,8 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
                 else {
                     mockData = {
                         title: 'Link Preview',
-                        description: 'Preview description of the linked content.',
+                        description:
+                            'Preview description of the linked content.',
                         image: '',
                         domain: domain,
                     };
@@ -138,7 +167,12 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
     // normal link if no preview
     if (!shouldShowPreview(href)) {
         return (
-            <a href={href} target="_blank" rel="noopener noreferrer" className="markdown-link">
+            <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="markdown-link"
+            >
                 {children}
             </a>
         );
@@ -181,8 +215,12 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
                     <div className="p-4">
                         <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                                <h3 className="m-0! text-lg font-semibold text-white mb-1">{preview.title}</h3>
-                                <p className="m-0! text-sm text-gray-400 mb-2">{preview.description}</p>
+                                <h3 className="m-0! text-lg font-semibold text-white mb-1">
+                                    {preview.title}
+                                </h3>
+                                <p className="m-0! text-sm text-gray-400 mb-2">
+                                    {preview.description}
+                                </p>
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
                                     <span>🔗</span>
                                     <span>{preview.domain}</span>
@@ -197,14 +235,23 @@ function LinkPreview({ href, children }: { href: string; children: React.ReactNo
 
     // fallback link
     return (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="markdown-link">
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="markdown-link"
+        >
             {children}
         </a>
     );
 }
 
 // Main markdown renderer
-export function MarkdownRenderer({ content, className = '', variant = 'public' }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+    content,
+    className = '',
+    variant = 'public',
+}: MarkdownRendererProps) {
     // base styles
     // Update the baseStyles in MarkdownRenderer.tsx
     const baseStyles = `
@@ -399,20 +446,49 @@ export function MarkdownRenderer({ content, className = '', variant = 'public' }
     // render markdown
     return (
         <div className={`markdown-content ${className}`}>
-            <style dangerouslySetInnerHTML={{ __html: baseStyles + variantStyles[variant] }} />
+            <style
+                dangerouslySetInnerHTML={{
+                    __html: baseStyles + variantStyles[variant],
+                }}
+            />
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
                 components={{
                     // code blocks
-                    code: ({ inline, className, children }: { inline?: boolean; className?: string; children?: React.ReactNode }) => {
+                    code: ({
+                        inline,
+                        className,
+                        children,
+                    }: {
+                        inline?: boolean;
+                        className?: string;
+                        children?: React.ReactNode;
+                    }) => {
                         const codeString = String(children).replace(/\n$/, '');
-                        if (inline) return <code className={className}>{children}</code>;
-                        return <CodeBlock className={className}>{codeString}</CodeBlock>;
+                        if (inline)
+                            return (
+                                <code className={className}>{children}</code>
+                            );
+                        return (
+                            <CodeBlock className={className}>
+                                {codeString}
+                            </CodeBlock>
+                        );
                     },
                     // links
-                    a: ({ children, href }: { children?: React.ReactNode; href?: string }) => {
-                        return <LinkPreview href={href || '#'}>{children}</LinkPreview>;
+                    a: ({
+                        children,
+                        href,
+                    }: {
+                        children?: React.ReactNode;
+                        href?: string;
+                    }) => {
+                        return (
+                            <LinkPreview href={href || '#'}>
+                                {children}
+                            </LinkPreview>
+                        );
                     },
                 }}
             >

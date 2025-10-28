@@ -21,10 +21,16 @@ export function PostMain({ slug }: PostMainProps) {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get<{ success: boolean; post: Post }>(`/posts/${slug}`);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    post: Post;
+                }>(`/posts/${slug}`);
                 setContent(response.data.post.content || '');
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch post content';
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to fetch post content';
                 setError(errorMessage);
                 logError('PostMain error:', errorMessage, err);
             } finally {

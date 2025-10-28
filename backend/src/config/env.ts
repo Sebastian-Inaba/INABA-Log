@@ -35,7 +35,8 @@ export const env = {
         buckets: {
             postsImage: process.env.SUPABASE_BUCKET_POSTS_IMAGE as string,
             researchImage: process.env.SUPABASE_BUCKET_RESEARCH_IMAGE as string,
-            researchAttachments: process.env.SUPABASE_BUCKET_RESEARCH_ATTACHMENTS as string,
+            researchAttachments: process.env
+                .SUPABASE_BUCKET_RESEARCH_ATTACHMENTS as string,
         },
     },
     google: {

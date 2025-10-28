@@ -6,7 +6,10 @@ import styles from './ScrollWrapper.module.css';
 type LenisLike = {
     on?: (ev: 'scroll', fn: (e: unknown) => void) => void;
     off?: (ev: 'scroll', fn: (e: unknown) => void) => void;
-    scrollTo?: (y: number, opts?: { immediate?: boolean; duration?: number }) => void;
+    scrollTo?: (
+        y: number,
+        opts?: { immediate?: boolean; duration?: number },
+    ) => void;
 };
 
 export function ScrollBar() {
@@ -32,9 +35,13 @@ export function ScrollBar() {
     const getScrollHeights = useCallback(() => {
         const doc = document.documentElement;
         const body = document.body;
-        const scrollHeight = Math.max(body?.scrollHeight || 0, doc?.scrollHeight || 0);
+        const scrollHeight = Math.max(
+            body?.scrollHeight || 0,
+            doc?.scrollHeight || 0,
+        );
         const clientHeight = doc?.clientHeight || window.innerHeight;
-        const scrollTop = typeof window.scrollY === 'number' ? window.scrollY : 0;
+        const scrollTop =
+            typeof window.scrollY === 'number' ? window.scrollY : 0;
         return { scrollHeight, clientHeight, scrollTop };
     }, []);
 
@@ -50,11 +57,18 @@ export function ScrollBar() {
                 return;
             }
 
-            const trackHeight = trackRef.current?.clientHeight || window.innerHeight;
-            const thumbHeight = Math.max((clientHeight / scrollHeight) * trackHeight, 30);
-            const scrollTop = typeof externalY === 'number' ? externalY : window.scrollY || 0;
-            const scrollPercentage = scrollTop / Math.max(1, scrollHeight - clientHeight);
-            const thumbTop = scrollPercentage * Math.max(0, trackHeight - thumbHeight);
+            const trackHeight =
+                trackRef.current?.clientHeight || window.innerHeight;
+            const thumbHeight = Math.max(
+                (clientHeight / scrollHeight) * trackHeight,
+                30,
+            );
+            const scrollTop =
+                typeof externalY === 'number' ? externalY : window.scrollY || 0;
+            const scrollPercentage =
+                scrollTop / Math.max(1, scrollHeight - clientHeight);
+            const thumbTop =
+                scrollPercentage * Math.max(0, trackHeight - thumbHeight);
 
             thumbSizeRef.current = { height: thumbHeight, top: thumbTop };
         },
@@ -92,7 +106,8 @@ export function ScrollBar() {
 
         const handleMouseMove = (e: MouseEvent) => {
             const deltaY = e.clientY - dragStartY.current;
-            const trackHeight = trackRef.current?.clientHeight || window.innerHeight;
+            const trackHeight =
+                trackRef.current?.clientHeight || window.innerHeight;
             const { scrollHeight, clientHeight } = getScrollHeights();
             const thumbHeight = thumbSizeRef.current.height || 30;
             const scrollable = Math.max(0, scrollHeight - clientHeight);
@@ -118,7 +133,10 @@ export function ScrollBar() {
             isDraggingRef.current = false;
             document.body.style.userSelect = '';
             if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-            hideTimeoutRef.current = window.setTimeout(() => setIsVisible(false), 1200);
+            hideTimeoutRef.current = window.setTimeout(
+                () => setIsVisible(false),
+                1200,
+            );
         };
 
         document.addEventListener('mousemove', handleMouseMove);
@@ -141,7 +159,9 @@ export function ScrollBar() {
         };
         const resizeHandler = () => updateThumb();
 
-        window.addEventListener('scroll', nativeScrollHandler, { passive: true });
+        window.addEventListener('scroll', nativeScrollHandler, {
+            passive: true,
+        });
         window.addEventListener('resize', resizeHandler);
 
         // Lenis scroll handler
@@ -182,7 +202,9 @@ export function ScrollBar() {
                 const { height: targetH, top: targetT } = thumbSizeRef.current;
 
                 // Separate lerp values for position vs size
-                const positionLerp = isDraggingRef.current ? THUMB_POSITION_LERP.DRAGGING : THUMB_POSITION_LERP.NORMAL;
+                const positionLerp = isDraggingRef.current
+                    ? THUMB_POSITION_LERP.DRAGGING
+                    : THUMB_POSITION_LERP.NORMAL;
                 const sizeLerp = THUMB_SIZE_LERP;
 
                 const newH = curHeight + (targetH - curHeight) * sizeLerp;
@@ -207,7 +229,8 @@ export function ScrollBar() {
             } catch {
                 // ignore
             }
-            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+            if (animationFrameRef.current)
+                cancelAnimationFrame(animationFrameRef.current);
             if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
         };
     }, [updateThumb, showScrollbar]);
@@ -246,7 +269,11 @@ export function ScrollBar() {
             onMouseEnter={showScrollbar}
             aria-hidden
         >
-            <div ref={thumbRef} className={styles.scrollbarThumb} onMouseDown={handleMouseDown} />
+            <div
+                ref={thumbRef}
+                className={styles.scrollbarThumb}
+                onMouseDown={handleMouseDown}
+            />
         </div>
     );
 }

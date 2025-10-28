@@ -9,13 +9,21 @@ import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 import { FadeIn } from '../AnimationComps/FadeIn';
 import { FeaturedPosts } from './PostFeatured';
 
-const COLOR_OPTIONS = ['text-yellow-500', 'text-green-500', 'text-blue-500', 'text-pink-500', 'text-red-500'];
+const COLOR_OPTIONS = [
+    'text-yellow-500',
+    'text-green-500',
+    'text-blue-500',
+    'text-pink-500',
+    'text-red-500',
+];
 
 interface PublicPostListProps {
     imageHeight?: string;
 }
 
-export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListProps = {}) {
+export default function PublicPostList({
+    imageHeight = 'h-64',
+}: PublicPostListProps = {}) {
     // Use URL search params for pagination
     const [searchParams] = useSearchParams();
     const [posts, setPosts] = useState<Post[]>([]);
@@ -58,35 +66,41 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
         setLoading(true);
         try {
             const res = await apiClient.get('/posts');
-            const raw = Array.isArray(res.data) ? res.data : (res.data?.posts ?? []);
+            const raw = Array.isArray(res.data)
+                ? res.data
+                : (res.data?.posts ?? []);
 
-            const normalized: Post[] = (raw || []).filter(Boolean).map((p: unknown, i: number) => {
-                const obj = p as Record<string, unknown>;
-                const _id = String(obj._id ?? obj.id ?? `fallback-${i}`);
-                const title = (obj.title as string) ?? '';
-                const description = (obj.description as string) ?? '';
-                const tags = Array.isArray(obj.tags) ? (obj.tags as string[]) : [];
-                const featured = Boolean(obj.featured);
-                const featuredImage = obj.featuredImage ?? null;
-                const category = (obj.category as string) ?? null;
-                const author = (obj.author as string) ?? null;
-                const createdAt = (obj.createdAt as string) ?? null;
-                const slug = (obj.slug as string) ?? '';
+            const normalized: Post[] = (raw || [])
+                .filter(Boolean)
+                .map((p: unknown, i: number) => {
+                    const obj = p as Record<string, unknown>;
+                    const _id = String(obj._id ?? obj.id ?? `fallback-${i}`);
+                    const title = (obj.title as string) ?? '';
+                    const description = (obj.description as string) ?? '';
+                    const tags = Array.isArray(obj.tags)
+                        ? (obj.tags as string[])
+                        : [];
+                    const featured = Boolean(obj.featured);
+                    const featuredImage = obj.featuredImage ?? null;
+                    const category = (obj.category as string) ?? null;
+                    const author = (obj.author as string) ?? null;
+                    const createdAt = (obj.createdAt as string) ?? null;
+                    const slug = (obj.slug as string) ?? '';
 
-                return {
-                    ...obj,
-                    _id,
-                    title,
-                    description,
-                    tags,
-                    featured,
-                    featuredImage,
-                    category,
-                    author,
-                    createdAt,
-                    slug,
-                } as Post;
-            });
+                    return {
+                        ...obj,
+                        _id,
+                        title,
+                        description,
+                        tags,
+                        featured,
+                        featuredImage,
+                        category,
+                        author,
+                        createdAt,
+                        slug,
+                    } as Post;
+                });
 
             setPosts(normalized);
             setFilteredPosts(normalized);
@@ -133,7 +147,9 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                 if (availableColors.length === 0) {
                     availableColors.push(...COLOR_OPTIONS);
                 }
-                const randomIndex = Math.floor(Math.random() * availableColors.length);
+                const randomIndex = Math.floor(
+                    Math.random() * availableColors.length,
+                );
                 return availableColors.splice(randomIndex, 1)[0];
             });
         });
@@ -163,7 +179,10 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                     <div /> {/* Left spacer for desktop */}
                     <div className="w-full max-w-[1040px] space-y-6">
                         {[...Array(3)].map((_, idx) => (
-                            <div key={idx} className="bg-neutral-800 rounded-lg h-96 animate-pulse" />
+                            <div
+                                key={idx}
+                                className="bg-neutral-800 rounded-lg h-96 animate-pulse"
+                            />
                         ))}
                     </div>
                     <div className="hidden xl:block">
@@ -199,7 +218,8 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                 {/* Filter section */}
                 <div className="w-full max-w-[1040px] xl:max-w-[1600px] mx-auto mb-6">
                     <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6">
-                        <div className="hidden xl:block" /> {/* Spacer for desktop alignment */}
+                        <div className="hidden xl:block" />{' '}
+                        {/* Spacer for desktop alignment */}
                         <div>
                             <FilterWrapper
                                 items={posts}
@@ -210,7 +230,8 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                 showFeaturedFilter={true}
                             />
                         </div>
-                        <div className="hidden xl:block" /> {/* Spacer for desktop alignment */}
+                        <div className="hidden xl:block" />{' '}
+                        {/* Spacer for desktop alignment */}
                     </div>
                 </div>
 
@@ -246,7 +267,9 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
             {/* Results count */}
             <div className="w-full max-w-[1040px] mx-auto mb-4 px-4">
                 <p className="text-sm text-slate-400">
-                    Showing {startIndex + 1}-{Math.min(endIndex, filteredPosts.length)} of {filteredPosts.length} results
+                    Showing {startIndex + 1}-
+                    {Math.min(endIndex, filteredPosts.length)} of{' '}
+                    {filteredPosts.length} results
                 </p>
             </div>
 
@@ -271,19 +294,37 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                         const tagColorMap = postColorMaps[globalIndex] || [];
 
                         return (
-                            <FadeIn key={post._id} direction="up" delay={postIndex * 60}>
+                            <FadeIn
+                                key={post._id}
+                                direction="up"
+                                delay={postIndex * 60}
+                            >
                                 <article
                                     className="relative flex-1 w-full"
-                                    style={{ marginBottom: postIndex < currentPosts.length - 1 ? '1.5rem' : '0' }}
+                                    style={{
+                                        marginBottom:
+                                            postIndex < currentPosts.length - 1
+                                                ? '1.5rem'
+                                                : '0',
+                                    }}
                                 >
                                     {/* Desktop date display */}
                                     <div className="hidden xl:flex xl:absolute xl:-ml-[150px] xl:w-28 xl:top-6 justify-center">
                                         <div className="text-center">
                                             <div className="text-xl text-white">
-                                                {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
+                                                {new Date(
+                                                    post.createdAt,
+                                                ).toLocaleDateString('en-US', {
+                                                    day: '2-digit',
+                                                })}
                                             </div>
                                             <div className="text-sm text-slate-300 mt-1">
-                                                {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                {new Date(
+                                                    post.createdAt,
+                                                ).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
                                             </div>
                                         </div>
                                     </div>
@@ -292,10 +333,19 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                     <div className="xl:hidden flex items-center gap-2 mb-4">
                                         <div className="text-center">
                                             <div className="text-xl text-white">
-                                                {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit' })}
+                                                {new Date(
+                                                    post.createdAt,
+                                                ).toLocaleDateString('en-US', {
+                                                    day: '2-digit',
+                                                })}
                                             </div>
                                             <div className="text-xs text-slate-300 mt-1">
-                                                {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                {new Date(
+                                                    post.createdAt,
+                                                ).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
                                             </div>
                                         </div>
                                     </div>
@@ -304,7 +354,9 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                     {post.featuredImage && (
                                         <div
                                             className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
-                                            onClick={() => handleReadMore(post.slug)}
+                                            onClick={() =>
+                                                handleReadMore(post.slug)
+                                            }
                                             role="button"
                                             tabIndex={0}
                                             aria-label={`View ${post.title}`}
@@ -314,7 +366,9 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                                 alt={post.title}
                                                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                 onError={(e) => {
-                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                    (
+                                                        e.target as HTMLImageElement
+                                                    ).style.display = 'none';
                                                 }}
                                             />
                                         </div>
@@ -326,13 +380,20 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                         <div className="flex justify-between items-center gap-4">
                                             <h2
                                                 className="text-2xl text-white line-clamp-2 cursor-pointer inline-flex relative group/title"
-                                                onClick={() => handleReadMore(post.slug)}
+                                                onClick={() =>
+                                                    handleReadMore(post.slug)
+                                                }
                                                 role="link"
                                                 tabIndex={0}
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                    if (
+                                                        e.key === 'Enter' ||
+                                                        e.key === ' '
+                                                    ) {
                                                         e.preventDefault();
-                                                        handleReadMore(post.slug);
+                                                        handleReadMore(
+                                                            post.slug,
+                                                        );
                                                     }
                                                 }}
                                             >
@@ -353,44 +414,79 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                         {/* Tags */}
                                         {visibleTags.length > 0 && (
                                             <div className="flex flex-wrap items-center text-sm md:text-base gap-1">
-                                                {visibleTags.map((tag: string, i: number) => (
-                                                    <span key={i} className={`${tagColorMap[i] ?? 'text-blue-600'}`}>
-                                                        {tag}
-                                                        {i !== visibleTags.length - 1 && <span className="mx-2 text-gray-300">|</span>}
-                                                    </span>
-                                                ))}
-                                                {post.tags && post.tags.length > 5 && (
-                                                    <span className="ml-3 text-gray-500 text-sm">+{post.tags.length - 5} more</span>
+                                                {visibleTags.map(
+                                                    (
+                                                        tag: string,
+                                                        i: number,
+                                                    ) => (
+                                                        <span
+                                                            key={i}
+                                                            className={`${tagColorMap[i] ?? 'text-blue-600'}`}
+                                                        >
+                                                            {tag}
+                                                            {i !==
+                                                                visibleTags.length -
+                                                                    1 && (
+                                                                <span className="mx-2 text-gray-300">
+                                                                    |
+                                                                </span>
+                                                            )}
+                                                        </span>
+                                                    ),
                                                 )}
+                                                {post.tags &&
+                                                    post.tags.length > 5 && (
+                                                        <span className="ml-3 text-gray-500 text-sm">
+                                                            +
+                                                            {post.tags.length -
+                                                                5}{' '}
+                                                            more
+                                                        </span>
+                                                    )}
                                             </div>
                                         )}
 
                                         {/* Description */}
                                         {post.description && (
-                                            <p className="text-white line-clamp-3 tracking-wide mt-4">{post.description}</p>
+                                            <p className="text-white line-clamp-3 tracking-wide mt-4">
+                                                {post.description}
+                                            </p>
                                         )}
 
                                         {/* Metadata (author and date) */}
                                         <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-500">
-                                            {post.author && <span>By: {post.author}</span>}
-                                            <span>Created: {post.createdAt ? formatDate(post.createdAt) : '—'}</span>
+                                            {post.author && (
+                                                <span>By: {post.author}</span>
+                                            )}
+                                            <span>
+                                                Created:{' '}
+                                                {post.createdAt
+                                                    ? formatDate(post.createdAt)
+                                                    : '—'}
+                                            </span>
                                         </div>
 
                                         {/* Read More button */}
                                         <div className="mt-2 flex items-center justify-end relative">
                                             <button
-                                                onClick={() => handleReadMore(post.slug)}
+                                                onClick={() =>
+                                                    handleReadMore(post.slug)
+                                                }
                                                 className="relative left-1 md:left-8 inline-flex items-center gap-3 text-purple-400 font-semibold text-lg tracking-wide transition-all duration-200 transform hover:text-purple-200 hover:translate-x-1 hover:cursor-pointer"
                                                 aria-label={`Read more about ${post.title}`}
                                             >
                                                 <span>Read More</span>
-                                                <span className="text-current text-xl">&gt;</span>
+                                                <span className="text-current text-xl">
+                                                    &gt;
+                                                </span>
                                             </button>
                                         </div>
                                     </div>
 
                                     {/* Divider between posts */}
-                                    {postIndex < currentPosts.length - 1 && <div className="m-0 border border-gray-400 rounded-2xl" />}
+                                    {postIndex < currentPosts.length - 1 && (
+                                        <div className="m-0 border border-gray-400 rounded-2xl" />
+                                    )}
                                 </article>
                             </FadeIn>
                         );
@@ -434,13 +530,19 @@ export default function PublicPostList({ imageHeight = 'h-64' }: PublicPostListP
                                             : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
                                     }`}
                                     aria-label={`Go to page ${pageNumber}`}
-                                    aria-current={page === pageNumber ? 'page' : undefined}
+                                    aria-current={
+                                        page === pageNumber ? 'page' : undefined
+                                    }
                                 >
                                     {pageNumber}
                                 </button>
                             );
                         })}
-                        {totalPages > 10 && <span className="flex items-center text-gray-500 text-xs px-2">+{totalPages - 10} more</span>}
+                        {totalPages > 10 && (
+                            <span className="flex items-center text-gray-500 text-xs px-2">
+                                +{totalPages - 10} more
+                            </span>
+                        )}
                     </div>
 
                     {/* Next button */}

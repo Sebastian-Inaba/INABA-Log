@@ -3,14 +3,19 @@ export function NotFound() {
     return (
         <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-8 font-sans pt-[70px]">
             {/* Animated number */}
-            <div className="text-6xl md:text-8xl font-bold text-purple-600 mb-4 animate-bounce">404</div>
+            <div className="text-6xl md:text-8xl font-bold text-purple-600 mb-4 animate-bounce">
+                404
+            </div>
 
             {/* Main message */}
-            <h1 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-4">Oops! You seem to be lost.</h1>
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-4">
+                Oops! You seem to be lost.
+            </h1>
 
             {/* Descriptive text */}
             <p className="text-lg text-gray-200 mb-8 max-w-md leading-relaxed">
-                The page you're looking for seems to have vanished into the void. It might have been moved, deleted, or never existed in the
+                The page you're looking for seems to have vanished into the
+                void. It might have been moved, deleted, or never existed in the
                 first place.
             </p>
 

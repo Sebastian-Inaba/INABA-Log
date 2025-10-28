@@ -20,7 +20,9 @@ export function useAuthLogic() {
             log('[Auth] fetchUser start', { idTokenProvided: !!idToken });
 
             // Add token to headers if provided
-            const headers = idToken ? { Authorization: `Bearer ${idToken}` } : {};
+            const headers = idToken
+                ? { Authorization: `Bearer ${idToken}` }
+                : {};
             const res = await axiosInstance.get('/admin/me', { headers });
 
             log('[Auth] fetchUser success', res.status, res.data);
@@ -84,7 +86,9 @@ export function useAuthLogic() {
 
     // Run once on mount, check if user is logged in on /login and /admin routes
     useEffect(() => {
-        const isProtectedRoute = window.location.pathname.startsWith('/admin') || window.location.pathname === '/login';
+        const isProtectedRoute =
+            window.location.pathname.startsWith('/admin') ||
+            window.location.pathname === '/login';
 
         if (!initialized && isProtectedRoute) {
             fetchUser();

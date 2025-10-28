@@ -11,8 +11,15 @@ type FooterProps = {
     ctaFont?: string;
 };
 
-export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Roboto_Slab' }: FooterProps) {
-    const footerNavItems: RouteConfig[] = useMemo(() => routesConfig[0].children?.filter((r) => r.showInNav) ?? [], []);
+export function Footer({
+    logoFont = 'Poppins',
+    navFont = 'Lato',
+    ctaFont = 'Roboto_Slab',
+}: FooterProps) {
+    const footerNavItems: RouteConfig[] = useMemo(
+        () => routesConfig[0].children?.filter((r) => r.showInNav) ?? [],
+        [],
+    );
 
     // local arrays
     const socialIconList = [
@@ -36,7 +43,13 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
         },
     ];
 
-    const otherList = [{ key: 'longArrow', icon: (otherIcons as Record<string, string>).longArrow, label: 'Long Arrow' }];
+    const otherList = [
+        {
+            key: 'longArrow',
+            icon: (otherIcons as Record<string, string>).longArrow,
+            label: 'Long Arrow',
+        },
+    ];
 
     // Lookup directly by key
     const longArrow = otherList.find((i) => i.key === 'longArrow')?.icon;
@@ -50,7 +63,11 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
                 {/* Footer content */}
                 <div className="flex flex-col gap-4">
                     {/* Row 1: Logo */}
-                    <Link to="/" style={{ fontFamily: logoFont }} className="text-2xl text-purple-500 font-medium tracking-widest">
+                    <Link
+                        to="/"
+                        style={{ fontFamily: logoFont }}
+                        className="text-2xl text-purple-500 font-medium tracking-widest"
+                    >
                         INABA-Log
                     </Link>
 
@@ -66,7 +83,11 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
                                     >
                                         {item.label}
                                     </Link>
-                                    {idx < footerNavItems.length - 1 && <span className="px-3 text-gray-400">•</span>}
+                                    {idx < footerNavItems.length - 1 && (
+                                        <span className="px-3 text-gray-400">
+                                            •
+                                        </span>
+                                    )}
                                 </li>
                             ))}
                         </ul>
@@ -74,11 +95,20 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
 
                     {/* Row 3: Call to action to portfolio */}
                     <div className="flex items-center gap-4 text-lg">
-                        <span className="text-green-400 font-bold" style={{ fontFamily: ctaFont }}>
+                        <span
+                            className="text-green-400 font-bold"
+                            style={{ fontFamily: ctaFont }}
+                        >
                             Like what you see?
                         </span>
 
-                        {longArrow && <img src={longArrow} alt="Arrow" className="w-4 h-4" />}
+                        {longArrow && (
+                            <img
+                                src={longArrow}
+                                alt="Arrow"
+                                className="w-4 h-4"
+                            />
+                        )}
 
                         <Link
                             to="/portfolio"
@@ -86,9 +116,15 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
                         >
                             <span className="absolute top-1 left-1 right-1 border-t border-yellow-400 group-hover:border-yellow-200 transition-colors" />
                             <span className="absolute bottom-1 left-1 right-1 border-b border-yellow-400 group-hover:border-yellow-200 transition-colors" />
-                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">-</span>
-                            <span className="group-hover:text-yellow-200 transition-colors">Portfolio</span>
-                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">-</span>
+                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">
+                                -
+                            </span>
+                            <span className="group-hover:text-yellow-200 transition-colors">
+                                Portfolio
+                            </span>
+                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">
+                                -
+                            </span>
                         </Link>
                     </div>
 
@@ -96,13 +132,20 @@ export function Footer({ logoFont = 'Poppins', navFont = 'Lato', ctaFont = 'Robo
                     <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center p-3">
                         {socialIconList.map((s) => (
                             <a key={s.key} href={s.url} aria-label={s.label}>
-                                <img src={s.icon} alt={s.label} className="w-8 h-8" />
+                                <img
+                                    src={s.icon}
+                                    alt={s.label}
+                                    className="w-8 h-8"
+                                />
                             </a>
                         ))}
                     </div>
 
                     {/* Row 5: Copyright */}
-                    <div className="text-gray-400 text-sm">© {new Date().getFullYear()} INABA-Log. All rights reserved.</div>
+                    <div className="text-gray-400 text-sm">
+                        © {new Date().getFullYear()} INABA-Log. All rights
+                        reserved.
+                    </div>
                 </div>
             </div>
         </div>

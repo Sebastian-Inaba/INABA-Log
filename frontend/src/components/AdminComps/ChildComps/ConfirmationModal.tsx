@@ -9,17 +9,32 @@ interface ConfirmationModalProps {
     onConfirm: () => void;
 }
 
-export function ConfirmationModal({ type, loading, disabled, onCancel, onConfirm }: ConfirmationModalProps) {
+export function ConfirmationModal({
+    type,
+    loading,
+    disabled,
+    onCancel,
+    onConfirm,
+}: ConfirmationModalProps) {
     return (
         <div className="fixed inset-0 z-70 flex items-center justify-center">
             <div className="absolute inset-0 bg-black bg-opacity-70" />
             <div className="relative z-80 bg-neutral-800 border border-purple-700 p-6 rounded-lg w-full max-w-md">
-                <h4 className="font-bold text-lg text-purple-300 mb-3">Confirm Action</h4>
+                <h4 className="font-bold text-lg text-purple-300 mb-3">
+                    Confirm Action
+                </h4>
                 <p className="text-neutral-300 mb-4">
-                    Are you sure you want to {type === 'post' ? 'update/create post' : 'update/create deep dive'}?
+                    Are you sure you want to{' '}
+                    {type === 'post'
+                        ? 'update/create post'
+                        : 'update/create deep dive'}
+                    ?
                 </p>
                 <div className="flex justify-end gap-3">
-                    <button onClick={onCancel} className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600">
+                    <button
+                        onClick={onCancel}
+                        className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600"
+                    >
                         Cancel
                     </button>
                     <button

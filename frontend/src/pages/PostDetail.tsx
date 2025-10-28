@@ -12,7 +12,9 @@ export function PostDetail() {
         return (
             <div className="w-full h-full overflow-x-hidden overflow-y-auto">
                 <div className="w-full mb-8">
-                    <div className="text-center py-12 text-gray-500 text-lg">Invalid post URL.</div>
+                    <div className="text-center py-12 text-gray-500 text-lg">
+                        Invalid post URL.
+                    </div>
                 </div>
             </div>
         );

@@ -2,7 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { apiClient } from '../../utilities/api';
 import { makeSlug, parseTags, parseReferences } from '../../utilities/helpers';
-import { FileUpload, Checkbox, PreviewPanel, StatusMessages, ConfirmationModal } from './ChildComps';
+import {
+    FileUpload,
+    Checkbox,
+    PreviewPanel,
+    StatusMessages,
+    ConfirmationModal,
+} from './ChildComps';
 import type { ContentType, FormState, Post, Research } from '../../types';
 import type { ChangeEvent } from 'react';
 
@@ -28,7 +34,13 @@ const getProperty = (item: Post | Research, property: string): string => {
     return typeof value === 'string' ? value : '';
 };
 
-export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalProps) {
+export function EditModal({
+    item,
+    type,
+    isOpen,
+    onClose,
+    onUpdate,
+}: EditModalProps) {
     // Form state for all input fields
     const [formData, setFormData] = useState<FormState>({
         title: '',
@@ -47,19 +59,27 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
         references: '',
     });
 
-    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
+    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(
+        null,
+    );
     const [pdfAttachment, setPdfAttachment] = useState<File | null>(null);
-    const [featuredImageUrl, setFeaturedImageUrl] = useState<string | null>(null);
+    const [featuredImageUrl, setFeaturedImageUrl] = useState<string | null>(
+        null,
+    );
     const [loading, setLoading] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const [status, setStatus] = useState<{ error: string | null; success: string | null }>({ error: null, success: null });
+    const [status, setStatus] = useState<{
+        error: string | null;
+        success: string | null;
+    }>({ error: null, success: null });
 
     const initialFocusRef = useRef<HTMLTextAreaElement>(null);
 
     // Populate form when modal opens or item changes
     useEffect(() => {
         if (isOpen && item) {
-            const referencesArray = isResearch(item) && item.references ? item.references : [];
+            const referencesArray =
+                isResearch(item) && item.references ? item.references : [];
 
             setFormData({
                 title: item.title || '',
@@ -68,7 +88,9 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                 description: getProperty(item, 'description'),
                 content: getProperty(item, 'content'),
                 category: getProperty(item, 'category'),
-                tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags || '',
+                tags: Array.isArray(item.tags)
+                    ? item.tags.join(', ')
+                    : item.tags || '',
                 featured: item.featured || false,
                 abstractText: isResearch(item) ? item.abstract || '' : '',
                 introduction: getProperty(item, 'introduction'),
@@ -90,7 +112,9 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
         return () => URL.revokeObjectURL(url);
     }, [featuredImageFile]);
 
-    const pdfPreviewName = pdfAttachment?.name || (isResearch(item) ? getProperty(item, 'pdfAttachment') : null);
+    const pdfPreviewName =
+        pdfAttachment?.name ||
+        (isResearch(item) ? getProperty(item, 'pdfAttachment') : null);
 
     const updateField = (field: keyof FormState, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -99,7 +123,9 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
     // Automatically generate slug from title
     useEffect(() => {
         const newSlug = makeSlug(formData.title);
-        setFormData((prev) => (prev.slug === newSlug ? prev : { ...prev, slug: newSlug }));
+        setFormData((prev) =>
+            prev.slug === newSlug ? prev : { ...prev, slug: newSlug },
+        );
     }, [formData.title]);
 
     // Prevent scrolling when modal is open
@@ -131,7 +157,10 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
     // Handle form submission and API request
     const handleSubmit = async () => {
         if (!isValid()) {
-            setStatus({ error: 'Please fill required fields (title, content, and abstract for research).', success: null });
+            setStatus({
+                error: 'Please fill required fields (title, content, and abstract for research).',
+                success: null,
+            });
             setShowConfirm(false);
             return;
         }
@@ -144,25 +173,33 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
             fd.append('title', formData.title);
             fd.append('slug', formData.slug || makeSlug(formData.title));
             if (formData.author) fd.append('author', formData.author);
-            if (formData.description) fd.append('description', formData.description);
+            if (formData.description)
+                fd.append('description', formData.description);
             fd.append('content', formData.content);
 
             const tagsArray = parseTags(formData.tags);
             fd.append('tags', JSON.stringify(tagsArray));
             fd.append('featured', String(formData.featured));
 
-            if (featuredImageFile) fd.append('featuredImage', featuredImageFile);
+            if (featuredImageFile)
+                fd.append('featuredImage', featuredImageFile);
 
-            const endpoint = type === 'post' ? `/admin/posts/${item._id}` : `/admin/research/${item._id}`;
+            const endpoint =
+                type === 'post'
+                    ? `/admin/posts/${item._id}`
+                    : `/admin/research/${item._id}`;
 
             if (type === 'post') {
                 if (formData.category) fd.append('category', formData.category);
             } else {
                 fd.append('abstract', formData.abstractText);
-                if (formData.introduction) fd.append('introduction', formData.introduction);
+                if (formData.introduction)
+                    fd.append('introduction', formData.introduction);
                 if (formData.method) fd.append('method', formData.method);
-                if (formData.keyFindings) fd.append('keyFindings', formData.keyFindings);
-                if (formData.credibility) fd.append('credibility', formData.credibility);
+                if (formData.keyFindings)
+                    fd.append('keyFindings', formData.keyFindings);
+                if (formData.credibility)
+                    fd.append('credibility', formData.credibility);
 
                 const referencesArray = parseReferences(formData.references);
                 fd.append('references', JSON.stringify(referencesArray));
@@ -172,7 +209,10 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
 
             await apiClient.patch(endpoint, fd);
 
-            setStatus({ success: `${type === 'post' ? 'Post' : 'Research'} updated successfully.`, error: null });
+            setStatus({
+                success: `${type === 'post' ? 'Post' : 'Research'} updated successfully.`,
+                error: null,
+            });
             onUpdate();
             onClose();
         } catch (err) {
@@ -188,16 +228,27 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
     // Standardized props for input and textarea elements
     const commonInputProps = (field: keyof FormState) => ({
         value: formData[field] as unknown as string,
-        onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => updateField(field, e.target.value),
-        className: 'w-full p-3 rounded-lg bg-neutral-800 border border-purple-700 focus:ring-2 focus:ring-purple-500',
+        onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+            updateField(field, e.target.value),
+        className:
+            'w-full p-3 rounded-lg bg-neutral-800 border border-purple-700 focus:ring-2 focus:ring-purple-500',
     });
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Edit content">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Edit content"
+        >
             {/* Overlay background */}
-            <div className="absolute inset-0 bg-neutral-900 bg-opacity-80" onClick={onClose} aria-hidden />
+            <div
+                className="absolute inset-0 bg-neutral-900 bg-opacity-80"
+                onClick={onClose}
+                aria-hidden
+            />
 
             {/* Modal container */}
             <div
@@ -207,10 +258,18 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                 {/* Header with title and close button */}
                 <div className="flex items-start justify-between gap-4 mb-6">
                     <div className="flex items-center gap-4">
-                        <h2 className="text-2xl font-bold text-purple-400">Edit {type === 'post' ? 'Post' : 'Deep Dive'}</h2>
-                        <div className="px-3 py-1 bg-purple-900 text-purple-300 rounded-full text-sm font-medium">{type}</div>
+                        <h2 className="text-2xl font-bold text-purple-400">
+                            Edit {type === 'post' ? 'Post' : 'Deep Dive'}
+                        </h2>
+                        <div className="px-3 py-1 bg-purple-900 text-purple-300 rounded-full text-sm font-medium">
+                            {type}
+                        </div>
                     </div>
-                    <button onClick={onClose} className="text-xl font-bold px-2 py-1 hover:bg-purple-900 rounded-lg" aria-label="Close">
+                    <button
+                        onClick={onClose}
+                        className="text-xl font-bold px-2 py-1 hover:bg-purple-900 rounded-lg"
+                        aria-label="Close"
+                    >
                         x
                     </button>
                 </div>
@@ -219,20 +278,30 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="space-y-5">
                         {/* Basic fields: title and author */}
-                        {(['title', 'author'] as (keyof FormState)[]).map((field) => (
-                            <div key={field}>
-                                <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">{field}</label>
-                                <input {...commonInputProps(field)} />
-                            </div>
-                        ))}
+                        {(['title', 'author'] as (keyof FormState)[]).map(
+                            (field) => (
+                                <div key={field}>
+                                    <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">
+                                        {field}
+                                    </label>
+                                    <input {...commonInputProps(field)} />
+                                </div>
+                            ),
+                        )}
 
                         {/* Description / Abstract */}
                         <div>
                             <label className="block text-sm font-semibold text-purple-300 mb-1">
-                                {type === 'post' ? 'Description (optional)' : 'Abstract (required)'}
+                                {type === 'post'
+                                    ? 'Description (optional)'
+                                    : 'Abstract (required)'}
                             </label>
                             <textarea
-                                {...commonInputProps(type === 'post' ? 'description' : 'abstractText')}
+                                {...commonInputProps(
+                                    type === 'post'
+                                        ? 'description'
+                                        : 'abstractText',
+                                )}
                                 className={`${commonInputProps(type === 'post' ? 'description' : 'abstractText').className} min-h-[100px]`}
                             />
                         </div>
@@ -240,7 +309,9 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                         {/* Category for posts */}
                         {type === 'post' && (
                             <div>
-                                <label className="block text-sm font-semibold text-purple-300 mb-1">Category</label>
+                                <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                    Category
+                                </label>
                                 <input {...commonInputProps('category')} />
                             </div>
                         )}
@@ -248,9 +319,18 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                         {/* Research-specific fields */}
                         {type === 'research' && (
                             <>
-                                {(['introduction', 'method', 'keyFindings', 'credibility'] as (keyof FormState)[]).map((field) => (
+                                {(
+                                    [
+                                        'introduction',
+                                        'method',
+                                        'keyFindings',
+                                        'credibility',
+                                    ] as (keyof FormState)[]
+                                ).map((field) => (
                                     <div key={field}>
-                                        <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">{field}</label>
+                                        <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">
+                                            {field}
+                                        </label>
                                         <input {...commonInputProps(field)} />
                                     </div>
                                 ))}
@@ -259,15 +339,21 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
 
                         {/* Tags */}
                         <div>
-                            <label className="block text-sm font-semibold text-purple-300 mb-1">Tags (comma separated)</label>
-                            <input {...commonInputProps('tags')} placeholder="tag1, tag2, tag3" />
+                            <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                Tags (comma separated)
+                            </label>
+                            <input
+                                {...commonInputProps('tags')}
+                                placeholder="tag1, tag2, tag3"
+                            />
                         </div>
 
                         {/* References for research */}
                         {type === 'research' && (
                             <div>
                                 <label className="block text-sm font-semibold text-purple-300 mb-1">
-                                    References (comma, semicolon, or newline separated)
+                                    References (comma, semicolon, or newline
+                                    separated)
                                 </label>
                                 <textarea
                                     {...commonInputProps('references')}
@@ -278,7 +364,12 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                         )}
 
                         {/* File uploads */}
-                        <FileUpload label="Featured Image" accept="image/*" onChange={setFeaturedImageFile} previewUrl={featuredImageUrl} />
+                        <FileUpload
+                            label="Featured Image"
+                            accept="image/*"
+                            onChange={setFeaturedImageFile}
+                            previewUrl={featuredImageUrl}
+                        />
                         {type === 'research' && (
                             <FileUpload
                                 label="PDF Attachment (optional)"
@@ -290,7 +381,9 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
 
                         {/* Content editor */}
                         <div>
-                            <label className="block text-sm font-semibold text-purple-300 mb-1">Content (Markdown)</label>
+                            <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                Content (Markdown)
+                            </label>
                             <textarea
                                 ref={initialFocusRef}
                                 {...commonInputProps('content')}
@@ -303,12 +396,17 @@ export function EditModal({ item, type, isOpen, onClose, onUpdate }: EditModalPr
                         <Checkbox
                             label="Feature this content"
                             checked={formData.featured}
-                            onChange={(checked: boolean) => updateField('featured', checked)}
+                            onChange={(checked: boolean) =>
+                                updateField('featured', checked)
+                            }
                         />
 
                         {/* Action buttons */}
                         <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-purple-800">
-                            <button onClick={onClose} className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600">
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600"
+                            >
                                 Cancel
                             </button>
                             <button

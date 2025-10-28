@@ -14,7 +14,11 @@ export interface AuthenticatedRequest extends Request {
 }
 
 // Admin Guard: ensures the request has a valid Google ID token
-export async function requireGoogleAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function requireGoogleAuth(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+) {
     try {
         /*
         // TEMPORARY: bypass Google verification for testing

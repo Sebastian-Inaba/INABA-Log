@@ -166,8 +166,12 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 if (mutation.type === 'childList') {
                     // Ignore if nodes are just text nodes
                     const hasElementNodes =
-                        Array.from(mutation.addedNodes).some((node) => node.nodeType === Node.ELEMENT_NODE) ||
-                        Array.from(mutation.removedNodes).some((node) => node.nodeType === Node.ELEMENT_NODE);
+                        Array.from(mutation.addedNodes).some(
+                            (node) => node.nodeType === Node.ELEMENT_NODE,
+                        ) ||
+                        Array.from(mutation.removedNodes).some(
+                            (node) => node.nodeType === Node.ELEMENT_NODE,
+                        );
                     return hasElementNodes;
                 }
 
@@ -197,7 +201,13 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 subtree: true,
                 attributes: true,
                 // Observe a larger set of attributes
-                attributeFilter: ['src', 'srcset', 'style', 'class', 'aria-expanded'],
+                attributeFilter: [
+                    'src',
+                    'srcset',
+                    'style',
+                    'class',
+                    'aria-expanded',
+                ],
             });
         }
 
@@ -215,7 +225,10 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 resizeDebounce = null;
             }, 60); // small debounce
         };
-        window.addEventListener('lenis:contentchange', onExternalContentChange as EventListener);
+        window.addEventListener(
+            'lenis:contentchange',
+            onExternalContentChange as EventListener,
+        );
         // -----------------------------------------------------------------------------------
 
         // Cleanup
@@ -243,7 +256,10 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             window.lenis = undefined;
 
             // remove the custom listener
-            window.removeEventListener('lenis:contentchange', onExternalContentChange as EventListener);
+            window.removeEventListener(
+                'lenis:contentchange',
+                onExternalContentChange as EventListener,
+            );
         };
     }, [onDirectionChange]);
 
@@ -310,7 +326,10 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 window.scrollTo(0, 0);
 
                 try {
-                    lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+                    lenisRef.current?.scrollTo(0, {
+                        immediate: true,
+                        force: true,
+                    });
                 } catch {
                     // fallback
                 }

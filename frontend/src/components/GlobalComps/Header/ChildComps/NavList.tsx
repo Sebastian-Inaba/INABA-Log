@@ -11,7 +11,12 @@ type NavListProps = {
     tabIndex?: number; // TabIndex to control keyboard navigation
 };
 
-export function NavList({ navItems, navFont, onItemClick, tabIndex }: NavListProps) {
+export function NavList({
+    navItems,
+    navFont,
+    onItemClick,
+    tabIndex,
+}: NavListProps) {
     return (
         <ul className={`flex flex-col gap-4`}>
             {navItems.map((route) => (
@@ -24,9 +29,19 @@ export function NavList({ navItems, navFont, onItemClick, tabIndex }: NavListPro
                         className="flex items-center gap-2 px-4 py-2 bg-green-400 rounded-3xl hover:bg-green-500 transition-colors"
                     >
                         {/* Optional icon */}
-                        {route.icon && <img src={route.icon} alt={route.iconLabel} className="w-5 h-5" loading="lazy" />}
+                        {route.icon && (
+                            <img
+                                src={route.icon}
+                                alt={route.iconLabel}
+                                className="w-5 h-5"
+                                loading="lazy"
+                            />
+                        )}
                         {/* Link label */}
-                        <span style={{ fontFamily: navFont, color: '#252525' }} className="font-semibold">
+                        <span
+                            style={{ fontFamily: navFont, color: '#252525' }}
+                            className="font-semibold"
+                        >
                             {route.label}
                         </span>
                     </Link>

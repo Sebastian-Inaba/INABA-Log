@@ -24,10 +24,16 @@ export function ResearchMain({ slug }: ResearchMainProps) {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get<{ success: boolean; deepDive: Research }>(`/research/${slug}`);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    deepDive: Research;
+                }>(`/research/${slug}`);
                 setResearch(response.data.deepDive);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch research';
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to fetch research';
                 setError(errorMessage);
                 logError('ResearchMain error:', errorMessage, err);
             } finally {
@@ -38,7 +44,10 @@ export function ResearchMain({ slug }: ResearchMainProps) {
     }, [slug]);
 
     // memoized formatted date
-    const formattedDate = useMemo(() => (research ? formatDate(research.createdAt) : ''), [research]);
+    const formattedDate = useMemo(
+        () => (research ? formatDate(research.createdAt) : ''),
+        [research],
+    );
 
     // loading state
     if (loading) {
@@ -83,7 +92,9 @@ export function ResearchMain({ slug }: ResearchMainProps) {
         return (
             <FadeIn direction="up" duration={500} distance={100}>
                 <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
-                    <div className="text-center text-slate-300 text-lg">Research not found.</div>
+                    <div className="text-center text-slate-300 text-lg">
+                        Research not found.
+                    </div>
                 </div>
             </FadeIn>
         );
@@ -159,7 +170,9 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                     <header className="flex-1 p-8 lg:p-12 md:border-r-2 md:border-gray-400 lg:border-r-0">
                         {/* Title + image (grid) */}
                         <div className="title-image-grid mb-4">
-                            <h1 className="text-3xl lg:text-4xl font-bold leading-tight wrap-break-words">{research.title}</h1>
+                            <h1 className="text-3xl lg:text-4xl font-bold leading-tight wrap-break-words">
+                                {research.title}
+                            </h1>
 
                             {research.featuredImage && (
                                 <div className="featured-img rounded-lg border-2 border-gray-400 object-cover overflow-hidden">
@@ -179,7 +192,13 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 text-sm text-slate-300">
                                     {research.author && (
                                         <div className="flex items-center gap-1.5">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                            <svg
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                aria-hidden
+                                            >
                                                 <path
                                                     strokeLinecap="round"
                                                     strokeLinejoin="round"
@@ -187,11 +206,19 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                                 />
                                             </svg>
-                                            <span className="font-medium">{research.author}</span>
+                                            <span className="font-medium">
+                                                {research.author}
+                                            </span>
                                         </div>
                                     )}
                                     <div className="flex items-center gap-1.5">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                        <svg
+                                            className="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden
+                                        >
                                             <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
@@ -205,8 +232,12 @@ export function ResearchMain({ slug }: ResearchMainProps) {
 
                                 {research.abstract && (
                                     <div className="rounded-sm pl-4 mb-4 border-l-4 border-purple-600 bg-transparent">
-                                        <h2 className="text-sm font-semibold mb-1 uppercase tracking-wide text-slate-50">Abstract</h2>
-                                        <p className="leading-relaxed text-sm text-slate-300">{research.abstract}</p>
+                                        <h2 className="text-sm font-semibold mb-1 uppercase tracking-wide text-slate-50">
+                                            Abstract
+                                        </h2>
+                                        <p className="leading-relaxed text-sm text-slate-300">
+                                            {research.abstract}
+                                        </p>
                                     </div>
                                 )}
 
@@ -214,7 +245,9 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                                 {research.tags && research.tags.length > 0 && (
                                     <div className="mt-2 mb-4">
                                         <div className="flex flex-wrap gap-2 items-center">
-                                            <span className="text-xs text-slate-400 mr-2">Keywords:</span>
+                                            <span className="text-xs text-slate-400 mr-2">
+                                                Keywords:
+                                            </span>
                                             {research.tags.map((tag, idx) => (
                                                 <span
                                                     key={idx}
@@ -231,7 +264,10 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* sidebar */}
                             <aside className="hidden md:block lg:hidden header-sidebar">
                                 <div className="p-4">
-                                    <ResearchSidebar slug={slug} showOnlyTop={true} />
+                                    <ResearchSidebar
+                                        slug={slug}
+                                        showOnlyTop={true}
+                                    />
                                 </div>
                             </aside>
                         </div>
@@ -239,7 +275,10 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                         {/* bottom sidebar blocks */}
                         <div className="hidden md:block lg:hidden w-full mt-4">
                             <div className="grid grid-cols-2 gap-4">
-                                <ResearchSidebar slug={slug} showOnlyBottom={true} />
+                                <ResearchSidebar
+                                    slug={slug}
+                                    showOnlyBottom={true}
+                                />
                             </div>
                         </div>
                     </header>
@@ -263,9 +302,14 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Introduction */}
                             {research.introduction && (
                                 <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Introduction</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
+                                        Introduction
+                                    </h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer content={research.introduction} variant="preview" />
+                                        <MarkdownRenderer
+                                            content={research.introduction}
+                                            variant="preview"
+                                        />
                                     </div>
                                 </section>
                             )}
@@ -273,9 +317,14 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Methods */}
                             {research.method && (
                                 <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Methods &amp; Approach</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
+                                        Methods &amp; Approach
+                                    </h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer content={research.method} variant="preview" />
+                                        <MarkdownRenderer
+                                            content={research.method}
+                                            variant="preview"
+                                        />
                                     </div>
                                 </section>
                             )}
@@ -283,9 +332,14 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Key Findings */}
                             {research.keyFindings && (
                                 <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Key Findings</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
+                                        Key Findings
+                                    </h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer content={research.keyFindings} variant="preview" />
+                                        <MarkdownRenderer
+                                            content={research.keyFindings}
+                                            variant="preview"
+                                        />
                                     </div>
                                 </section>
                             )}
@@ -293,26 +347,41 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             {/* Discussion */}
                             {research.content && (
                                 <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">Discussion &amp; Analysis</h2>
+                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
+                                        Discussion &amp; Analysis
+                                    </h2>
                                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer content={research.content} variant="preview" />
+                                        <MarkdownRenderer
+                                            content={research.content}
+                                            variant="preview"
+                                        />
                                     </div>
                                 </section>
                             )}
 
                             {/* References */}
-                            {research.references && research.references.length > 0 && (
-                                <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">References</h2>
-                                    <ol className="space-y-2 list-decimal list-inside text-slate-300 text-sm">
-                                        {research.references.map((ref, idx) => (
-                                            <li key={idx} className="pl-2">
-                                                <span className="pl-2">{ref}</span>
-                                            </li>
-                                        ))}
-                                    </ol>
-                                </section>
-                            )}
+                            {research.references &&
+                                research.references.length > 0 && (
+                                    <section className="py-6">
+                                        <h2 className="text-3xl font-bold mb-4 text-slate-50">
+                                            References
+                                        </h2>
+                                        <ol className="space-y-2 list-decimal list-inside text-slate-300 text-sm">
+                                            {research.references.map(
+                                                (ref, idx) => (
+                                                    <li
+                                                        key={idx}
+                                                        className="pl-2"
+                                                    >
+                                                        <span className="pl-2">
+                                                            {ref}
+                                                        </span>
+                                                    </li>
+                                                ),
+                                            )}
+                                        </ol>
+                                    </section>
+                                )}
                         </div>
                     </main>
                 </div>
@@ -320,8 +389,12 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                 {/* Footer metadata */}
                 <footer className="border-t-2 border-gray-400 p-6 lg:p-8 text-sm text-slate-300 flex flex-col lg:flex-row justify-between gap-3">
                     <div>
-                        <div className="font-medium">{research.author ?? 'Unknown author'}</div>
-                        <div className="text-xs">© {new Date(research.createdAt).getFullYear()}</div>
+                        <div className="font-medium">
+                            {research.author ?? 'Unknown author'}
+                        </div>
+                        <div className="text-xs">
+                            © {new Date(research.createdAt).getFullYear()}
+                        </div>
                     </div>
                     <div className="text-xs">
                         <div>Published: {formattedDate}</div>

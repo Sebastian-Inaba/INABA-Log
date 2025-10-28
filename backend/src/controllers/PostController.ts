@@ -4,7 +4,11 @@ import createHttpError from 'http-errors';
 import { Post, IPost } from '../models/PostModel';
 
 // get all posts
-export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllPosts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const tag = req.query.tag as string | undefined;
         const category = req.query.category as string | undefined;
@@ -26,19 +30,29 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
             filter.createdAt = {};
             switch (dateFilter) {
                 case 'newest':
-                    filter.createdAt.$gte = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'week':
-                    filter.createdAt.$gte = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 7 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'month':
-                    filter.createdAt.$gte = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 30 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'year':
-                    filter.createdAt.$gte = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'older':
-                    filter.createdAt.$lt = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$lt = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
             }
         }
@@ -49,7 +63,9 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('title author description category tags featuredImage createdAt updatedAt slug')
+            .select(
+                'title author description category tags featuredImage createdAt updatedAt slug',
+            )
             .lean();
 
         const totalPosts = await Post.countDocuments(filter);
@@ -68,11 +84,17 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
 };
 
 // get newest post
-export const getNewestPost = async (req: Request, res: Response, next: NextFunction) => {
+export const getNewestPost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const post = await Post.findOne()
             .sort({ createdAt: -1 })
-            .select('title author description category tags featuredImage createdAt slug');
+            .select(
+                'title author description category tags featuredImage createdAt slug',
+            );
 
         if (!post) throw createHttpError(404, 'No posts found');
 
@@ -83,9 +105,15 @@ export const getNewestPost = async (req: Request, res: Response, next: NextFunct
 };
 
 // get featured posts
-export const getFeaturedPosts = async (req: Request, res: Response, next: NextFunction) => {
+export const getFeaturedPosts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const posts = await Post.find({ featured: true }).select('title category featured slug');
+        const posts = await Post.find({ featured: true }).select(
+            'title category featured slug',
+        );
 
         res.status(200).json({
             success: true,
@@ -98,7 +126,11 @@ export const getFeaturedPosts = async (req: Request, res: Response, next: NextFu
 };
 
 // get post by slug
-export const getPostBySlug = async (req: Request, res: Response, next: NextFunction) => {
+export const getPostBySlug = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { slug } = req.params;
         const post = await Post.findOne({ slug }).exec();
@@ -112,13 +144,19 @@ export const getPostBySlug = async (req: Request, res: Response, next: NextFunct
 };
 
 // get latest five posts (excluding the newest)
-export const getLatestFivePosts = async (req: Request, res: Response, next: NextFunction) => {
+export const getLatestFivePosts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const posts = await Post.find()
             .sort({ createdAt: -1 })
             .skip(1)
             .limit(5)
-            .select('title author description category tags featuredImage createdAt updatedAt slug');
+            .select(
+                'title author description category tags featuredImage createdAt updatedAt slug',
+            );
 
         res.status(200).json({
             success: true,

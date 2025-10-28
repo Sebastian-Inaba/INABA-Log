@@ -8,7 +8,11 @@ type DesktopNavProps = {
     onItemClick?: () => void;
 };
 
-export function DesktopNav({ navItems, navFont, onItemClick }: DesktopNavProps) {
+export function DesktopNav({
+    navItems,
+    navFont,
+    onItemClick,
+}: DesktopNavProps) {
     return (
         <ul className="flex flex-row gap-4">
             {navItems.map((route) => {
@@ -24,14 +28,22 @@ export function DesktopNav({ navItems, navFont, onItemClick }: DesktopNavProps) 
                             {route.icon && (
                                 <img
                                     src={route.icon}
-                                    alt={route.iconLabel ?? `${route.label} icon`}
+                                    alt={
+                                        route.iconLabel ?? `${route.label} icon`
+                                    }
                                     className="w-5 h-5 shrink-0 ml-0.5"
                                     loading="lazy"
                                 />
                             )}
 
                             {/* Label text */}
-                            <span style={{ fontFamily: navFont, color: '#252525' }} className="font-semibold whitespace-nowrap">
+                            <span
+                                style={{
+                                    fontFamily: navFont,
+                                    color: '#252525',
+                                }}
+                                className="font-semibold whitespace-nowrap"
+                            >
                                 {route.label}
                             </span>
                         </Link>

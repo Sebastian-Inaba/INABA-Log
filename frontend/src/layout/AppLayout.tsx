@@ -42,9 +42,15 @@ export function AppLayout() {
     useEffect(() => {
         if (typeof document !== 'undefined') {
             if (!isHeaderVisible) {
-                document.documentElement.setAttribute('data-header-hidden', 'true');
+                document.documentElement.setAttribute(
+                    'data-header-hidden',
+                    'true',
+                );
             } else {
-                document.documentElement.setAttribute('data-header-hidden', 'false');
+                document.documentElement.setAttribute(
+                    'data-header-hidden',
+                    'false',
+                );
             }
         }
     }, [isHeaderVisible]);
@@ -52,7 +58,14 @@ export function AppLayout() {
     return (
         <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
             {/* Line Network Backdrop */}
-            <LineNetworkBackdrop lineCount={35} lineColor="#9162CB66" lineWidth={2} duration={15000} endpointBand={0.7} sphereSize={0.05} />
+            <LineNetworkBackdrop
+                lineCount={35}
+                lineColor="#9162CB66"
+                lineWidth={2}
+                duration={15000}
+                endpointBand={0.7}
+                sphereSize={0.05}
+            />
 
             {/* Header */}
             <header

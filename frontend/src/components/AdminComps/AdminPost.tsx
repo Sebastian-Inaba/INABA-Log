@@ -2,7 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { apiClient } from '../../utilities/api';
 import { makeSlug, parseTags, parseReferences } from '../../utilities/helpers';
-import { FileUpload, Checkbox, PreviewPanel, StatusMessages, ConfirmationModal } from './ChildComps';
+import {
+    FileUpload,
+    Checkbox,
+    PreviewPanel,
+    StatusMessages,
+    ConfirmationModal,
+} from './ChildComps';
 import type { ContentType, FormState } from '../../types';
 import type { ChangeEvent } from 'react';
 
@@ -30,11 +36,15 @@ export function CreateNewModal() {
     });
 
     // File uploads
-    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
+    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(
+        null,
+    );
     const [pdfAttachment, setPdfAttachment] = useState<File | null>(null);
 
     // Preview URLs for files
-    const [featuredImageUrl, setFeaturedImageUrl] = useState<string | null>(null);
+    const [featuredImageUrl, setFeaturedImageUrl] = useState<string | null>(
+        null,
+    );
     useEffect(() => {
         if (!featuredImageFile) {
             setFeaturedImageUrl(null);
@@ -49,7 +59,10 @@ export function CreateNewModal() {
 
     const [loading, setLoading] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const [status, setStatus] = useState<{ error: string | null; success: string | null }>({ error: null, success: null });
+    const [status, setStatus] = useState<{
+        error: string | null;
+        success: string | null;
+    }>({ error: null, success: null });
     const initialFocusRef = useRef<HTMLTextAreaElement>(null);
 
     // Generic handler to update form fields
@@ -60,7 +73,9 @@ export function CreateNewModal() {
     // Auto-generate slug from title
     useEffect(() => {
         const newSlug = makeSlug(formData.title);
-        setFormData((prev) => (prev.slug === newSlug ? prev : { ...prev, slug: newSlug }));
+        setFormData((prev) =>
+            prev.slug === newSlug ? prev : { ...prev, slug: newSlug },
+        );
     }, [formData.title]);
 
     // Prevent background scrolling when modal is open
@@ -116,7 +131,10 @@ export function CreateNewModal() {
     // Handle submission: prepare FormData, call API, handle response
     const handleSubmit = async () => {
         if (!isValid()) {
-            setStatus({ error: 'Please fill required fields (title, content, and abstract for research).', success: null });
+            setStatus({
+                error: 'Please fill required fields (title, content, and abstract for research).',
+                success: null,
+            });
             setShowConfirm(false);
             return;
         }
@@ -130,14 +148,16 @@ export function CreateNewModal() {
             fd.append('title', formData.title);
             fd.append('slug', formData.slug || makeSlug(formData.title));
             if (formData.author) fd.append('author', formData.author);
-            if (formData.description) fd.append('description', formData.description);
+            if (formData.description)
+                fd.append('description', formData.description);
             fd.append('content', formData.content);
 
             const tagsArray = parseTags(formData.tags);
             fd.append('tags', JSON.stringify(tagsArray));
             fd.append('featured', String(formData.featured));
 
-            if (featuredImageFile) fd.append('featuredImage', featuredImageFile);
+            if (featuredImageFile)
+                fd.append('featuredImage', featuredImageFile);
 
             let endpoint = '';
 
@@ -147,10 +167,13 @@ export function CreateNewModal() {
             } else {
                 endpoint = '/admin/research';
                 fd.append('abstract', formData.abstractText);
-                if (formData.introduction) fd.append('introduction', formData.introduction);
+                if (formData.introduction)
+                    fd.append('introduction', formData.introduction);
                 if (formData.method) fd.append('method', formData.method);
-                if (formData.keyFindings) fd.append('keyFindings', formData.keyFindings);
-                if (formData.credibility) fd.append('credibility', formData.credibility);
+                if (formData.keyFindings)
+                    fd.append('keyFindings', formData.keyFindings);
+                if (formData.credibility)
+                    fd.append('credibility', formData.credibility);
 
                 const referencesArray = parseReferences(formData.references);
                 fd.append('references', JSON.stringify(referencesArray));
@@ -160,7 +183,10 @@ export function CreateNewModal() {
 
             await apiClient.post(endpoint, fd);
 
-            setStatus({ success: `${type === 'post' ? 'Post' : 'Research'} created successfully.`, error: null });
+            setStatus({
+                success: `${type === 'post' ? 'Post' : 'Research'} created successfully.`,
+                error: null,
+            });
             resetForm();
             setOpen(false);
         } catch (err) {
@@ -176,8 +202,10 @@ export function CreateNewModal() {
     // Standard props for all input fields
     const commonInputProps = (field: keyof FormState) => ({
         value: formData[field] as unknown as string,
-        onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => updateField(field, e.target.value),
-        className: 'w-full p-3 rounded-lg bg-neutral-800 border border-purple-700 focus:ring-2 focus:ring-purple-500',
+        onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+            updateField(field, e.target.value),
+        className:
+            'w-full p-3 rounded-lg bg-neutral-800 border border-purple-700 focus:ring-2 focus:ring-purple-500',
     });
 
     return (
@@ -202,7 +230,11 @@ export function CreateNewModal() {
                     aria-label="Create new content"
                 >
                     {/* Background overlay */}
-                    <div className="absolute inset-0 bg-neutral-900 bg-opacity-80" onClick={() => setOpen(false)} aria-hidden />
+                    <div
+                        className="absolute inset-0 bg-neutral-900 bg-opacity-80"
+                        onClick={() => setOpen(false)}
+                        aria-hidden
+                    />
 
                     {/* Modal content container */}
                     <div
@@ -212,10 +244,14 @@ export function CreateNewModal() {
                         {/* Header with title and content type selector */}
                         <div className="flex items-start justify-between gap-4 mb-6">
                             <div className="flex items-center gap-4">
-                                <h2 className="text-2xl font-bold text-purple-400">Create New Content</h2>
+                                <h2 className="text-2xl font-bold text-purple-400">
+                                    Create New Content
+                                </h2>
                                 <select
                                     value={type}
-                                    onChange={(e) => setType(e.target.value as ContentType)}
+                                    onChange={(e) =>
+                                        setType(e.target.value as ContentType)
+                                    }
                                     className="bg-neutral-800 text-white px-3 py-2 rounded-lg border border-purple-700 focus:ring-2 focus:ring-purple-500"
                                     aria-label="Content type"
                                 >
@@ -236,9 +272,13 @@ export function CreateNewModal() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="space-y-5">
                                 {/* Basic fields: title and author */}
-                                {(['title', 'author'] as (keyof FormState)[]).map((field) => (
+                                {(
+                                    ['title', 'author'] as (keyof FormState)[]
+                                ).map((field) => (
                                     <div key={field}>
-                                        <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">{field}</label>
+                                        <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">
+                                            {field}
+                                        </label>
                                         <input {...commonInputProps(field)} />
                                     </div>
                                 ))}
@@ -246,10 +286,16 @@ export function CreateNewModal() {
                                 {/* Description / Abstract */}
                                 <div>
                                     <label className="block text-sm font-semibold text-purple-300 mb-1">
-                                        {type === 'post' ? 'Description (optional)' : 'Abstract (required)'}
+                                        {type === 'post'
+                                            ? 'Description (optional)'
+                                            : 'Abstract (required)'}
                                     </label>
                                     <textarea
-                                        {...commonInputProps(type === 'post' ? 'description' : 'abstractText')}
+                                        {...commonInputProps(
+                                            type === 'post'
+                                                ? 'description'
+                                                : 'abstractText',
+                                        )}
                                         className={`${commonInputProps(type === 'post' ? 'description' : 'abstractText').className} min-h-[100px]`}
                                     />
                                 </div>
@@ -257,20 +303,33 @@ export function CreateNewModal() {
                                 {/* Category for posts */}
                                 {type === 'post' && (
                                     <div>
-                                        <label className="block text-sm font-semibold text-purple-300 mb-1">Category</label>
-                                        <input {...commonInputProps('category')} />
+                                        <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                            Category
+                                        </label>
+                                        <input
+                                            {...commonInputProps('category')}
+                                        />
                                     </div>
                                 )}
 
                                 {/* Research-specific fields */}
                                 {type === 'research' && (
                                     <>
-                                        {(['introduction', 'method', 'keyFindings', 'credibility'] as (keyof FormState)[]).map((field) => (
+                                        {(
+                                            [
+                                                'introduction',
+                                                'method',
+                                                'keyFindings',
+                                                'credibility',
+                                            ] as (keyof FormState)[]
+                                        ).map((field) => (
                                             <div key={field}>
                                                 <label className="block text-sm font-semibold text-purple-300 mb-1 capitalize">
                                                     {field}
                                                 </label>
-                                                <input {...commonInputProps(field)} />
+                                                <input
+                                                    {...commonInputProps(field)}
+                                                />
                                             </div>
                                         ))}
                                     </>
@@ -278,15 +337,21 @@ export function CreateNewModal() {
 
                                 {/* Tags */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-purple-300 mb-1">Tags (comma separated)</label>
-                                    <input {...commonInputProps('tags')} placeholder="tag1, tag2, tag3" />
+                                    <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                        Tags (comma separated)
+                                    </label>
+                                    <input
+                                        {...commonInputProps('tags')}
+                                        placeholder="tag1, tag2, tag3"
+                                    />
                                 </div>
 
                                 {/* References for research */}
                                 {type === 'research' && (
                                     <div>
                                         <label className="block text-sm font-semibold text-purple-300 mb-1">
-                                            References (comma, semicolon, or newline separated)
+                                            References (comma, semicolon, or
+                                            newline separated)
                                         </label>
                                         <textarea
                                             {...commonInputProps('references')}
@@ -315,7 +380,9 @@ export function CreateNewModal() {
 
                                 {/* Content editor */}
                                 <div>
-                                    <label className="block text-sm font-semibold text-purple-300 mb-1">Content (Markdown)</label>
+                                    <label className="block text-sm font-semibold text-purple-300 mb-1">
+                                        Content (Markdown)
+                                    </label>
                                     <textarea
                                         ref={initialFocusRef}
                                         {...commonInputProps('content')}
@@ -328,7 +395,9 @@ export function CreateNewModal() {
                                 <Checkbox
                                     label="Feature this content"
                                     checked={formData.featured}
-                                    onChange={(checked: boolean) => updateField('featured', checked)}
+                                    onChange={(checked: boolean) =>
+                                        updateField('featured', checked)
+                                    }
                                 />
 
                                 {/* Action buttons */}

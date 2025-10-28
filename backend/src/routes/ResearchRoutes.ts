@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getAllResearch, getResearchBySlug, getTwoNewestResearch } from '../controllers/ResearchController';
+import {
+    getAllResearch,
+    getResearchBySlug,
+    getTwoNewestResearch,
+} from '../controllers/ResearchController';
 
 const router = Router();
 

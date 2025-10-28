@@ -50,7 +50,12 @@ export const globalLimiter = rateLimit({
     skip: (req) => env.nodeEnv !== 'production',
     handler: (req, res) => {
         res.set('Retry-After', String(Math.ceil(15 * 60)));
-        return res.status(429).json({ error: 'Too many requests', message: 'Too many requests, please try again later.' });
+        return res
+            .status(429)
+            .json({
+                error: 'Too many requests',
+                message: 'Too many requests, please try again later.',
+            });
     },
 });
 
@@ -73,7 +78,10 @@ connectDB()
         });
     })
     .catch((err) => {
-        console.error('❌ Failed to connect to MongoDB. Server not started.', err);
+        console.error(
+            '❌ Failed to connect to MongoDB. Server not started.',
+            err,
+        );
     });
 
 // ---------------- Graceful shutdown ----------------------------------- //

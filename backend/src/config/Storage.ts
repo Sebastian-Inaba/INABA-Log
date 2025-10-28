@@ -3,7 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 import { env } from './env';
 
 // Supabase client
-export const supabase = createClient(env.supabase.url, env.supabase.serviceRoleKey);
+export const supabase = createClient(
+    env.supabase.url,
+    env.supabase.serviceRoleKey,
+);
 
 // Export buckets
 export const buckets = {

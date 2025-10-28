@@ -10,7 +10,11 @@ interface ResearchSidebarProps {
     showOnlyBottom?: boolean; // Flag to show only the bottom section
 }
 
-export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBottom = false }: ResearchSidebarProps) {
+export default function ResearchSidebar({
+    slug,
+    showOnlyTop = false,
+    showOnlyBottom = false,
+}: ResearchSidebarProps) {
     // State management
     const [research, setResearch] = useState<Research | null>(null);
     const [loading, setLoading] = useState(true);
@@ -21,10 +25,16 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
         const fetchResearch = async () => {
             try {
                 setLoading(true);
-                const response = await apiClient.get<{ success: boolean; deepDive: Research }>(`/research/${slug}`);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    deepDive: Research;
+                }>(`/research/${slug}`);
                 setResearch(response.data.deepDive);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch research';
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to fetch research';
                 logError('ResearchSidebar error:', errorMessage, err);
             } finally {
                 setLoading(false);
@@ -58,7 +68,8 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
     };
 
     // CSS class constants for consistent styling
-    const baseCard = 'rounded-lg shadow-lg p-5 border-2 border-gray-400 bg-neutral-900 text-slate-50';
+    const baseCard =
+        'rounded-lg shadow-lg p-5 border-2 border-gray-400 bg-neutral-900 text-slate-50';
     const buttonBase =
         'flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg font-semibold text-xs transition-colors border-2 border-gray-400 cursor-pointer';
 
@@ -66,10 +77,18 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
     if (loading) {
         return (
             <div className="space-y-4">
-                {!showOnlyBottom && <div className={`${baseCard} animate-pulse`} />}
-                {!showOnlyBottom && <div className={`${baseCard} animate-pulse`} />}
-                {!showOnlyTop && <div className={`${baseCard} animate-pulse`} />}
-                {!showOnlyTop && <div className={`${baseCard} animate-pulse`} />}
+                {!showOnlyBottom && (
+                    <div className={`${baseCard} animate-pulse`} />
+                )}
+                {!showOnlyBottom && (
+                    <div className={`${baseCard} animate-pulse`} />
+                )}
+                {!showOnlyTop && (
+                    <div className={`${baseCard} animate-pulse`} />
+                )}
+                {!showOnlyTop && (
+                    <div className={`${baseCard} animate-pulse`} />
+                )}
             </div>
         );
     }
@@ -85,7 +104,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                 <div className={`${baseCard}`}>
                     <div className="flex items-center gap-2 mb-3">
                         {/* PDF Icon */}
-                        <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-5 h-5 text-purple-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -93,13 +118,17 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                             />
                         </svg>
-                        <h3 className="text-base font-bold">Full Research Paper</h3>
+                        <h3 className="text-base font-bold">
+                            Full Research Paper
+                        </h3>
                     </div>
 
                     {/* PDF Attachment Availability */}
                     {research.pdfAttachment ? (
                         <>
-                            <p className="text-xs mb-3 text-slate-300">Access the complete research document</p>
+                            <p className="text-xs mb-3 text-slate-300">
+                                Access the complete research document
+                            </p>
                             <div className="flex gap-2">
                                 {/* View PDF Button */}
                                 <a
@@ -109,7 +138,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                     className={`${buttonBase} text-purple-300 hover:bg-purple-950/20`}
                                     aria-label="View research PDF"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden
+                                    >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -133,7 +168,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                     className={`${buttonBase} text-purple-300 hover:bg-purple-950/20`}
                                     aria-label="Download research PDF"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden
+                                    >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -147,7 +188,9 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         </>
                     ) : (
                         // Fallback when no PDF available
-                        <p className="text-xs italic text-slate-400">PDF not available for this research</p>
+                        <p className="text-xs italic text-slate-400">
+                            PDF not available for this research
+                        </p>
                     )}
                 </div>
 
@@ -158,15 +201,23 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         {/* Author Information */}
                         {research.author && (
                             <div>
-                                <span className="text-slate-400 block mb-0.5">Author</span>
-                                <span className="font-medium">{research.author}</span>
+                                <span className="text-slate-400 block mb-0.5">
+                                    Author
+                                </span>
+                                <span className="font-medium">
+                                    {research.author}
+                                </span>
                             </div>
                         )}
                         {/* Publication Date */}
                         <div>
-                            <span className="text-slate-400 block mb-0.5">Published</span>
+                            <span className="text-slate-400 block mb-0.5">
+                                Published
+                            </span>
                             <span className="font-medium">
-                                {new Date(research.createdAt).toLocaleDateString('en-US', {
+                                {new Date(
+                                    research.createdAt,
+                                ).toLocaleDateString('en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
@@ -181,16 +232,25 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                     <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg shadow-lg p-5 border-2 border-green-200 dark:border-green-900">
                         <div className="flex items-center gap-2 mb-2">
                             {/* Checkmark Icon */}
-                            <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
+                            <svg
+                                className="w-4 h-4 text-green-600 dark:text-green-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                aria-hidden
+                            >
                                 <path
                                     fillRule="evenodd"
                                     d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <h3 className="text-base font-bold text-green-900 dark:text-green-100">Credibility</h3>
+                            <h3 className="text-base font-bold text-green-900 dark:text-green-100">
+                                Credibility
+                            </h3>
                         </div>
-                        <p className="text-xs text-green-800 dark:text-green-200">{research.credibility}</p>
+                        <p className="text-xs text-green-800 dark:text-green-200">
+                            {research.credibility}
+                        </p>
                     </div>
                 )}
             </div>
@@ -207,7 +267,9 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                     {/* Citation Preview */}
                     <div className="rounded p-3 border-2 border-gray-400 mb-3">
                         <p className="text-xs font-mono wrap-break-words leading-relaxed text-slate-50">
-                            {research.author ? `${research.author}. ` : ''}({new Date(research.createdAt).getFullYear()}). {research.title}.
+                            {research.author ? `${research.author}. ` : ''}(
+                            {new Date(research.createdAt).getFullYear()}).{' '}
+                            {research.title}.
                         </p>
                     </div>
 
@@ -217,7 +279,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-neutral-800 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border-2 border-gray-400 cursor-pointer"
                         aria-label="Copy citation"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -244,7 +312,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         onClick={handleCopyLink}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border-2 border-gray-400 bg-transparent cursor-pointer hover:bg-neutral-800"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -268,7 +342,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                 {/* PDF Access Card */}
                 <div className={`${baseCard}`}>
                     <div className="flex items-center gap-2 mb-3">
-                        <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-5 h-5 text-purple-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -276,12 +356,16 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                 d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                             />
                         </svg>
-                        <h3 className="text-base font-bold">Full Research Paper</h3>
+                        <h3 className="text-base font-bold">
+                            Full Research Paper
+                        </h3>
                     </div>
 
                     {research.pdfAttachment ? (
                         <>
-                            <p className="text-xs mb-3 text-slate-300">Access the complete research document</p>
+                            <p className="text-xs mb-3 text-slate-300">
+                                Access the complete research document
+                            </p>
                             <div className="flex gap-2">
                                 <a
                                     href={research.pdfAttachment}
@@ -290,7 +374,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                     className={`${buttonBase} text-purple-300 hover:bg-purple-950/20`}
                                     aria-label="View research PDF"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden
+                                    >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -313,7 +403,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                                     className={`${buttonBase} text-purple-300 hover:bg-purple-950/20`}
                                     aria-label="Download research PDF"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden
+                                    >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -326,7 +422,9 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                             </div>
                         </>
                     ) : (
-                        <p className="text-xs italic text-slate-400">PDF not available for this research</p>
+                        <p className="text-xs italic text-slate-400">
+                            PDF not available for this research
+                        </p>
                     )}
                 </div>
 
@@ -336,14 +434,22 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                     <div className="space-y-2.5 text-sm">
                         {research.author && (
                             <div>
-                                <span className="text-slate-400 block mb-0.5">Author</span>
-                                <span className="font-medium">{research.author}</span>
+                                <span className="text-slate-400 block mb-0.5">
+                                    Author
+                                </span>
+                                <span className="font-medium">
+                                    {research.author}
+                                </span>
                             </div>
                         )}
                         <div>
-                            <span className="text-slate-400 block mb-0.5">Published</span>
+                            <span className="text-slate-400 block mb-0.5">
+                                Published
+                            </span>
                             <span className="font-medium">
-                                {new Date(research.createdAt).toLocaleDateString('en-US', {
+                                {new Date(
+                                    research.createdAt,
+                                ).toLocaleDateString('en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
@@ -357,16 +463,25 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                 {research.credibility && (
                     <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg shadow-lg p-5 border-2 border-green-200 dark:border-green-900">
                         <div className="flex items-center gap-2 mb-2">
-                            <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
+                            <svg
+                                className="w-4 h-4 text-green-600 dark:text-green-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                aria-hidden
+                            >
                                 <path
                                     fillRule="evenodd"
                                     d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <h3 className="text-base font-bold text-green-900 dark:text-green-100">Credibility</h3>
+                            <h3 className="text-base font-bold text-green-900 dark:text-green-100">
+                                Credibility
+                            </h3>
                         </div>
-                        <p className="text-xs text-green-800 dark:text-green-200">{research.credibility}</p>
+                        <p className="text-xs text-green-800 dark:text-green-200">
+                            {research.credibility}
+                        </p>
                     </div>
                 )}
             </div>
@@ -378,7 +493,9 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                     <h3 className="text-base font-bold mb-3">Cite This Work</h3>
                     <div className="rounded p-3 border-2 border-gray-400 mb-3">
                         <p className="text-xs font-mono wrap-break-words leading-relaxed text-slate-50">
-                            {research.author ? `${research.author}. ` : ''}({new Date(research.createdAt).getFullYear()}). {research.title}.
+                            {research.author ? `${research.author}. ` : ''}(
+                            {new Date(research.createdAt).getFullYear()}).{' '}
+                            {research.title}.
                         </p>
                     </div>
 
@@ -387,7 +504,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-neutral-800 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border-2 border-gray-400 cursor-pointer"
                         aria-label="Copy citation"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -411,7 +534,13 @@ export default function ResearchSidebar({ slug, showOnlyTop = false, showOnlyBot
                         onClick={handleCopyLink}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border-2 border-gray-400 bg-transparent cursor-pointer hover:bg-neutral-800"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                        >
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"

@@ -3,16 +3,36 @@ import { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
 import { Post, IPost } from '../models/PostModel';
 import { Research, IResearch } from '../models/ResearchModel';
-import { uploadFile, removeFile, UploadResult } from '../controllers/UploadController';
+import {
+    uploadFile,
+    removeFile,
+    UploadResult,
+} from '../controllers/UploadController';
 
 // -------------------- POSTS -------------------------------------------------------------------- //
 
 // Create Post
-export const createPost = async (req: Request, res: Response, next: NextFunction) => {
+export const createPost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const { title, content, category, tags, featured, author, description } = req.body;
+        const {
+            title,
+            content,
+            category,
+            tags,
+            featured,
+            author,
+            description,
+        } = req.body;
         // Parse tags if sent as JSON string
-        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
+        const parsedTags = tags
+            ? Array.isArray(tags)
+                ? tags
+                : JSON.parse(tags)
+            : [];
         let featuredImage: string | null = null;
 
         if (req.file) {
@@ -38,10 +58,22 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 };
 
 // Update Post
-export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
+export const updatePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
-        const { title, content, category, tags, featured, author, description } = req.body;
+        const {
+            title,
+            content,
+            category,
+            tags,
+            featured,
+            author,
+            description,
+        } = req.body;
 
         const post: IPost | null = await Post.findById(id);
         if (!post) throw createHttpError(404, 'Post not found');
@@ -59,7 +91,12 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
             }
 
             const uploaded: UploadResult = await uploadFile(req.file, 'posts');
-            console.log('Uploaded new file:', uploaded.filename, 'Public URL:', uploaded.publicUrl);
+            console.log(
+                'Uploaded new file:',
+                uploaded.filename,
+                'Public URL:',
+                uploaded.publicUrl,
+            );
 
             post.featuredImage = uploaded.filename;
         } else if (req.body.removeImage === 'true') {
@@ -74,14 +111,21 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
             }
         } else {
             // No change
-            console.log('No image uploaded and no delete requested — keeping current image');
+            console.log(
+                'No image uploaded and no delete requested — keeping current image',
+            );
         }
 
         if (title) post.title = title;
         post.content = content || post.content;
         post.category = category || post.category;
-        post.tags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : post.tags;
-        if (featured !== undefined) post.featured = featured === true || featured === 'true';
+        post.tags = tags
+            ? Array.isArray(tags)
+                ? tags
+                : JSON.parse(tags)
+            : post.tags;
+        if (featured !== undefined)
+            post.featured = featured === true || featured === 'true';
         post.author = author || post.author;
         post.description = description || post.description;
 
@@ -94,7 +138,11 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
 };
 
 // Delete Post
-export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+export const deletePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const post = await Post.findById(id);
@@ -122,7 +170,11 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
 };
 
 // Get Post
-export const getPost = async (req: Request, res: Response, next: NextFunction) => {
+export const getPost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const post = await Post.findById(id);
@@ -136,12 +188,36 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
 // -------------------- RESEARCH -------------------------------------------------------------------------- //
 
 // Create Research
-export const createResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const createResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const { title, author, abstract, introduction, method, keyFindings, credibility, content, references, tags, featured } = req.body;
+        const {
+            title,
+            author,
+            abstract,
+            introduction,
+            method,
+            keyFindings,
+            credibility,
+            content,
+            references,
+            tags,
+            featured,
+        } = req.body;
 
-        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
-        const parsedReferences = references ? (Array.isArray(references) ? references : JSON.parse(references)) : [];
+        const parsedTags = tags
+            ? Array.isArray(tags)
+                ? tags
+                : JSON.parse(tags)
+            : [];
+        const parsedReferences = references
+            ? Array.isArray(references)
+                ? references
+                : JSON.parse(references)
+            : [];
 
         let featuredImage: string | null = null;
         let pdfAttachment: string | null = null;
@@ -149,14 +225,20 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
         // Handle featured image
         if (req.files && (req.files as any).featuredImage?.length) {
             const imageFile = (req.files as any).featuredImage[0];
-            const uploadedImage: UploadResult = await uploadFile(imageFile, 'research');
+            const uploadedImage: UploadResult = await uploadFile(
+                imageFile,
+                'research',
+            );
             featuredImage = uploadedImage.publicUrl;
         }
 
         // Handle PDF attachment
         if (req.files && (req.files as any).pdfAttachment?.length) {
             const pdfFile = (req.files as any).pdfAttachment[0];
-            const uploadedPdf: UploadResult = await uploadFile(pdfFile, 'attachments');
+            const uploadedPdf: UploadResult = await uploadFile(
+                pdfFile,
+                'attachments',
+            );
             pdfAttachment = uploadedPdf.publicUrl;
         }
 
@@ -183,7 +265,11 @@ export const createResearch = async (req: Request, res: Response, next: NextFunc
 };
 
 // Update Research
-export const updateResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const updateResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const {
@@ -208,18 +294,29 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
         // Handle featured image update
         if (req.files && (req.files as any).featuredImage?.length) {
             if (research.featuredImage) {
-                const oldFile = decodeURIComponent(research.featuredImage.split('/').pop()!);
+                const oldFile = decodeURIComponent(
+                    research.featuredImage.split('/').pop()!,
+                );
                 console.log('Deleting old research image:', oldFile);
                 await removeFile('research', oldFile);
             }
 
             const imageFile = (req.files as any).featuredImage[0];
-            const uploadedImage: UploadResult = await uploadFile(imageFile, 'research');
-            console.log('Uploaded new research image:', uploadedImage.filename, uploadedImage.publicUrl);
+            const uploadedImage: UploadResult = await uploadFile(
+                imageFile,
+                'research',
+            );
+            console.log(
+                'Uploaded new research image:',
+                uploadedImage.filename,
+                uploadedImage.publicUrl,
+            );
 
             research.featuredImage = uploadedImage.publicUrl;
         } else if (removeImage === 'true' && research.featuredImage) {
-            const oldFile = decodeURIComponent(research.featuredImage.split('/').pop()!);
+            const oldFile = decodeURIComponent(
+                research.featuredImage.split('/').pop()!,
+            );
             console.log('Deleting research image only:', oldFile);
             await removeFile('research', oldFile);
             research.featuredImage = null;
@@ -230,18 +327,29 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
         // Handle PDF attachment update
         if (req.files && (req.files as any).pdfAttachment?.length) {
             if (research.pdfAttachment) {
-                const oldPdf = decodeURIComponent(research.pdfAttachment.split('/').pop()!);
+                const oldPdf = decodeURIComponent(
+                    research.pdfAttachment.split('/').pop()!,
+                );
                 console.log('Deleting old PDF attachment:', oldPdf);
                 await removeFile('attachments', oldPdf);
             }
 
             const pdfFile = (req.files as any).pdfAttachment[0];
-            const uploadedPdf: UploadResult = await uploadFile(pdfFile, 'attachments');
-            console.log('Uploaded new PDF attachment:', uploadedPdf.filename, uploadedPdf.publicUrl);
+            const uploadedPdf: UploadResult = await uploadFile(
+                pdfFile,
+                'attachments',
+            );
+            console.log(
+                'Uploaded new PDF attachment:',
+                uploadedPdf.filename,
+                uploadedPdf.publicUrl,
+            );
 
             research.pdfAttachment = uploadedPdf.publicUrl;
         } else if (removePdf === 'true' && research.pdfAttachment) {
-            const oldPdf = decodeURIComponent(research.pdfAttachment.split('/').pop()!);
+            const oldPdf = decodeURIComponent(
+                research.pdfAttachment.split('/').pop()!,
+            );
             console.log('Deleting PDF attachment only:', oldPdf);
             await removeFile('attachments', oldPdf);
             research.pdfAttachment = null;
@@ -249,8 +357,16 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
             console.log('No new PDF uploaded and no delete requested');
         }
 
-        const parsedTags = tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [];
-        const parsedReferences = references ? (Array.isArray(references) ? references : JSON.parse(references)) : [];
+        const parsedTags = tags
+            ? Array.isArray(tags)
+                ? tags
+                : JSON.parse(tags)
+            : [];
+        const parsedReferences = references
+            ? Array.isArray(references)
+                ? references
+                : JSON.parse(references)
+            : [];
 
         if (title) research.title = title;
         research.author = author || research.author;
@@ -262,7 +378,8 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
         research.content = content || research.content;
         research.references = parsedReferences;
         research.tags = parsedTags;
-        if (featured !== undefined) research.featured = featured === true || featured === 'true';
+        if (featured !== undefined)
+            research.featured = featured === true || featured === 'true';
 
         await research.save();
 
@@ -273,7 +390,11 @@ export const updateResearch = async (req: Request, res: Response, next: NextFunc
 };
 
 // Delete Research
-export const deleteResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const research = await Research.findById(id);
@@ -312,7 +433,11 @@ export const deleteResearch = async (req: Request, res: Response, next: NextFunc
 };
 
 // Get Research
-export const getResearch = async (req: Request, res: Response, next: NextFunction) => {
+export const getResearch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id } = req.params;
         const research = await Research.findById(id);
@@ -326,7 +451,11 @@ export const getResearch = async (req: Request, res: Response, next: NextFunctio
 // -------------------- RESEARCH AND POSTS(custom getall for admin panel) ---------------------------------------------------------- //
 
 // Get all content (both posts and research)
-export const getAllContent = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllContent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const {
             type, // 'post', 'research', or 'all'
@@ -342,7 +471,8 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
         } = req.query;
 
         // Validate type parameter
-        const contentType = type === 'research' ? 'research' : type === 'post' ? 'post' : 'all';
+        const contentType =
+            type === 'research' ? 'research' : type === 'post' ? 'post' : 'all';
 
         // Build base filter
         const filter: any = {};
@@ -364,25 +494,37 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
 
             switch (dateFilter) {
                 case 'newest':
-                    filter.createdAt.$gte = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'week':
-                    filter.createdAt.$gte = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 7 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'month':
-                    filter.createdAt.$gte = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 30 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'year':
-                    filter.createdAt.$gte = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$gte = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
                 case 'older':
-                    filter.createdAt.$lt = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    filter.createdAt.$lt = new Date(
+                        now.getTime() - 365 * 24 * 60 * 60 * 1000,
+                    );
                     break;
             }
         }
 
         const skip = (Number(page) - 1) * Number(limit);
-        const sortOption: any = { [sortBy as string]: sortOrder === 'desc' ? -1 : 1 };
+        const sortOption: any = {
+            [sortBy as string]: sortOrder === 'desc' ? -1 : 1,
+        };
 
         let results: any = {};
 
@@ -393,17 +535,24 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
                     .sort(sortOption)
                     .skip(skip)
                     .limit(Number(limit))
-                    .select('title slug author description category tags featuredImage featured createdAt updatedAt')
+                    .select(
+                        'title slug author description category tags featuredImage featured createdAt updatedAt',
+                    )
                     .lean(),
                 Research.find(filter)
                     .sort(sortOption)
                     .skip(skip)
                     .limit(Number(limit))
-                    .select('title slug author abstract tags featuredImage featured attachments createdAt updatedAt')
+                    .select(
+                        'title slug author abstract tags featuredImage featured attachments createdAt updatedAt',
+                    )
                     .lean(),
             ]);
 
-            const [totalPosts, totalResearch] = await Promise.all([Post.countDocuments(filter), Research.countDocuments(filter)]);
+            const [totalPosts, totalResearch] = await Promise.all([
+                Post.countDocuments(filter),
+                Research.countDocuments(filter),
+            ]);
 
             results = {
                 posts,
@@ -428,7 +577,9 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
                 .sort(sortOption)
                 .skip(skip)
                 .limit(Number(limit))
-                .select('title slug author description category tags featuredImage featured createdAt updatedAt')
+                .select(
+                    'title slug author description category tags featuredImage featured createdAt updatedAt',
+                )
                 .lean();
 
             const total = await Post.countDocuments(filter);
@@ -448,7 +599,9 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
                 .sort(sortOption)
                 .skip(skip)
                 .limit(Number(limit))
-                .select('title slug author abstract tags featuredImage featured attachments createdAt updatedAt')
+                .select(
+                    'title slug author abstract tags featuredImage featured attachments createdAt updatedAt',
+                )
                 .lean();
 
             const total = await Research.countDocuments(filter);
@@ -474,7 +627,11 @@ export const getAllContent = async (req: Request, res: Response, next: NextFunct
 };
 
 // Get content statistics for admin dashboard
-export const getContentStats = async (req: Request, res: Response, next: NextFunction) => {
+export const getContentStats = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         // Get counts by different criteria
         const [
@@ -498,17 +655,27 @@ export const getContentStats = async (req: Request, res: Response, next: NextFun
             // This month's content
             Post.countDocuments({
                 createdAt: {
-                    $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                    $gte: new Date(
+                        new Date().getFullYear(),
+                        new Date().getMonth(),
+                        1,
+                    ),
                 },
             }),
             Research.countDocuments({
                 createdAt: {
-                    $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                    $gte: new Date(
+                        new Date().getFullYear(),
+                        new Date().getMonth(),
+                        1,
+                    ),
                 },
             }),
 
             // Group by category (for posts)
-            Post.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]),
+            Post.aggregate([
+                { $group: { _id: '$category', count: { $sum: 1 } } },
+            ]),
 
             // Group by tag (for research)
             Research.aggregate([
@@ -551,13 +718,20 @@ export const getContentStats = async (req: Request, res: Response, next: NextFun
 };
 
 // Toggle featured status for content
-export const toggleFeatured = async (req: Request, res: Response, next: NextFunction) => {
+export const toggleFeatured = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { id, type } = req.params;
 
         if (!id) throw createHttpError(400, 'Content ID is required');
         if (!type || (type !== 'post' && type !== 'research')) {
-            throw createHttpError(400, 'Content type must be "post" or "research"');
+            throw createHttpError(
+                400,
+                'Content type must be "post" or "research"',
+            );
         }
 
         let content;

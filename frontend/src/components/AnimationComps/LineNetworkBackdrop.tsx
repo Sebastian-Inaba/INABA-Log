@@ -93,9 +93,16 @@ export function LineNetworkBackdrop({
             linesRef.current = Array.from({ length: lineCount }, () => {
                 const jitter = (Math.random() - 0.5) * (bandPx * 0.25);
                 const startY = midY + (Math.random() - 0.5) * bandPx + jitter;
-                const endY = midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
+                const endY =
+                    midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
 
-                return { startX: 0, startY, endX: W, endY, cx: [x1, x2, x3, x4] };
+                return {
+                    startX: 0,
+                    startY,
+                    endX: W,
+                    endY,
+                    cx: [x1, x2, x3, x4],
+                };
             });
 
             // Create or refresh motion targets (preserve existing angles when possible)
@@ -185,7 +192,8 @@ export function LineNetworkBackdrop({
                 let enforcedRightY = rawYs[2];
                 const denom = midX - xLeft;
                 if (Math.abs(denom) > 1e-6) {
-                    enforcedRightY = midY + ((xRight - midX) * (midY - rawYs[1])) / denom;
+                    enforcedRightY =
+                        midY + ((xRight - midX) * (midY - rawYs[1])) / denom;
                 }
                 // Use the enforced right control Y directly (strict C¹ continuity)
                 const cp2Y = enforcedRightY;
@@ -194,17 +202,32 @@ export function LineNetworkBackdrop({
                 const controlYs = [rawYs[0], rawYs[1], cp2Y, rawYs[3]];
 
                 // middle anchor point for the visual bulge (keeps center moving smoothly)
-                const middleY = midY + Math.sin(t.angle + 0.1) * (t.radius * 0.85);
+                const middleY =
+                    midY + Math.sin(t.angle + 0.1) * (t.radius * 0.85);
 
                 // draw the two Bezier segments: left->center and center->right
                 ctx.beginPath();
                 ctx.moveTo(line.startX, line.startY);
 
                 // left segment (start -> mid)
-                ctx.bezierCurveTo(line.cx[0], controlYs[0], line.cx[1], controlYs[1], midX, middleY);
+                ctx.bezierCurveTo(
+                    line.cx[0],
+                    controlYs[0],
+                    line.cx[1],
+                    controlYs[1],
+                    midX,
+                    middleY,
+                );
 
                 // right segment (mid -> end)
-                ctx.bezierCurveTo(line.cx[2], controlYs[2], line.cx[3], controlYs[3], line.endX, line.endY);
+                ctx.bezierCurveTo(
+                    line.cx[2],
+                    controlYs[2],
+                    line.cx[3],
+                    controlYs[3],
+                    line.endX,
+                    line.endY,
+                );
 
                 ctx.stroke();
             }
@@ -242,5 +265,11 @@ export function LineNetworkBackdrop({
     }, [lineCount, lineColor, lineWidth, duration, endpointBand, sphereSize]);
 
     // full-screen canvas behind UI (pointer-events-none so it doesn't block interaction)
-    return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }} />;
+    return (
+        <canvas
+            ref={canvasRef}
+            className="fixed top-0 left-0 w-full h-full pointer-events-none"
+            style={{ zIndex: 1 }}
+        />
+    );
 }

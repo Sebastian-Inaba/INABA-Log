@@ -35,10 +35,16 @@ export function NewestResearch({
             try {
                 setLoading(true);
                 setError(null);
-                const response = await apiClient.get<{ success: boolean; research: Research[] }>(url);
+                const response = await apiClient.get<{
+                    success: boolean;
+                    research: Research[];
+                }>(url);
                 setResearchList(response.data.research);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Failed to fetch research';
+                const message =
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to fetch research';
                 setError(message);
                 logError('NewestResearch error:', message, err);
             } finally {
@@ -67,7 +73,10 @@ export function NewestResearch({
                     <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
                         Something went wrong getting research highlights.
                     </p>
-                    <button onClick={handleRetry} className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2">
+                    <button
+                        onClick={handleRetry}
+                        className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
+                    >
                         Try Again
                     </button>
                 </div>
@@ -78,7 +87,10 @@ export function NewestResearch({
     /** Loading skeleton */
     if (loading) {
         return (
-            <section className={`p-3 sm:p-4 md:p-6 ${className}`} aria-labelledby="home-hero">
+            <section
+                className={`p-3 sm:p-4 md:p-6 ${className}`}
+                aria-labelledby="home-hero"
+            >
                 <header id="home-hero" className="mb-4 sm:mb-5">
                     <div className="h-7 sm:h-8 w-48 sm:w-64 rounded bg-gray-700 mb-2" />
                     <div className="h-3 sm:h-4 w-full sm:w-5/6 rounded bg-gray-700" />
@@ -86,7 +98,10 @@ export function NewestResearch({
                 </header>
                 <div className="space-y-3">
                     {[0, 1].map((_, researchIndex) => (
-                        <div key={researchIndex} className="p-3 rounded-lg border border-gray-700 bg-transparent animate-pulse">
+                        <div
+                            key={researchIndex}
+                            className="p-3 rounded-lg border border-gray-700 bg-transparent animate-pulse"
+                        >
                             <div className="h-4 sm:h-5 w-full sm:w-3/4 rounded bg-gray-700 mb-2" />
                             <div className="h-3 sm:h-4 w-3/4 sm:w-1/2 rounded bg-gray-700" />
                         </div>
@@ -98,9 +113,16 @@ export function NewestResearch({
 
     if (!loading && researchList.length === 0) {
         return (
-            <section className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}>
-                <p className="text-gray-300">No research highlights available.</p>
-                <button onClick={handleRetry} className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm">
+            <section
+                className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}
+            >
+                <p className="text-gray-300">
+                    No research highlights available.
+                </p>
+                <button
+                    onClick={handleRetry}
+                    className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm"
+                >
                     Refresh
                 </button>
             </section>
@@ -108,7 +130,10 @@ export function NewestResearch({
     }
 
     return (
-        <section className={`${className} relative z-20`} aria-labelledby="home-hero">
+        <section
+            className={`${className} relative z-20`}
+            aria-labelledby="home-hero"
+        >
             <div id="home-hero" className="mb-4 sm:mb-6">
                 <FadeIn direction="right" delay={0}>
                     <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
@@ -146,7 +171,9 @@ export function NewestResearch({
                             Subscribe
                         </a>  
                         */}
-                        <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">•</span>
+                        <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">
+                            •
+                        </span>
                         <button
                             onClick={() => navigate('/research')}
                             className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
@@ -162,11 +189,17 @@ export function NewestResearch({
                 {researchList.map((research, idx) => {
                     const id = research._id ?? research.slug;
                     return (
-                        <FadeIn direction="right" delay={300 + idx * 100} key={id}>
+                        <FadeIn
+                            direction="right"
+                            delay={300 + idx * 100}
+                            key={id}
+                        >
                             <article
                                 role="button"
                                 tabIndex={0}
-                                onClick={() => handleGoDeeperRedirect(research.slug)}
+                                onClick={() =>
+                                    handleGoDeeperRedirect(research.slug)
+                                }
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
@@ -195,11 +228,17 @@ export function NewestResearch({
                                     <div className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300">
                                         <div className="shrink-0">
                                             {showAuthor && research.author ? (
-                                                <span className="wrap-break-words">By {research.author} • </span>
+                                                <span className="wrap-break-words">
+                                                    By {research.author} •{' '}
+                                                </span>
                                             ) : (
                                                 ''
                                             )}
-                                            <time dateTime={research.createdAt}>{new Date(research.createdAt).toLocaleDateString()}</time>
+                                            <time dateTime={research.createdAt}>
+                                                {new Date(
+                                                    research.createdAt,
+                                                ).toLocaleDateString()}
+                                            </time>
                                         </div>
                                     </div>
 
@@ -219,13 +258,23 @@ export function NewestResearch({
 
                 {/* If backend returns <2 items, show placeholders */}
                 {researchList.length < 2 &&
-                    Array.from({ length: 2 - researchList.length }).map((_, i) => (
-                        <FadeIn direction="right" delay={300 + researchList.length * 100 + i * 100} key={`empty-${i}`}>
-                            <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
-                                <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">More deep dives coming soon.</p>
-                            </div>
-                        </FadeIn>
-                    ))}
+                    Array.from({ length: 2 - researchList.length }).map(
+                        (_, i) => (
+                            <FadeIn
+                                direction="right"
+                                delay={
+                                    300 + researchList.length * 100 + i * 100
+                                }
+                                key={`empty-${i}`}
+                            >
+                                <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
+                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">
+                                        More deep dives coming soon.
+                                    </p>
+                                </div>
+                            </FadeIn>
+                        ),
+                    )}
             </div>
         </section>
     );

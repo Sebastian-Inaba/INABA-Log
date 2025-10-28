@@ -23,10 +23,16 @@ export function FeaturedPosts() {
             try {
                 setLoading(true);
                 setFetchError(null);
-                const response = await apiClient.get<{ success: boolean; posts: Post[] }>('/posts/featured');
+                const response = await apiClient.get<{
+                    success: boolean;
+                    posts: Post[];
+                }>('/posts/featured');
                 setFeaturedPosts(response.data.posts);
             } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch featured posts';
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to fetch featured posts';
                 setFetchError(errorMessage);
                 logError('FeaturedPosts error:', errorMessage, err);
             } finally {
@@ -46,7 +52,10 @@ export function FeaturedPosts() {
                 <div className="space-y-4">
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="space-y-2">
-                            <div className="h-4 rounded bg-neutral-800" style={{ width: `${80 - idx * 5}%` }} />
+                            <div
+                                className="h-4 rounded bg-neutral-800"
+                                style={{ width: `${80 - idx * 5}%` }}
+                            />
                             <div className="h-3 rounded bg-neutral-800 w-20" />
                         </div>
                     ))}
@@ -60,7 +69,9 @@ export function FeaturedPosts() {
         return (
             <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
-                    <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
+                    <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
+                        Editor's Choice
+                    </h2>
                 </div>
                 <div className="text-center py-6">
                     <p className="text-red-400 text-sm mb-4">{fetchError}</p>
@@ -80,9 +91,13 @@ export function FeaturedPosts() {
         return (
             <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
-                    <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
+                    <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
+                        Editor's Choice
+                    </h2>
                 </div>
-                <div className="text-center py-6 text-gray-400 text-sm">No featured posts yet</div>
+                <div className="text-center py-6 text-gray-400 text-sm">
+                    No featured posts yet
+                </div>
             </aside>
         );
     }
@@ -90,19 +105,30 @@ export function FeaturedPosts() {
     return (
         <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full flex flex-col gap-5 border border-purple-500">
             <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
-                <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">Editor's Choice</h2>
+                <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
+                    Editor's Choice
+                </h2>
             </div>
 
             <ul className="space-y-3">
                 {featuredPosts.map((post) => (
-                    <li key={post._id} onClick={() => handlePostClick(post.slug)} className="group cursor-pointer">
+                    <li
+                        key={post._id}
+                        onClick={() => handlePostClick(post.slug)}
+                        className="group cursor-pointer"
+                    >
                         <article className="space-y-2 p-4 rounded-lg border-l-4 border-purple-500 bg-neutral-800/50 group-hover:bg-neutral-800 group-hover:border-purple-400 transition-all duration-200">
                             <h3 className="text-white font-semibold leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors duration-200">
                                 {post.title}
                             </h3>
                             {post.category && (
                                 <span className="inline-flex items-center gap-1 text-gray-400 text-xs font-medium uppercase tracking-wider group-hover:text-purple-400 transition-colors duration-200">
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-3 h-3"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"

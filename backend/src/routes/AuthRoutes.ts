@@ -38,10 +38,20 @@ router.get('/me', requireGoogleAuth, getCurrentUser);
 
 // -------------------- POSTS ---------------------------------------------------------------------- //
 // Create Post
-router.post('/posts', requireGoogleAuth, uploadMiddleware.single('featuredImage'), createPost);
+router.post(
+    '/posts',
+    requireGoogleAuth,
+    uploadMiddleware.single('featuredImage'),
+    createPost,
+);
 
 // Update Post
-router.patch('/posts/:id', requireGoogleAuth, uploadMiddleware.single('featuredImage'), updatePost);
+router.patch(
+    '/posts/:id',
+    requireGoogleAuth,
+    uploadMiddleware.single('featuredImage'),
+    updatePost,
+);
 
 // Delete Post
 router.delete('/posts/:id', requireGoogleAuth, deletePost);
