@@ -108,21 +108,25 @@ export function NewestResearch({
     }
 
     return (
-        <section className={`${className}`} aria-labelledby="home-hero">
+        <section className={`${className} relative z-20`} aria-labelledby="home-hero">
             <div id="home-hero" className="mb-4 sm:mb-6">
                 <FadeIn direction="right" delay={0}>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words">{heroTitle}</h1>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                        {heroTitle}
+                    </h1>
                 </FadeIn>
 
                 <FadeIn direction="right" delay={100}>
-                    <p className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300">{heroText}</p>
+                    <p className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
+                        {heroText}
+                    </p>
                 </FadeIn>
 
                 <FadeIn direction="right" delay={200}>
                     <div className="mt-3 sm:mt-4 flex flex-wrap gap-2 sm:gap-3 items-center">
                         <a
                             href="/portfolio"
-                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
+                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50 backdrop-blur-sm drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
                         >
                             View Portfolio
                         </a>
@@ -130,7 +134,7 @@ export function NewestResearch({
                             href="https://github.com/your-username"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap"
+                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50 backdrop-blur-sm drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
                         >
                             GitHub
                         </a>
@@ -145,7 +149,7 @@ export function NewestResearch({
                         <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">•</span>
                         <button
                             onClick={() => navigate('/research')}
-                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer"
+                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
                             aria-label={heroCtaText}
                         >
                             {heroCtaText}
@@ -175,7 +179,7 @@ export function NewestResearch({
                                     rounded-lg border border-gray-700 dark:border-slate-700 border-l-4
                                     hover:border-transparent hover:border-l-purple-500
                                     p-3 sm:p-4 flex items-start gap-2 sm:gap-4 cursor-pointer
-                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500
+                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 backdrop-blur-sm
                                 `}
                                 style={{ willChange: 'transform' }}
                             >

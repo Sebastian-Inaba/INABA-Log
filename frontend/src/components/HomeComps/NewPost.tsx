@@ -113,10 +113,7 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
 
     // Default render
     return (
-        <article
-            className="relative p-2 md:p-5 rounded-xl border border-gray-400 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out 
-                    bg-neutral-950/70 backdrop-blur-lg"
-        >
+        <article className="relative p-2 md:p-5 rounded-xl border border-gray-400 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out bg-neutral-900/50 backdrop-blur-sm">
             {/* H1*/}
             <div className="text-2xl md:text-3xl text-gray-900 dark:text-white mb-6 text-center">
                 <h1 className="italic">New Post</h1>
@@ -181,7 +178,7 @@ export function NewestPost({ apiUrl = '/posts/newest', className = '', imageHeig
                     {/* CTA */}
                     <button
                         onClick={() => handleReadMore(post.slug)}
-                        className="cursor-pointer inline-flex items-center gap-2 bg-transparent text-[#9162CB] border border-gray-400 px-6 py-3 rounded-full tracking-wide transition-all transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_#9162CB]"
+                        className="cursor-pointer inline-flex items-center gap-2 bg-transparent text-[#9162CB] border border-gray-400 px-6 py-3 rounded-full tracking-wide transition-all transform hover:scale-110 hover:border-[#9162CB]"
                         aria-label="Read more about this post"
                     >
                         <span>Read More</span>
