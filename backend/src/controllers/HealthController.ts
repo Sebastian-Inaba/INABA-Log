@@ -25,7 +25,9 @@ export const healthCheck = async (
 
         // Ping Supabase - check bucket existence
         try {
-            const { data, error } = await supabase.storage.getBucket(buckets.posts);
+            const { data, error } = await supabase.storage.getBucket(
+                buckets.posts,
+            );
             if (error) throw error;
             health.services.supabase = 'connected';
         } catch (err) {

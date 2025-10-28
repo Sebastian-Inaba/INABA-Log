@@ -48,12 +48,15 @@ export const pingBackend = async () => {
 };
 
 // Auto-ping every 5 days (432000000 ms)
-setInterval(() => {
-    pingBackend().catch(() => {
-        // Silent fail - just log it
-        console.warn('Scheduled ping failed');
-    });
-}, 5 * 24 * 60 * 60 * 1000); // 5 days in milliseconds
+setInterval(
+    () => {
+        pingBackend().catch(() => {
+            // Silent fail - just log it
+            console.warn('Scheduled ping failed');
+        });
+    },
+    5 * 24 * 60 * 60 * 1000,
+); // 5 days in milliseconds
 
 // Initial ping on load
 pingBackend().catch(() => {});

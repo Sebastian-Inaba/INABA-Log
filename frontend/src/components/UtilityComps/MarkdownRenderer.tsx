@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { useState, useEffect } from 'react';
+import React from 'react';
 
 interface MarkdownRendererProps {
     content: string;
@@ -289,7 +290,6 @@ export function MarkdownRenderer({
     variant = 'public',
 }: MarkdownRendererProps) {
     // base styles
-    // Update the baseStyles in MarkdownRenderer.tsx
     const baseStyles = `
     .markdown-content {
         width: 100%;
@@ -491,6 +491,10 @@ export function MarkdownRenderer({
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
                 components={{
+                    // Disable paragraph auto-wrapping to avoid nesting issues
+                    p: ({ children }: { children?: React.ReactNode }) => {
+                        return <>{children}</>;
+                    },
                     // code blocks
                     code: ({
                         inline,
@@ -502,10 +506,12 @@ export function MarkdownRenderer({
                         children?: React.ReactNode;
                     }) => {
                         const codeString = String(children).replace(/\n$/, '');
-                        if (inline)
+
+                        if (inline) {
                             return (
                                 <code className={className}>{children}</code>
                             );
+                        }
                         return (
                             <CodeBlock className={className}>
                                 {codeString}
