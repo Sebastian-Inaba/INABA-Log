@@ -45,7 +45,7 @@ export function FeaturedPosts() {
     // Loading state
     if (loading) {
         return (
-            <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500 animate-pulse">
+            <aside className="bg-neutral-900 rounded-xl p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500 animate-pulse">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                     <div className="h-6 w-40 bg-neutral-800 rounded" />
                 </div>
@@ -67,7 +67,7 @@ export function FeaturedPosts() {
     // Error state
     if (fetchError) {
         return (
-            <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
+            <aside className="bg-neutral-900 rounded-xl p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                     <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
                         Editor's Choice
@@ -89,7 +89,7 @@ export function FeaturedPosts() {
     // Empty state
     if (featuredPosts.length === 0) {
         return (
-            <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
+            <aside className="bg-neutral-900 rounded-xl p-6 w-full md:w-80 flex flex-col gap-5 border border-purple-500">
                 <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                     <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
                         Editor's Choice
@@ -103,7 +103,7 @@ export function FeaturedPosts() {
     }
 
     return (
-        <aside className="bg-neutral-900 rounded-xl shadow-lg p-6 w-full flex flex-col gap-5 border border-purple-500">
+        <aside className="bg-neutral-900 rounded-xl p-6 w-full flex flex-col gap-5 border border-purple-500">
             <div className="flex items-center gap-2 pb-3 border-b-2 border-purple-500">
                 <h2 className="text-lg font-bold text-purple-500 uppercase tracking-widest">
                     Editor's Choice

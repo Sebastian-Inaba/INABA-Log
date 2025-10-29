@@ -187,7 +187,7 @@ export function Home() {
                 className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}
             >
                 {/* Backdrop blur (instant, no fade) */}
-                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] backdrop-blur-2xl bg-black/40 shadow-lg -z-100" />
+                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] bg-neutral-950 -z-100" />
 
                 {/* Fade in everything else */}
                 <FadeIn direction="up" threshold={0}>

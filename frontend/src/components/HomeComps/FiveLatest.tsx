@@ -218,7 +218,7 @@ export function LatestPosts({
                                         <article className="flex-1 relative">
                                             {post.featuredImage && (
                                                 <div
-                                                    className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
+                                                    className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950`}
                                                     onClick={() =>
                                                         handleReadMore(
                                                             post.slug,

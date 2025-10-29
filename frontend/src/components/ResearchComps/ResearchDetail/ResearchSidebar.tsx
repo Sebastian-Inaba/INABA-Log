@@ -69,7 +69,7 @@ export default function ResearchSidebar({
 
     // CSS class constants for consistent styling
     const baseCard =
-        'rounded-lg shadow-lg p-5 border-2 border-gray-400 bg-neutral-900 text-slate-50';
+        'rounded-lg p-5 border-2 border-gray-400 bg-neutral-900 text-slate-50';
     const buttonBase =
         'flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg font-semibold text-xs transition-colors border-2 border-gray-400 cursor-pointer';
 
@@ -229,7 +229,7 @@ export default function ResearchSidebar({
 
                 {/* Credibility Indicator Card */}
                 {research.credibility && (
-                    <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg shadow-lg p-5 border-2 border-green-200 dark:border-green-900">
+                    <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg p-5 border-2 border-green-200 dark:border-green-900">
                         <div className="flex items-center gap-2 mb-2">
                             {/* Checkmark Icon */}
                             <svg
@@ -495,7 +495,7 @@ export default function ResearchSidebar({
 
                 {/* Credibility Indicator Card */}
                 {research.credibility && (
-                    <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg shadow-lg p-5 border-2 border-green-200 dark:border-green-900">
+                    <div className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg p-5 border-2 border-green-200 dark:border-green-900">
                         <div className="flex items-center gap-2 mb-2">
                             <svg
                                 className="w-4 h-4 text-green-600 dark:text-green-400"

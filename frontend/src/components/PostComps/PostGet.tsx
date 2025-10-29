@@ -353,7 +353,7 @@ export default function PublicPostList({
                                     {/* Featured image */}
                                     {post.featuredImage && (
                                         <div
-                                            className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950 shadow-2xl`}
+                                            className={`relative ${imageHeight} cursor-pointer overflow-hidden rounded-lg border border-gray-950`}
                                             onClick={() =>
                                                 handleReadMore(post.slug)
                                             }

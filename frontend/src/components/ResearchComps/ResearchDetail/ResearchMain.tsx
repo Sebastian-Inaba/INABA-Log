@@ -15,7 +15,7 @@ interface ResearchMainProps {
 // Memoized loading skeleton
 const LoadingSkeleton = memo(() => (
     <FadeIn direction="up" duration={500} distance={100}>
-        <div className="rounded-lg shadow-lg p-8 animate-pulse border-2 border-gray-400 bg-neutral-900 text-slate-50">
+        <div className="rounded-lg p-8 animate-pulse border-2 border-gray-400 bg-neutral-900 text-slate-50">
             <div className="space-y-6">
                 <div className="h-10 w-3/4 rounded bg-slate-700" />
                 <div className="h-5 w-48 rounded bg-slate-700" />
@@ -34,7 +34,7 @@ LoadingSkeleton.displayName = 'LoadingSkeleton';
 // Memoized error component
 const ErrorState = memo(({ error }: { error: string }) => (
     <FadeIn direction="up" duration={500} distance={100}>
-        <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
+        <div className="rounded-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
             <div className="text-center">
                 <p className="text-red-400 text-lg mb-4">{error}</p>
                 <button
@@ -53,7 +53,7 @@ ErrorState.displayName = 'ErrorState';
 // Memoized not found component
 const NotFoundState = memo(() => (
     <FadeIn direction="up" duration={500} distance={100}>
-        <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
+        <div className="rounded-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
             <div className="text-center text-slate-300 text-lg">
                 Research not found.
             </div>
@@ -224,7 +224,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
     // default state
     return (
         <FadeIn direction="up" duration={700} distance={100}>
-            <article className="paper rounded-lg shadow-lg border-2 border-gray-400 overflow-hidden bg-neutral-950/70 text-slate-50">
+            <article className="paper rounded-lg border-2 border-gray-400 overflow-hidden bg-neutral-950/70 text-slate-50">
                 {/* Inline CSS for the specific 770px behavior and sidebar shrink rules */}
                 <style>{`
                     @media (max-width: 770px) {

@@ -256,7 +256,7 @@ export default function PublicResearchList() {
                                     direction="up"
                                     delay={index * 40}
                                 >
-                                    <article className="group relative bg-neutral-900/50 hover:bg-neutral-900 border-l-4 border border-gray-700 hover:border-transparent hover:border-l-purple-500 transition-all duration-300 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:shadow-purple-900/20">
+                                    <article className="group relative bg-neutral-900/50 hover:bg-neutral-900 border-l-4 border border-gray-700 hover:border-transparent hover:border-l-purple-500 transition-all duration-300 rounded-lg overflow-hidden">
                                         {/* Main content row */}
                                         <div className="p-4 sm:p-6">
                                             {/* Title and badges row */}
@@ -265,7 +265,7 @@ export default function PublicResearchList() {
                                                     {/* Deep dive badge */}
                                                     {/* // SHOULD CHANGE TO CATEGORY LATER*/}
                                                     <div className="flex items-center gap-3 mb-2">
-                                                        <span className="px-2.5 py-0.5 bg-linear-to-r from-purple-700 to-purple-600 text-purple-100 rounded text-xs font-bold uppercase tracking-wide shadow-md">
+                                                        <span className="px-2.5 py-0.5 bg-linear-to-r from-purple-700 to-purple-600 text-purple-100 rounded text-xs font-bold uppercase tracking-wide">
                                                             Deep Dive
                                                         </span>
                                                     </div>
@@ -440,7 +440,7 @@ export default function PublicResearchList() {
                                                         }
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="px-4 py-2 bg-red-700/80 text-red-100 rounded-lg hover:bg-red-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                                                        className="px-4 py-2 bg-red-700/80 text-red-100 rounded-lg hover:bg-red-600 text-sm inline-flex items-center gap-2 transition-all cursor-pointer"
                                                         onClick={(e) =>
                                                             e.stopPropagation()
                                                         }
@@ -467,7 +467,7 @@ export default function PublicResearchList() {
                                                             item.slug,
                                                         )
                                                     }
-                                                    className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 text-sm inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg group-hover:translate-x-1 cursor-pointer"
+                                                    className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 text-sm inline-flex items-center gap-2 transition-all group-hover:translate-x-1 cursor-pointer"
                                                 >
                                                     <span>Dive In</span>
                                                     <svg

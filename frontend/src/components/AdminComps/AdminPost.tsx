@@ -239,7 +239,7 @@ export function CreateNewModal() {
                     {/* Modal content container */}
                     <div
                         data-lenis-prevent
-                        className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 shadow-2xl p-6 z-60"
+                        className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-900 text-white rounded-xl border border-purple-700 p-6 z-60"
                     >
                         {/* Header with title and content type selector */}
                         <div className="flex items-start justify-between gap-4 mb-6">

@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { Header } from '../components/GlobalComps/Header/Header';
 import { Footer } from '../components/GlobalComps/Footer/Footer';
 import { LenisScroll } from '../components/AnimationComps/Scroll/ScrollWrapper';
-import { LineNetworkBackdrop } from '../components/AnimationComps/LineNetworkBackdrop';
+// import { LineNetworkBackdrop } from '../components/AnimationComps/LineNetworkBackdrop';
 
 export function AppLayout() {
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -57,7 +57,8 @@ export function AppLayout() {
 
     return (
         <div className="flex flex-col min-h-screen text-white">
-            {/* Line Network Backdrop */}
+            {/* Line Network Backdrop currently not in use because its to performance heavy */}
+            {/*
             <LineNetworkBackdrop
                 lineCount={15}
                 lineColor="#9162CB66"
@@ -66,6 +67,7 @@ export function AppLayout() {
                 endpointBand={0.7}
                 sphereSize={0.05}
             />
+            */}
 
             {/* Header */}
             <header

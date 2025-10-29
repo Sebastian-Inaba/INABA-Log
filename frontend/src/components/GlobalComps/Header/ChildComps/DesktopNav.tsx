@@ -21,7 +21,7 @@ export function DesktopNav({
                         <Link
                             to={route.path!}
                             onClick={onItemClick}
-                            className="flex items-center gap-2 px-3 py-2 rounded bg-green-400 transform transition-transform duration-200 ease-out hover:scale-105 hover:shadow-lg focus:outline-none focus-visible:scale-105"
+                            className="flex items-center gap-2 px-3 py-2 rounded bg-green-400 transform transition-transform duration-200 ease-out hover:scale-105 focus:outline-none focus-visible:scale-105"
                             aria-label={route.label}
                         >
                             {/* icon */}

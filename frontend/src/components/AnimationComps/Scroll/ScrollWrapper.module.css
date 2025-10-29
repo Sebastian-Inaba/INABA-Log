@@ -35,7 +35,6 @@
     width: 10px;
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     top: 0;
     height: 40px;
     transform: translateZ(0);

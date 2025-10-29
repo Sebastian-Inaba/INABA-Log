@@ -161,7 +161,7 @@ export function MobileNav({
                         top: isOpen ? '24px' : '0',
                         right: isOpen ? '24px' : '0',
                     }}
-                    className={`absolute w-10 h-10 z-10 flex flex-col justify-center items-center gap-1.5 rounded-md shadow-md transition-all duration-500 ease-in-out ${
+                    className={`absolute w-10 h-10 z-10 flex flex-col justify-center items-center gap-1.5 rounded-md transition-all duration-500 ease-in-out ${
                         isOpen
                             ? 'bg-red-400 border-0'
                             : 'bg-green-400 border border-purple-500'

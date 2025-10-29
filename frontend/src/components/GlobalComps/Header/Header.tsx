@@ -23,7 +23,7 @@ export function Header({
     return (
         <div
             className="w-full max-w-6xl mx-auto flex items-center justify-between px-4 py-4 relative
-             bg-neutral-900/40 backdrop-blur-lg rounded-lg border border-neutral-800 shadow-md"
+             bg-neutral-900/40 backdrop-blur-lg rounded-lg border border-neutral-800"
         >
             {/* Logo */}
             <Link

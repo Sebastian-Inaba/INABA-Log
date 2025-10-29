@@ -255,7 +255,7 @@ export function FilterWrapper({
 
             {/* Filter dropdown */}
             {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 p-4 bg-neutral-800 border border-neutral-600 rounded-lg shadow-lg z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 p-4 bg-neutral-800 border border-neutral-600 rounded-lg z-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* Content Type Select Filter - Admin only */}
                         {isAdmin && (

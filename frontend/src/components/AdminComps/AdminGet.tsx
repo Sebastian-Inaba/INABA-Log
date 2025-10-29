@@ -191,7 +191,7 @@ export function ContentList() {
                             {currentItems.map((item) => (
                                 <div
                                     key={`${item.type}-${item._id}`}
-                                    className="relative bg-neutral-800 rounded-lg p-4 min-w-0 shadow-md hover:shadow-lg transition"
+                                    className="relative bg-neutral-800 rounded-lg p-4 min-w-0 transition"
                                 >
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div className="flex-1 min-w-0">

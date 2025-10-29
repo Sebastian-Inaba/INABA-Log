@@ -78,7 +78,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
     if (loading) {
         return (
             <FadeIn direction="up" duration={500} distance={100}>
-                <section className="rounded-2xl shadow-xl animate-pulse px-4">
+                <section className="rounded-2xl animate-pulse px-4">
                     <div className="flex justify-center items-center w-full">
                         <div className="flex flex-col md:flex-row gap-4 w-full max-w-6xl">
                             <div className="w-full md:w-28rem h-72 md:h-28rem bg-purple-200" />
@@ -99,7 +99,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
     if (error) {
         return (
             <FadeIn direction="up" duration={500} distance={100}>
-                <section className="shadow-xl p-6 md:p-10">
+                <section className="p-6 md:p-10">
                     <div className="flex justify-center items-center w-full">
                         <div className="text-center w-full max-w-6xl">
                             <p className="text-red-500 text-lg mb-4">{error}</p>
