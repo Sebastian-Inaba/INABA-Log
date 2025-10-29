@@ -33,15 +33,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 # Update
 
-- Created a **Research Detail** page, allowing full deep dives to be viewed along with their content.  
-- Added some items to the TODO list for future implementation.  
-- Encountered one CSS issue(idea i tried to implement): the main content blocks do not yet extend to full width under the sidebar on desktop, leaving empty space beneath it. This will be fixed in a future update. Also the copy card boxes are different sizes 
+- I had a design in mind, but due to performance issues with blur effects and canvas animations, I couldn’t get it to work. So now I’m back to square one...
 
-* **TL;DR:**
-Post page is now functional with post listings. But...  
-- Scroll behavior has occasional jumps due to Lenis(i assume), not sure why.  
-- Pagination page resets view to top on page 1 but not 2(why?).  
-- Search/filter does not filter by categories yet.  
+- At the moment, it just feels… empty.
 
 #### Full Design Example (might not be final product)
 
