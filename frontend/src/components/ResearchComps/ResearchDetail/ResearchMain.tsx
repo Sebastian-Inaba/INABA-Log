@@ -1,5 +1,5 @@
 // src/components/ResearchComps/ResearchDetail/ResearchMain.tsx
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, memo } from 'react';
 import { FadeIn } from '../../AnimationComps/FadeIn';
 import { MarkdownRenderer } from '../../UtilityComps/MarkdownRenderer';
 import { apiClient } from '../../../utilities/api';
@@ -11,6 +11,138 @@ import ResearchSidebar from './ResearchSidebar';
 interface ResearchMainProps {
     slug: string;
 }
+
+// Memoized loading skeleton
+const LoadingSkeleton = memo(() => (
+    <FadeIn direction="up" duration={500} distance={100}>
+        <div className="rounded-lg shadow-lg p-8 animate-pulse border-2 border-gray-400 bg-neutral-900 text-slate-50">
+            <div className="space-y-6">
+                <div className="h-10 w-3/4 rounded bg-slate-700" />
+                <div className="h-5 w-48 rounded bg-slate-700" />
+                <div className="h-20 w-full rounded bg-slate-700" />
+                <div className="space-y-2">
+                    <div className="h-4 w-full rounded bg-slate-700" />
+                    <div className="h-4 w-5/6 rounded bg-slate-700" />
+                </div>
+            </div>
+        </div>
+    </FadeIn>
+));
+
+LoadingSkeleton.displayName = 'LoadingSkeleton';
+
+// Memoized error component
+const ErrorState = memo(({ error }: { error: string }) => (
+    <FadeIn direction="up" duration={500} distance={100}>
+        <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
+            <div className="text-center">
+                <p className="text-red-400 text-lg mb-4">{error}</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors cursor-pointer"
+                >
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </FadeIn>
+));
+
+ErrorState.displayName = 'ErrorState';
+
+// Memoized not found component
+const NotFoundState = memo(() => (
+    <FadeIn direction="up" duration={500} distance={100}>
+        <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
+            <div className="text-center text-slate-300 text-lg">
+                Research not found.
+            </div>
+        </div>
+    </FadeIn>
+));
+
+NotFoundState.displayName = 'NotFoundState';
+
+// Memoized metadata component
+const ResearchMetadata = memo(
+    ({ author, formattedDate }: { author?: string; formattedDate: string }) => (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 text-sm text-slate-300">
+            {author && (
+                <div className="flex items-center gap-1.5">
+                    <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                    </svg>
+                    <span className="font-medium">{author}</span>
+                </div>
+            )}
+            <div className="flex items-center gap-1.5">
+                <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                </svg>
+                <span>{formattedDate}</span>
+            </div>
+        </div>
+    ),
+);
+
+ResearchMetadata.displayName = 'ResearchMetadata';
+
+// Memoized keywords component
+const Keywords = memo(({ tags }: { tags: string[] }) => (
+    <div className="mt-2 mb-4">
+        <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-slate-400 mr-2">Keywords:</span>
+            {tags.map((tag, idx) => (
+                <span
+                    key={idx}
+                    className="px-3 py-1 text-purple-300 text-xs rounded-full border-2 border-purple-500"
+                >
+                    {tag}
+                </span>
+            ))}
+        </div>
+    </div>
+));
+
+Keywords.displayName = 'Keywords';
+
+// Memoized references component
+const References = memo(({ references }: { references: string[] }) => (
+    <section className="py-6">
+        <h2 className="text-3xl font-bold mb-4 text-slate-50">References</h2>
+        <ol className="space-y-2 list-decimal list-inside text-slate-300 text-sm">
+            {references.map((ref, idx) => (
+                <li key={idx} className="pl-2">
+                    <span className="pl-2">{ref}</span>
+                </li>
+            ))}
+        </ol>
+    </section>
+));
+
+References.displayName = 'References';
 
 export function ResearchMain({ slug }: ResearchMainProps) {
     // states
@@ -49,64 +181,52 @@ export function ResearchMain({ slug }: ResearchMainProps) {
         [research],
     );
 
+    // Consolidate all markdown content into one string
+    const consolidatedMarkdown = useMemo(() => {
+        if (!research) return '';
+
+        const sections: string[] = [];
+
+        if (research.introduction) {
+            sections.push(`## Introduction\n\n${research.introduction}`);
+        }
+
+        if (research.method) {
+            sections.push(`## Methods & Approach\n\n${research.method}`);
+        }
+
+        if (research.keyFindings) {
+            sections.push(`## Key Findings\n\n${research.keyFindings}`);
+        }
+
+        if (research.content) {
+            sections.push(`## Discussion & Analysis\n\n${research.content}`);
+        }
+
+        return sections.join('\n\n---\n\n');
+    }, [research]);
+
     // loading state
     if (loading) {
-        return (
-            <FadeIn direction="up" duration={500} distance={100}>
-                <div className="rounded-lg shadow-lg p-8 animate-pulse border-2 border-gray-400 bg-neutral-900 text-slate-50">
-                    <div className="space-y-6">
-                        <div className="h-10 w-3/4 rounded bg-slate-700" />
-                        <div className="h-5 w-48 rounded bg-slate-700" />
-                        <div className="h-20 w-full rounded bg-slate-700" />
-                        <div className="space-y-2">
-                            <div className="h-4 w-full rounded bg-slate-700" />
-                            <div className="h-4 w-5/6 rounded bg-slate-700" />
-                        </div>
-                    </div>
-                </div>
-            </FadeIn>
-        );
+        return <LoadingSkeleton />;
     }
 
     // error state
     if (error) {
-        return (
-            <FadeIn direction="up" duration={500} distance={100}>
-                <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
-                    <div className="text-center">
-                        <p className="text-red-400 text-lg mb-4">{error}</p>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors cursor-pointer"
-                        >
-                            Try Again
-                        </button>
-                    </div>
-                </div>
-            </FadeIn>
-        );
+        return <ErrorState error={error} />;
     }
 
     // not-found state
     if (!research) {
-        return (
-            <FadeIn direction="up" duration={500} distance={100}>
-                <div className="rounded-lg shadow-lg p-8 border-2 border-gray-400 bg-neutral-900 text-slate-50">
-                    <div className="text-center text-slate-300 text-lg">
-                        Research not found.
-                    </div>
-                </div>
-            </FadeIn>
-        );
+        return <NotFoundState />;
     }
 
     // default state
     return (
         <FadeIn direction="up" duration={700} distance={100}>
             <article className="paper rounded-lg shadow-lg border-2 border-gray-400 overflow-hidden bg-neutral-950/70 text-slate-50">
-                {/* Inline CSS for the specific 770px behavior and sidebar shrink rules(tho useless for most devices?) */}
+                {/* Inline CSS for the specific 770px behavior and sidebar shrink rules */}
                 <style>{`
-                    /* At <= 770px, stack image above title; otherwise image sits to the right */
                     @media (max-width: 770px) {
                         .title-image-grid {
                             display: grid;
@@ -115,14 +235,13 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                             gap: 0.75rem;
                         }
                         .title-image-grid .featured-img {
-                            order: -1; /* image above */
+                            order: -1;
                             width: 100% !important;
                             max-width: 420px;
                             margin-left: auto;
                             margin-right: auto;
                         }
                         .header-aside {
-                            /* make header-aside expand below header on small screens */
                             margin-top: 0.5rem;
                         }
                     }
@@ -141,23 +260,19 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                         }
                     }
 
-                    /* Sidebar shrink rule: when viewport <= 770px the header-side sidebar will be allowed to shrink first.
-                       The main text area has a min-width to prevent it from shrinking too early.
-                    */
                     @media (max-width: 770px) {
                         .header-sidebar {
-                            flex: 0 1 16rem; /* basis 16rem, allow shrink */
+                            flex: 0 1 16rem;
                             min-width: 120px;
                         }
                         .header-main {
-                            min-width: 220px; /* protects text from shrinking before sidebar */
+                            min-width: 220px;
                         }
                     }
 
-                    /* On larger screens allow sidebar to behave as before */
                     @media (min-width: 771px) {
                         .header-sidebar {
-                            flex: 0 0 16rem; /* fixed-ish at wide view, non-shrinking */
+                            flex: 0 0 16rem;
                         }
                         .header-main {
                             min-width: 0;
@@ -189,46 +304,10 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                         <div className="flex flex-col md:flex-row gap-4">
                             {/* left main column */}
                             <div className="header-main flex-1 flex flex-col min-h-0">
-                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 text-sm text-slate-300">
-                                    {research.author && (
-                                        <div className="flex items-center gap-1.5">
-                                            <svg
-                                                className="w-4 h-4"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                aria-hidden
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                />
-                                            </svg>
-                                            <span className="font-medium">
-                                                {research.author}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="flex items-center gap-1.5">
-                                        <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                            aria-hidden
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                        <span>{formattedDate}</span>
-                                    </div>
-                                </div>
+                                <ResearchMetadata
+                                    author={research.author}
+                                    formattedDate={formattedDate}
+                                />
 
                                 {research.abstract && (
                                     <div className="rounded-sm pl-4 mb-4 border-l-4 border-purple-600 bg-transparent">
@@ -243,21 +322,7 @@ export function ResearchMain({ slug }: ResearchMainProps) {
 
                                 {/* Keywords */}
                                 {research.tags && research.tags.length > 0 && (
-                                    <div className="mt-2 mb-4">
-                                        <div className="flex flex-wrap gap-2 items-center">
-                                            <span className="text-xs text-slate-400 mr-2">
-                                                Keywords:
-                                            </span>
-                                            {research.tags.map((tag, idx) => (
-                                                <span
-                                                    key={idx}
-                                                    className="px-3 py-1 text-purple-300 text-xs rounded-full border-2 border-purple-500"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    <Keywords tags={research.tags} />
                                 )}
                             </div>
 
@@ -296,93 +361,20 @@ export function ResearchMain({ slug }: ResearchMainProps) {
                         <ResearchSidebar slug={slug} />
                     </aside>
 
-                    {/* Content column */}
+                    {/* Content column - Single MarkdownRenderer */}
                     <main className="content p-8 lg:p-12 lg:order-first">
-                        <div className="divide-y divide-gray-400">
-                            {/* Introduction */}
-                            {research.introduction && (
-                                <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
-                                        Introduction
-                                    </h2>
-                                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer
-                                            content={research.introduction}
-                                            variant="preview"
-                                        />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Methods */}
-                            {research.method && (
-                                <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
-                                        Methods &amp; Approach
-                                    </h2>
-                                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer
-                                            content={research.method}
-                                            variant="preview"
-                                        />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Key Findings */}
-                            {research.keyFindings && (
-                                <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
-                                        Key Findings
-                                    </h2>
-                                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer
-                                            content={research.keyFindings}
-                                            variant="preview"
-                                        />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Discussion */}
-                            {research.content && (
-                                <section className="py-6">
-                                    <h2 className="text-3xl font-bold mb-4 text-slate-50">
-                                        Discussion &amp; Analysis
-                                    </h2>
-                                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <MarkdownRenderer
-                                            content={research.content}
-                                            variant="preview"
-                                        />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* References */}
-                            {research.references &&
-                                research.references.length > 0 && (
-                                    <section className="py-6">
-                                        <h2 className="text-3xl font-bold mb-4 text-slate-50">
-                                            References
-                                        </h2>
-                                        <ol className="space-y-2 list-decimal list-inside text-slate-300 text-sm">
-                                            {research.references.map(
-                                                (ref, idx) => (
-                                                    <li
-                                                        key={idx}
-                                                        className="pl-2"
-                                                    >
-                                                        <span className="pl-2">
-                                                            {ref}
-                                                        </span>
-                                                    </li>
-                                                ),
-                                            )}
-                                        </ol>
-                                    </section>
-                                )}
+                        <div className="prose prose-slate dark:prose-invert max-w-none">
+                            <MarkdownRenderer
+                                content={consolidatedMarkdown}
+                                variant="preview"
+                            />
                         </div>
+
+                        {/* References */}
+                        {research.references &&
+                            research.references.length > 0 && (
+                                <References references={research.references} />
+                            )}
                     </main>
                 </div>
 

@@ -83,9 +83,7 @@ export function Footer() {
 
                     {/* Row 3: Call to action to portfolio */}
                     <div className="flex items-center gap-4 text-lg">
-                        <span
-                            className="text-green-400 font-bold"
-                        >
+                        <span className="text-green-400 font-bold">
                             Like what you see?
                         </span>
 

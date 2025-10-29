@@ -46,11 +46,11 @@ export function LineNetworkBackdrop({
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        
+
         isFirefox.current = /firefox/i.test(navigator.userAgent);
         targetFPS.current = isFirefox.current && lineCount > 20 ? 30 : 60;
         const frameInterval = 1000 / targetFPS.current;
-        
+
         const ctx = canvas.getContext('2d', {
             alpha: false,
             desynchronized: true,
@@ -68,10 +68,15 @@ export function LineNetworkBackdrop({
             cosCache.current[i] = Math.cos(angle);
         }
 
-        let W = 0, H = 0, midX = 0, midY = 0;
+        let W = 0,
+            H = 0,
+            midX = 0,
+            midY = 0;
 
         const setupCanvasSize = () => {
-            const dpr = isFirefox.current ? 1 : Math.min(2, window.devicePixelRatio || 1);
+            const dpr = isFirefox.current
+                ? 1
+                : Math.min(2, window.devicePixelRatio || 1);
             const cssW = window.innerWidth;
             const cssH = window.innerHeight;
             canvas.style.width = `${cssW}px`;
@@ -80,12 +85,12 @@ export function LineNetworkBackdrop({
             canvas.height = Math.round(cssH * dpr);
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
-            
+
             W = cssW;
             H = cssH;
             midX = W * 0.5;
             midY = H * 0.5;
-            
+
             return { W: cssW, H: cssH };
         };
 
@@ -102,7 +107,8 @@ export function LineNetworkBackdrop({
             linesRef.current = Array.from({ length: lineCount }, () => {
                 const jitter = (Math.random() - 0.5) * (bandPx * 0.25);
                 const startY = midY + (Math.random() - 0.5) * bandPx + jitter;
-                const endY = midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
+                const endY =
+                    midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
 
                 return {
                     startX: 0,
@@ -113,7 +119,8 @@ export function LineNetworkBackdrop({
                 };
             });
 
-            const baseSpeed = (Math.PI * 2) / ((duration * 0.001) * targetFPS.current);
+            const baseSpeed =
+                (Math.PI * 2) / (duration * 0.001 * targetFPS.current);
 
             if (motionTargetsRef.current.length !== lineCount) {
                 motionTargetsRef.current = linesRef.current.map(() => ({
@@ -134,7 +141,8 @@ export function LineNetworkBackdrop({
         // Fast sin lookup
         const fastSin = (angle: number): number => {
             if (!sinCache.current) return Math.sin(angle);
-            const normalized = ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+            const normalized =
+                ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
             const index = Math.floor((normalized / (Math.PI * 2)) * 360) % 360;
             return sinCache.current[index];
         };
@@ -142,26 +150,28 @@ export function LineNetworkBackdrop({
         const rawYs = new Float32Array(4);
         const controlYs = new Float32Array(4);
         let lastDrawTime = 0;
-        
+
         // Cache frequently accessed values
         const phases = [0, 0.9, 1.8, 2.7];
         const proximityWeights = [0.3, 0.7];
 
         const draw = (currentTime: number) => {
             if (!ctx) return;
-            
+
             const timeSinceLastDraw = currentTime - lastDrawTime;
             if (timeSinceLastDraw < frameInterval - 1) {
                 rafRef.current = requestAnimationFrame(draw);
                 return;
             }
-            
+
             lastDrawTime = currentTime;
-            const deltaTime = lastTimeRef.current ? currentTime - lastTimeRef.current : frameInterval;
+            const deltaTime = lastTimeRef.current
+                ? currentTime - lastTimeRef.current
+                : frameInterval;
             lastTimeRef.current = currentTime;
             const deltaFactor = Math.min(deltaTime, 100) / frameInterval;
 
-            ctx.fillStyle = '#131313'; 
+            ctx.fillStyle = '#131313';
             ctx.fillRect(0, 0, W, H);
 
             ctx.strokeStyle = lineColor;
@@ -192,26 +202,44 @@ export function LineNetworkBackdrop({
                 for (let j = 0; j < 4; j++) {
                     const x = cx[j];
                     const proximity = 1 - Math.abs((x - midX) * midXInv);
-                    const cpRadius = tRadius * (proximityWeights[0] + proximityWeights[1] * proximity);
-                    rawYs[j] = midY + fastSin(tAngle + tPhase + phases[j]) * cpRadius;
+                    const cpRadius =
+                        tRadius *
+                        (proximityWeights[0] + proximityWeights[1] * proximity);
+                    rawYs[j] =
+                        midY + fastSin(tAngle + tPhase + phases[j]) * cpRadius;
                 }
 
                 const xLeft = cx[1];
                 const xRight = cx[2];
                 const denom = midX - xLeft;
-                
+
                 controlYs[0] = rawYs[0];
                 controlYs[1] = rawYs[1];
-                controlYs[2] = Math.abs(denom) > 0.000001 
-                    ? midY + ((xRight - midX) * (midY - rawYs[1])) / denom 
-                    : rawYs[2];
+                controlYs[2] =
+                    Math.abs(denom) > 0.000001
+                        ? midY + ((xRight - midX) * (midY - rawYs[1])) / denom
+                        : rawYs[2];
                 controlYs[3] = rawYs[3];
-                
+
                 const middleY = midY + fastSin(tAngle + 0.1) * (tRadius * 0.85);
 
                 ctx.moveTo(line.startX, line.startY);
-                ctx.bezierCurveTo(cx[0], controlYs[0], cx[1], controlYs[1], midX, middleY);
-                ctx.bezierCurveTo(cx[2], controlYs[2], cx[3], controlYs[3], line.endX, line.endY);
+                ctx.bezierCurveTo(
+                    cx[0],
+                    controlYs[0],
+                    cx[1],
+                    controlYs[1],
+                    midX,
+                    middleY,
+                );
+                ctx.bezierCurveTo(
+                    cx[2],
+                    controlYs[2],
+                    cx[3],
+                    controlYs[3],
+                    line.endX,
+                    line.endY,
+                );
             }
 
             ctx.stroke();

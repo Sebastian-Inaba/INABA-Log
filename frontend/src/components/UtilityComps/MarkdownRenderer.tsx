@@ -2,7 +2,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import React from 'react';
 
 interface MarkdownRendererProps {
@@ -18,191 +18,241 @@ interface LinkPreviewData {
     domain: string;
 }
 
-// Code block with copy button
-function CodeBlock({
-    children,
-    className,
-}: {
-    children: string;
-    className?: string;
-}) {
-    const [copied, setCopied] = useState(false);
-    const language = className?.replace('language-', '') || 'text';
+// Memoized Code block with copy button
+const CodeBlock = memo(
+    ({ children, className }: { children: string; className?: string }) => {
+        const [copied, setCopied] = useState(false);
+        const language = useMemo(
+            () => className?.replace('language-', '') || 'text',
+            [className],
+        );
 
-    // handle copy to clipboard
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(children);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
+        const handleCopy = useCallback(async () => {
+            await navigator.clipboard.writeText(children);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }, [children]);
 
-    return (
-        <div className="relative group">
-            {/* copy button */}
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                    onClick={handleCopy}
-                    className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition-colors text-xs font-medium flex items-center gap-1.5"
-                    title="Copy code"
+        return (
+            <div className="relative group">
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                        onClick={handleCopy}
+                        className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition-colors text-xs font-medium flex items-center gap-1.5"
+                        title="Copy code"
+                    >
+                        {copied ? (
+                            <>
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                Copied!
+                            </>
+                        ) : (
+                            <>
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                                    />
+                                </svg>
+                                Copy
+                            </>
+                        )}
+                    </button>
+                </div>
+                <div className="text-xs text-gray-400 mb-1 px-4 pt-3 font-mono">
+                    {language}
+                </div>
+                <pre className="pt-0!">
+                    <code className={className}>{children}</code>
+                </pre>
+            </div>
+        );
+    },
+);
+
+CodeBlock.displayName = 'CodeBlock';
+
+// Memoized Link preview banner for special URLs
+const LinkPreview = memo(
+    ({ href, children }: { href: string; children: React.ReactNode }) => {
+        const [preview, setPreview] = useState<LinkPreviewData | null>(null);
+        const [loading, setLoading] = useState(false);
+
+        const shouldShowPreview = useCallback((url: string) => {
+            const previewPatterns = [
+                /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/,
+                /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/,
+                /^https?:\/\/(www\.)?github\.com\/[\w-]+/,
+            ];
+            try {
+                return previewPatterns.some((pattern) => pattern.test(url));
+            } catch {
+                return false;
+            }
+        }, []);
+
+        const getYouTubeVideoId = useCallback((url: string): string | null => {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+            ];
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }, []);
+
+        useEffect(() => {
+            if (shouldShowPreview(href)) {
+                setLoading(true);
+                setTimeout(() => {
+                    const domain = new URL(href).hostname;
+                    let mockData: LinkPreviewData;
+
+                    if (
+                        domain.includes('twitter.com') ||
+                        domain.includes('x.com')
+                    ) {
+                        mockData = {
+                            title: 'Twitter Post',
+                            description:
+                                'Check out this interesting tweet about web development and modern JavaScript frameworks.',
+                            image: '',
+                            domain: domain,
+                        };
+                    } else if (domain.includes('github.com')) {
+                        const username =
+                            href.split('github.com/')[1]?.split('/')[0] ||
+                            'user';
+                        mockData = {
+                            title: `${username} - GitHub`,
+                            description:
+                                'Check out this GitHub profile and their amazing projects.',
+                            image: `https://github.com/${username}.png?size=400`,
+                            domain: domain,
+                        };
+                    } else if (
+                        domain.includes('youtube.com') ||
+                        domain.includes('youtu.be')
+                    ) {
+                        const videoId = getYouTubeVideoId(href);
+                        mockData = {
+                            title: 'YouTube Video',
+                            description:
+                                'Watch this interesting video on YouTube.',
+                            image: videoId
+                                ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                                : '',
+                            domain: domain,
+                        };
+                    } else {
+                        mockData = {
+                            title: 'Link Preview',
+                            description:
+                                'Preview description of the linked content.',
+                            image: '',
+                            domain: domain,
+                        };
+                    }
+
+                    setPreview(mockData);
+                    setLoading(false);
+                }, 500);
+            }
+        }, [href, shouldShowPreview, getYouTubeVideoId]);
+
+        const showPreview = useMemo(
+            () => shouldShowPreview(href),
+            [href, shouldShowPreview],
+        );
+
+        if (!showPreview) {
+            return (
+                <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="markdown-link"
                 >
-                    {copied ? (
-                        <>
-                            <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                />
-                            </svg>
-                            Copied!
-                        </>
-                    ) : (
-                        <>
-                            <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                                />
-                            </svg>
-                            Copy
-                        </>
-                    )}
-                </button>
-            </div>
-            {/* language label */}
-            <div className="text-xs text-gray-400 mb-1 px-4 pt-3 font-mono">
-                {language}
-            </div>
-            {/* code content */}
-            <pre className="pt-0!">
-                <code className={className}>{children}</code>
-            </pre>
-        </div>
-    );
-}
-
-// Link preview banner for special URLs
-function LinkPreview({
-    href,
-    children,
-}: {
-    href: string;
-    children: React.ReactNode;
-}) {
-    const [preview, setPreview] = useState<LinkPreviewData | null>(null);
-    const [loading, setLoading] = useState(false);
-
-    // determine if URL should have preview
-    const shouldShowPreview = (url: string) => {
-        const previewPatterns = [
-            /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/,
-            /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/,
-            /^https?:\/\/(www\.)?github\.com\/[\w-]+/,
-        ];
-
-        try {
-            return previewPatterns.some((pattern) => pattern.test(url));
-        } catch {
-            return false;
+                    {children}
+                </a>
+            );
         }
-    };
 
-    // extract YouTube video ID
-    const getYouTubeVideoId = (url: string): string | null => {
-        const patterns = [
-            /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-            /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
-        ];
-
-        for (const pattern of patterns) {
-            const match = url.match(pattern);
-            if (match) return match[1];
+        if (loading) {
+            return (
+                <div className="my-4 p-4 border border-gray-700 rounded-lg bg-gray-800 animate-pulse">
+                    <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                </div>
+            );
         }
-        return null;
-    };
 
-    // fetch mock preview data
-    useEffect(() => {
-        if (shouldShowPreview(href)) {
-            setLoading(true);
-            setTimeout(() => {
-                const domain = new URL(href).hostname;
-                let mockData: LinkPreviewData;
-
-                // Twitter/X
-                if (
-                    domain.includes('twitter.com') ||
-                    domain.includes('x.com')
-                ) {
-                    mockData = {
-                        title: 'Twitter Post',
-                        description:
-                            'Check out this interesting tweet about web development and modern JavaScript frameworks.',
-                        image: '',
-                        domain: domain,
-                    };
-                }
-                // GitHub
-                else if (domain.includes('github.com')) {
-                    const username =
-                        href.split('github.com/')[1]?.split('/')[0] || 'user';
-                    mockData = {
-                        title: `${username} - GitHub`,
-                        description:
-                            'Check out this GitHub profile and their amazing projects.',
-                        image: `https://github.com/${username}.png?size=400`,
-                        domain: domain,
-                    };
-                }
-                // YouTube
-                else if (
-                    domain.includes('youtube.com') ||
-                    domain.includes('youtu.be')
-                ) {
-                    const videoId = getYouTubeVideoId(href);
-                    mockData = {
-                        title: 'YouTube Video',
-                        description: 'Watch this interesting video on YouTube.',
-                        image: videoId
-                            ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-                            : '',
-                        domain: domain,
-                    };
-                }
-                // fallback
-                else {
-                    mockData = {
-                        title: 'Link Preview',
-                        description:
-                            'Preview description of the linked content.',
-                        image: '',
-                        domain: domain,
-                    };
-                }
-
-                setPreview(mockData);
-                setLoading(false);
-            }, 500);
+        if (preview) {
+            return (
+                <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block my-4 no-underline hover:transform hover:scale-[1.02] transition-transform"
+                >
+                    <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800 hover:border-purple-500 transition-colors">
+                        {preview.image && (
+                            <img
+                                src={preview.image}
+                                alt={preview.title}
+                                loading="lazy"
+                                style={{
+                                    width: '100%',
+                                    height: 'clamp(144px, 25vw, 192px)',
+                                    objectFit: 'cover',
+                                    display: 'block',
+                                }}
+                            />
+                        )}
+                        <div className="p-4">
+                            <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                    <h3 className="m-0! text-lg font-semibold text-white mb-1">
+                                        {preview.title}
+                                    </h3>
+                                    <p className="m-0! text-sm text-gray-400 mb-2">
+                                        {preview.description}
+                                    </p>
+                                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                                        <span>🔗</span>
+                                        <span>{preview.domain}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            );
         }
-    }, [href]);
 
-    // normal link if no preview
-    if (!shouldShowPreview(href)) {
         return (
             <a
                 href={href}
@@ -213,84 +263,13 @@ function LinkPreview({
                 {children}
             </a>
         );
-    }
+    },
+);
 
-    // loading state
-    if (loading) {
-        return (
-            <div className="my-4 p-4 border border-gray-700 rounded-lg bg-gray-800 animate-pulse">
-                <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-700 rounded w-1/2"></div>
-            </div>
-        );
-    }
+LinkPreview.displayName = 'LinkPreview';
 
-    // show preview
-    if (preview) {
-        return (
-            <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block my-4 no-underline hover:transform hover:scale-[1.02] transition-transform"
-            >
-                <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800 hover:border-purple-500 transition-colors">
-                    {/* preview image */}
-                    {preview.image && (
-                        <img
-                            src={preview.image}
-                            alt={preview.title}
-                            style={{
-                                width: '100%',
-                                height: 'clamp(144px, 25vw, 192px)',
-                                objectFit: 'cover',
-                                display: 'block',
-                            }}
-                        />
-                    )}
-                    {/* preview content */}
-                    <div className="p-4">
-                        <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                                <h3 className="m-0! text-lg font-semibold text-white mb-1">
-                                    {preview.title}
-                                </h3>
-                                <p className="m-0! text-sm text-gray-400 mb-2">
-                                    {preview.description}
-                                </p>
-                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                    <span>🔗</span>
-                                    <span>{preview.domain}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        );
-    }
-
-    // fallback link
-    return (
-        <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="markdown-link"
-        >
-            {children}
-        </a>
-    );
-}
-
-// Main markdown renderer
-export function MarkdownRenderer({
-    content,
-    className = '',
-    variant = 'public',
-}: MarkdownRendererProps) {
-    // base styles
-    const baseStyles = `
+// Move styles outside component - they never change
+const BASE_STYLES = `
     .markdown-content {
         width: 100%;
         max-width: 100%;
@@ -300,7 +279,6 @@ export function MarkdownRenderer({
         hyphens: auto;
     }
 
-    /* headings, paragraphs, lists, etc. */
     .markdown-content h1, .markdown-content h2, .markdown-content h3,
     .markdown-content h4, .markdown-content h5, .markdown-content h6 {
         line-height: 1.2;
@@ -339,7 +317,6 @@ export function MarkdownRenderer({
         overflow-wrap: break-word;
     }
 
-    /* code & pre: allow wrapping but avoid overly aggressive break-all on inline code */
     .markdown-content code {
         background: #1f2937;
         padding: 0.125rem 0.375rem;
@@ -368,7 +345,6 @@ export function MarkdownRenderer({
         word-break: break-word;
     }
 
-    /* responsive font sizes */
     @media (max-width: 768px) {
         .markdown-content h1 { font-size: 1.75rem; }
         .markdown-content h2 { font-size: 1.5rem; }
@@ -388,7 +364,6 @@ export function MarkdownRenderer({
         .markdown-content blockquote { padding: 0.5rem 0.75rem; margin: 0.75rem 0; }
     }
 
-    /* links */
     .markdown-content .markdown-link {
         color: #7c3aed;
         text-decoration: underline;
@@ -396,24 +371,19 @@ export function MarkdownRenderer({
     }
     .markdown-content .markdown-link:hover { color: #6d28d9; }
 
-    /* images */
     .markdown-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
 
-    /* hr */
     .markdown-content hr { border: none; border-top: 2px solid #374151; margin: 2rem 0; }
 
-    /* tables */
     .markdown-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
     .markdown-content th, .markdown-content td {
         border: 1px solid #4b5563; padding: 0.75rem; text-align: left;
     }
     .markdown-content th { background: #1f2937; font-weight: 600; }
 
-    /* typography */
     .markdown-content strong { font-weight: 700; }
     .markdown-content em { font-style: italic; }
 
-    /* utility color classes */
     .markdown-content .text-red { color: #ef4444; }
     .markdown-content .text-blue { color: #3b82f6; }
     .markdown-content .text-green { color: #10b981; }
@@ -421,7 +391,6 @@ export function MarkdownRenderer({
     .markdown-content .text-purple { color: #a855f7; }
     .markdown-content .text-pink { color: #ec4899; }
 
-    /* highlight backgrounds */
     .markdown-content .bg-yellow-highlight {
         background: #fef3c7;
         padding: 0.125rem 0.25rem;
@@ -441,15 +410,12 @@ export function MarkdownRenderer({
         color: #5b21b6;
     }
 
-    /* link preview image sizing */
     .link-preview-img { width: 100%; height: 9rem; object-fit: cover; display: block; }
     @media (min-width: 768px) { .link-preview-img { height: 12rem; } }
+`;
 
-    `;
-
-    // variant-specific styles
-    const variantStyles = {
-        preview: `
+const VARIANT_STYLES = {
+    preview: `
       .markdown-content h1 { font-size: 2rem; font-weight: 700; }
       .markdown-content h2 { font-size: 1.75rem; font-weight: 700; }
       .markdown-content h3 { font-size: 1.5rem; font-weight: 600; }
@@ -460,7 +426,7 @@ export function MarkdownRenderer({
       .markdown-content code { color: #fbbf24; }
       .markdown-content pre code { color: #e5e7eb; }
     `,
-        public: `
+    public: `
       .markdown-content h1 { font-size: 2.5rem; font-weight: 800; }
       .markdown-content h2 { font-size: 2rem; font-weight: 700; }
       .markdown-content h3 { font-size: 1.5rem; font-weight: 600; }
@@ -477,65 +443,65 @@ export function MarkdownRenderer({
       .markdown-content .markdown-link { color: #7c3aed; }
       .markdown-content .markdown-link:hover { color: #6d28d9; }
     `,
-    };
+} as const;
 
-    // render markdown
-    return (
-        <div className={`markdown-content ${className}`}>
-            <style
-                dangerouslySetInnerHTML={{
-                    __html: baseStyles + variantStyles[variant],
-                }}
-            />
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                    // Disable paragraph auto-wrapping to avoid nesting issues
-                    p: ({ children }: { children?: React.ReactNode }) => {
-                        return <>{children}</>;
-                    },
-                    // code blocks
-                    code: ({
-                        inline,
-                        className,
-                        children,
-                    }: {
-                        inline?: boolean;
-                        className?: string;
-                        children?: React.ReactNode;
-                    }) => {
-                        const codeString = String(children).replace(/\n$/, '');
+// Pre-compute combined styles outside component
+const COMBINED_STYLES = {
+    preview: BASE_STYLES + VARIANT_STYLES.preview,
+    public: BASE_STYLES + VARIANT_STYLES.public,
+} as const;
 
-                        if (inline) {
-                            return (
-                                <code className={className}>{children}</code>
-                            );
-                        }
-                        return (
-                            <CodeBlock className={className}>
-                                {codeString}
-                            </CodeBlock>
-                        );
-                    },
-                    // links
-                    a: ({
-                        children,
-                        href,
-                    }: {
-                        children?: React.ReactNode;
-                        href?: string;
-                    }) => {
-                        return (
-                            <LinkPreview href={href || '#'}>
-                                {children}
-                            </LinkPreview>
-                        );
-                    },
-                }}
-            >
-                {content}
-            </ReactMarkdown>
-        </div>
-    );
-}
+// Memoize plugins array outside component
+const REMARK_PLUGINS = [remarkGfm];
+const REHYPE_PLUGINS = [rehypeRaw];
+
+// Create components object once outside component
+const createMarkdownComponents = () => ({
+    p: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+    code: ({
+        inline,
+        className,
+        children,
+    }: {
+        inline?: boolean;
+        className?: string;
+        children?: React.ReactNode;
+    }) => {
+        const codeString = String(children).replace(/\n$/, '');
+        if (inline) {
+            return <code className={className}>{children}</code>;
+        }
+        return <CodeBlock className={className}>{codeString}</CodeBlock>;
+    },
+    a: ({ children, href }: { children?: React.ReactNode; href?: string }) => (
+        <LinkPreview href={href || '#'}>{children}</LinkPreview>
+    ),
+});
+
+const MARKDOWN_COMPONENTS = createMarkdownComponents();
+
+// Main markdown renderer with memo
+export const MarkdownRenderer = memo(
+    ({
+        content,
+        className = '',
+        variant = 'public',
+    }: MarkdownRendererProps) => {
+        const combinedStyles = COMBINED_STYLES[variant];
+
+        return (
+            <div className={`markdown-content ${className}`}>
+                <style dangerouslySetInnerHTML={{ __html: combinedStyles }} />
+                <ReactMarkdown
+                    remarkPlugins={REMARK_PLUGINS}
+                    rehypePlugins={REHYPE_PLUGINS}
+                    components={MARKDOWN_COMPONENTS}
+                >
+                    {content}
+                </ReactMarkdown>
+            </div>
+        );
+    },
+);
+
+MarkdownRenderer.displayName = 'MarkdownRenderer';

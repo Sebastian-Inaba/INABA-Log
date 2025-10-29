@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+// src/components/HomeComps/ResearchHighlight.tsx
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
@@ -15,6 +16,83 @@ interface NewestResearchProps {
     heroCtaText?: string;
 }
 
+// Memoized research card to prevent unnecessary re-renders
+const ResearchCard = memo(
+    ({
+        research,
+        idx,
+        showAuthor,
+        onNavigate,
+    }: {
+        research: Research;
+        idx: number;
+        showAuthor: boolean;
+        onNavigate: (slug: string) => void;
+    }) => {
+        const id = research._id ?? research.slug;
+
+        const handleClick = useCallback(() => {
+            onNavigate(research.slug);
+        }, [research.slug, onNavigate]);
+
+        const handleKeyDown = useCallback(
+            (e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onNavigate(research.slug);
+                }
+            },
+            [research.slug, onNavigate],
+        );
+
+        return (
+            <FadeIn direction="right" delay={300 + idx * 100} key={id}>
+                <article
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                    className="group transform transition-transform duration-200 ease-out hover:scale-101 hover:-translate-y-1 hover:shadow-xl bg-neutral-900/50 hover:bg-neutral-900 rounded-lg border border-gray-700 dark:border-slate-700 border-l-4 hover:border-transparent hover:border-l-purple-500 p-3 sm:p-4 flex items-start gap-2 sm:gap-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 backdrop-blur-sm"
+                    style={{ willChange: 'transform' }}
+                >
+                    <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-purple-600 dark:bg-purple-400 mt-1 shrink-0 transition-colors duration-200 group-hover:bg-purple-500" />
+
+                    <div className="flex-1 min-w-0">
+                        <div className="text-left w-full">
+                            <h3 className="text-base sm:text-lg text-white dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-purple-300">
+                                {research.title}
+                            </h3>
+                        </div>
+
+                        <div className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300">
+                            <div className="shrink-0">
+                                {showAuthor && research.author && (
+                                    <span className="wrap-break-words">
+                                        By {research.author} •{' '}
+                                    </span>
+                                )}
+                                <time dateTime={research.createdAt}>
+                                    {new Date(
+                                        research.createdAt,
+                                    ).toLocaleDateString()}
+                                </time>
+                            </div>
+                        </div>
+
+                        {research.abstract && (
+                            <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 wrap-break-words transition-opacity duration-200 group-hover:opacity-90">
+                                {research.abstract}
+                            </p>
+                        )}
+                    </div>
+                </article>
+            </FadeIn>
+        );
+    },
+);
+
+ResearchCard.displayName = 'ResearchCard';
+
 export function NewestResearch({
     apiUrl = '/research/newest',
     className = '',
@@ -29,7 +107,6 @@ export function NewestResearch({
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    // Fetch newest research handler
     const handleFetchNewestResearch = useCallback(
         async (url: string = apiUrl) => {
             try {
@@ -58,14 +135,24 @@ export function NewestResearch({
         if (autoFetch) handleFetchNewestResearch();
     }, [autoFetch, handleFetchNewestResearch]);
 
-    const handleGoDeeperRedirect = (slug: string) => {
-        if (!slug) return;
-        navigate(`/research/${slug}`);
-    };
+    const handleGoDeeperRedirect = useCallback(
+        (slug: string) => {
+            if (!slug) return;
+            navigate(`/research/${slug}`);
+        },
+        [navigate],
+    );
 
-    const handleRetry = () => handleFetchNewestResearch();
+    const handleRetry = useCallback(
+        () => handleFetchNewestResearch(),
+        [handleFetchNewestResearch],
+    );
 
-    /** Error state */
+    const handleResearchNavigation = useCallback(() => {
+        navigate('/research');
+    }, [navigate]);
+
+    // Error state
     if (error) {
         return (
             <section className={`p-3 sm:p-4 md:p-6 ${className}`}>
@@ -84,51 +171,8 @@ export function NewestResearch({
         );
     }
 
-    /** Loading skeleton */
-    if (loading) {
-        return (
-            <section
-                className={`p-3 sm:p-4 md:p-6 ${className}`}
-                aria-labelledby="home-hero"
-            >
-                <header id="home-hero" className="mb-4 sm:mb-5">
-                    <div className="h-7 sm:h-8 w-48 sm:w-64 rounded bg-gray-700 mb-2" />
-                    <div className="h-3 sm:h-4 w-full sm:w-5/6 rounded bg-gray-700" />
-                    <div className="h-7 sm:h-8 w-24 sm:w-32 rounded bg-gray-700 mt-3" />
-                </header>
-                <div className="space-y-3">
-                    {[0, 1].map((_, researchIndex) => (
-                        <div
-                            key={researchIndex}
-                            className="p-3 rounded-lg border border-gray-700 bg-transparent animate-pulse"
-                        >
-                            <div className="h-4 sm:h-5 w-full sm:w-3/4 rounded bg-gray-700 mb-2" />
-                            <div className="h-3 sm:h-4 w-3/4 sm:w-1/2 rounded bg-gray-700" />
-                        </div>
-                    ))}
-                </div>
-            </section>
-        );
-    }
-
-    if (!loading && researchList.length === 0) {
-        return (
-            <section
-                className={`bg-gray-900 border border-gray-700 rounded-lg p-8 text-center ${className}`}
-            >
-                <p className="text-gray-300">
-                    No research highlights available.
-                </p>
-                <button
-                    onClick={handleRetry}
-                    className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm"
-                >
-                    Refresh
-                </button>
-            </section>
-        );
-    }
-
+    // CRITICAL: Render hero content immediately even while loading
+    // This ensures LCP hero text is painted ASAP without waiting for API
     return (
         <section
             className={`${className} relative z-20`}
@@ -163,19 +207,11 @@ export function NewestResearch({
                         >
                             GitHub
                         </a>
-                        {/* This will be for news letter or something else later? 
-                        <a
-                            href="/newsletter"
-                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold whitespace-nowrap"
-                        >
-                            Subscribe
-                        </a>  
-                        */}
                         <span className="hidden sm:inline text-sm text-gray-500 dark:text-slate-400">
                             •
                         </span>
                         <button
-                            onClick={() => navigate('/research')}
+                            onClick={handleResearchNavigation}
                             className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]"
                             aria-label={heroCtaText}
                         >
@@ -185,97 +221,65 @@ export function NewestResearch({
                 </FadeIn>
             </div>
 
-            <div className="space-y-3 sm:space-y-4">
-                {researchList.map((research, idx) => {
-                    const id = research._id ?? research.slug;
-                    return (
-                        <FadeIn
-                            direction="right"
-                            delay={300 + idx * 100}
-                            key={id}
+            {/* Content section - shows loading state without blocking hero */}
+            {loading ? (
+                <div className="space-y-3">
+                    {[0, 1].map((_, researchIndex) => (
+                        <div
+                            key={researchIndex}
+                            className="p-3 rounded-lg border border-gray-700 bg-transparent animate-pulse"
                         >
-                            <article
-                                role="button"
-                                tabIndex={0}
-                                onClick={() =>
-                                    handleGoDeeperRedirect(research.slug)
-                                }
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        handleGoDeeperRedirect(research.slug);
+                            <div className="h-4 sm:h-5 w-full sm:w-3/4 rounded bg-gray-700 mb-2" />
+                            <div className="h-3 sm:h-4 w-3/4 sm:w-1/2 rounded bg-gray-700" />
+                        </div>
+                    ))}
+                </div>
+            ) : researchList.length === 0 ? (
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 text-center">
+                    <p className="text-gray-300">
+                        No research highlights available.
+                    </p>
+                    <button
+                        onClick={handleRetry}
+                        className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm"
+                    >
+                        Refresh
+                    </button>
+                </div>
+            ) : (
+                <div className="space-y-3 sm:space-y-4">
+                    {researchList.map((research, idx) => (
+                        <ResearchCard
+                            key={research._id ?? research.slug}
+                            research={research}
+                            idx={idx}
+                            showAuthor={showAuthor}
+                            onNavigate={handleGoDeeperRedirect}
+                        />
+                    ))}
+
+                    {researchList.length < 2 &&
+                        Array.from({ length: 2 - researchList.length }).map(
+                            (_, i) => (
+                                <FadeIn
+                                    direction="right"
+                                    delay={
+                                        300 +
+                                        researchList.length * 100 +
+                                        i * 100
                                     }
-                                }}
-                                className={`group transform transition-transform duration-200 ease-out
-                                    hover:scale-101 hover:-translate-y-1 hover:shadow-xl
-                                    bg-neutral-900/50 hover:bg-neutral-900
-                                    rounded-lg border border-gray-700 dark:border-slate-700 border-l-4
-                                    hover:border-transparent hover:border-l-purple-500
-                                    p-3 sm:p-4 flex items-start gap-2 sm:gap-4 cursor-pointer
-                                    focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 backdrop-blur-sm
-                                `}
-                                style={{ willChange: 'transform' }}
-                            >
-                                <div className="w-1 sm:w-1.5 h-8 sm:h-10 rounded-full bg-purple-600 dark:bg-purple-400 mt-1 shrink-0 transition-colors duration-200 group-hover:bg-purple-500" />
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-left w-full">
-                                        <h3 className="text-base sm:text-lg text-white dark:text-white wrap-break-words line-clamp-2 transition-colors duration-200 group-hover:text-purple-300">
-                                            {research.title}
-                                        </h3>
-                                    </div>
-
-                                    <div className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-gray-500 dark:text-slate-300">
-                                        <div className="shrink-0">
-                                            {showAuthor && research.author ? (
-                                                <span className="wrap-break-words">
-                                                    By {research.author} •{' '}
-                                                </span>
-                                            ) : (
-                                                ''
-                                            )}
-                                            <time dateTime={research.createdAt}>
-                                                {new Date(
-                                                    research.createdAt,
-                                                ).toLocaleDateString()}
-                                            </time>
-                                        </div>
-                                    </div>
-
-                                    {research.abstract && (
-                                        <p
-                                            className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-600 dark:text-slate-300 line-clamp-3 wrap-break-words
-                    transition-opacity duration-200 group-hover:opacity-90"
-                                        >
-                                            {research.abstract}
+                                    key={`empty-${i}`}
+                                >
+                                    <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">
+                                            More deep dives coming soon.
                                         </p>
-                                    )}
-                                </div>
-                            </article>
-                        </FadeIn>
-                    );
-                })}
-
-                {/* If backend returns <2 items, show placeholders */}
-                {researchList.length < 2 &&
-                    Array.from({ length: 2 - researchList.length }).map(
-                        (_, i) => (
-                            <FadeIn
-                                direction="right"
-                                delay={
-                                    300 + researchList.length * 100 + i * 100
-                                }
-                                key={`empty-${i}`}
-                            >
-                                <div className="p-3 sm:p-4 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
-                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400">
-                                        More deep dives coming soon.
-                                    </p>
-                                </div>
-                            </FadeIn>
-                        ),
-                    )}
-            </div>
+                                    </div>
+                                </FadeIn>
+                            ),
+                        )}
+                </div>
+            )}
         </section>
     );
 }

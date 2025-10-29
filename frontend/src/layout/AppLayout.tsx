@@ -59,7 +59,7 @@ export function AppLayout() {
         <div className="flex flex-col min-h-screen text-white">
             {/* Line Network Backdrop */}
             <LineNetworkBackdrop
-                lineCount={20}
+                lineCount={15}
                 lineColor="#9162CB66"
                 lineWidth={2}
                 duration={35000}
