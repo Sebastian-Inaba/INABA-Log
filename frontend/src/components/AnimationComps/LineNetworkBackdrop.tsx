@@ -1,17 +1,13 @@
 // src/components/AnimationComps/LineNetworkBackdrop.tsx
-
-// This was made with heavy help from AI
-
 import { useEffect, useRef } from 'react';
-import { animate } from 'animejs';
 
 interface LineNetworkBackdropProps {
-    lineCount?: number; // number of lines to draw
-    lineColor?: string; // stroke color for the lines
-    lineWidth?: number; // stroke width in CSS pixels
-    duration?: number; // base animation duration (ms)
-    endpointBand?: number; // fraction (0..1) of height used as vertical band for edge endpoints
-    sphereSize?: number; // fraction (0..1) of height used to compute central bulge radius
+    lineCount?: number;
+    lineColor?: string;
+    lineWidth?: number;
+    duration?: number;
+    endpointBand?: number;
+    sphereSize?: number;
 }
 
 type Line = {
@@ -19,13 +15,14 @@ type Line = {
     startY: number;
     endX: number;
     endY: number;
-    cx: number[]; // control point X positions (4 control x values)
+    cx: number[];
 };
 
 type MotionTarget = {
-    angle: number; // animated angle used to compute control Y positions via sin(angle + phase)
-    phase: number; // per-line phase offset so lines are out of sync
-    radius: number; // movement amplitude for this line (px)
+    angle: number;
+    phase: number;
+    radius: number;
+    speed: number;
 };
 
 export function LineNetworkBackdrop({
@@ -36,65 +33,76 @@ export function LineNetworkBackdrop({
     endpointBand = 0.18,
     sphereSize = 0.12,
 }: LineNetworkBackdropProps) {
-    // refs to hold DOM canvas and animation state across renders
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const rafRef = useRef<number | null>(null);
-    const animationsRef = useRef<Array<{ pause: () => void }>>([]); // anime.js animation handles
-    const linesRef = useRef<Line[]>([]); // geometry for each line
-    const motionTargetsRef = useRef<MotionTarget[]>([]); // animated parameters for each line
+    const linesRef = useRef<Line[]>([]);
+    const motionTargetsRef = useRef<MotionTarget[]>([]);
+    const lastTimeRef = useRef<number>(0);
+    const isFirefox = useRef<boolean>(false);
+    const targetFPS = useRef<number>(60);
+    const sinCache = useRef<Float32Array | null>(null);
+    const cosCache = useRef<Float32Array | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        
+        isFirefox.current = /firefox/i.test(navigator.userAgent);
+        targetFPS.current = isFirefox.current && lineCount > 20 ? 30 : 60;
+        const frameInterval = 1000 / targetFPS.current;
+        
+        const ctx = canvas.getContext('2d', {
+            alpha: false,
+            desynchronized: true,
+            willReadFrequently: false,
+        });
         if (!ctx) return;
 
-        /**
-         * setupCanvasSize
-         * - Scales the canvas backing buffer by devicePixelRatio to avoid jagged thin strokes on high-DPI (Retina) displays.
-         * - Returns logical CSS width/height (W,H) for subsequent geometry calculations.
-         */
+        // Pre-compute sin/cos lookup tables for faster trig
+        const CACHE_SIZE = 360;
+        sinCache.current = new Float32Array(CACHE_SIZE);
+        cosCache.current = new Float32Array(CACHE_SIZE);
+        for (let i = 0; i < CACHE_SIZE; i++) {
+            const angle = (i / CACHE_SIZE) * Math.PI * 2;
+            sinCache.current[i] = Math.sin(angle);
+            cosCache.current[i] = Math.cos(angle);
+        }
+
+        let W = 0, H = 0, midX = 0, midY = 0;
+
         const setupCanvasSize = () => {
-            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            const dpr = isFirefox.current ? 1 : Math.min(2, window.devicePixelRatio || 1);
             const cssW = window.innerWidth;
             const cssH = window.innerHeight;
             canvas.style.width = `${cssW}px`;
             canvas.style.height = `${cssH}px`;
             canvas.width = Math.round(cssW * dpr);
             canvas.height = Math.round(cssH * dpr);
-            // reset any existing transforms, then scale to DPR so drawing calls use CSS pixels
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
+            
+            W = cssW;
+            H = cssH;
+            midX = W * 0.5;
+            midY = H * 0.5;
+            
             return { W: cssW, H: cssH };
         };
 
-        /**
-         * initGeometry
-         * - Recreates the line geometry (endpoints and control Xs).
-         * - Endpoints are placed inside a small vertical band around center (endpointBand),
-         *   so all left endpoints originate from roughly the same area and likewise on the right.
-         * - Control X positions are fixed fractions of width so curves consistently bulge in center.
-         * - Motion targets are created or refreshed; radius depends on sphereSize.
-         */
         const initGeometry = () => {
             const { W, H } = setupCanvasSize();
-            const midY = H / 2;
-
-            // endpointBand: if fractional (0..1), convert to px; otherwise treat as px
+            const midY = H * 0.5;
             const bandPx = endpointBand < 1 ? H * endpointBand : endpointBand;
 
-            // control point X coordinates (tunable)
             const x1 = W * 0.22;
             const x2 = W * 0.4;
             const x3 = W * 0.6;
             const x4 = W * 0.78;
 
-            // Build lines: endpoints inside the vertical band near midY (small jitter for natural look)
             linesRef.current = Array.from({ length: lineCount }, () => {
                 const jitter = (Math.random() - 0.5) * (bandPx * 0.25);
                 const startY = midY + (Math.random() - 0.5) * bandPx + jitter;
-                const endY =
-                    midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
+                const endY = midY + (Math.random() - 0.5) * bandPx - jitter * 0.5;
 
                 return {
                     startX: 0,
@@ -105,166 +113,132 @@ export function LineNetworkBackdrop({
                 };
             });
 
-            // Create or refresh motion targets (preserve existing angles when possible)
+            const baseSpeed = (Math.PI * 2) / ((duration * 0.001) * targetFPS.current);
+
             if (motionTargetsRef.current.length !== lineCount) {
                 motionTargetsRef.current = linesRef.current.map(() => ({
                     angle: Math.random() * Math.PI * 2,
                     phase: Math.random() * Math.PI * 2,
-                    // radius determines how large the central bulge can be for this line (px)
                     radius: H * sphereSize * (0.6 + Math.random() * 0.9),
+                    speed: baseSpeed * (1 + Math.random() * 0.6),
                 }));
             } else {
-                // refresh radius/phase to adapt to new size without resetting angle -> avoids jumps
                 motionTargetsRef.current.forEach((t) => {
                     t.phase = Math.random() * Math.PI * 2;
                     t.radius = H * sphereSize * (0.6 + Math.random() * 0.9);
+                    t.speed = baseSpeed * (1 + Math.random() * 0.6);
                 });
             }
         };
 
-        /**
-         * startAngleAnimations
-         * - Starts an anime.js linear loop for each motion target's 'angle' property.
-         * - Using a single continuously-increasing angle (linear easing) yields smooth periodic motion when sampled every frame.
-         */
-        const startAngleAnimations = () => {
-            // stop previous animations (if any)
-            animationsRef.current.forEach((a) => a.pause());
-            animationsRef.current = [];
-
-            motionTargetsRef.current.forEach((t, i) => {
-                const anim = animate(t, {
-                    angle: [t.angle, t.angle + Math.PI * 2],
-                    duration: duration * (1 + Math.random() * 0.6),
-                    easing: 'linear',
-                    loop: true,
-                    delay: i * 80,
-                });
-                animationsRef.current.push(anim);
-            });
+        // Fast sin lookup
+        const fastSin = (angle: number): number => {
+            if (!sinCache.current) return Math.sin(angle);
+            const normalized = ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+            const index = Math.floor((normalized / (Math.PI * 2)) * 360) % 360;
+            return sinCache.current[index];
         };
 
-        /**
-         * draw
-         * - Called via requestAnimationFrame at ~60fps.
-         * - For each line: compute control point Ys with smooth sinusoidal motion around the center.
-         * - Enforce tangent continuity at the center join so the two cubic Beziers meet with matching slope (C¹ continuity).
-         * - Draw two cubic bezier segments per line (left->center and center->right).
-         */
-        const draw = () => {
+        const rawYs = new Float32Array(4);
+        const controlYs = new Float32Array(4);
+        let lastDrawTime = 0;
+        
+        // Cache frequently accessed values
+        const phases = [0, 0.9, 1.8, 2.7];
+        const proximityWeights = [0.3, 0.7];
+
+        const draw = (currentTime: number) => {
             if (!ctx) return;
-            const W = canvas.clientWidth;
-            const H = canvas.clientHeight;
-            const midX = W / 2;
-            const midY = H / 2;
+            
+            const timeSinceLastDraw = currentTime - lastDrawTime;
+            if (timeSinceLastDraw < frameInterval - 1) {
+                rafRef.current = requestAnimationFrame(draw);
+                return;
+            }
+            
+            lastDrawTime = currentTime;
+            const deltaTime = lastTimeRef.current ? currentTime - lastTimeRef.current : frameInterval;
+            lastTimeRef.current = currentTime;
+            const deltaFactor = Math.min(deltaTime, 100) / frameInterval;
 
-            // clear the canvas for this frame
-            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#131313'; 
+            ctx.fillRect(0, 0, W, H);
 
-            // styling for crisp rounded strokes
             ctx.strokeStyle = lineColor;
             ctx.lineWidth = lineWidth;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            // iterate lines and draw each as two cubic bezier segments joined at (midX, middleY)
-            for (let i = 0; i < linesRef.current.length; i++) {
-                const line = linesRef.current[i];
-                const t = motionTargetsRef.current[i];
+            ctx.beginPath();
 
-                // compute raw control Ys for the 4 control points using sin-based orbiting motion
-                const rawYs = line.cx.map((x: number, j: number) => {
-                    // proximity factor makes controls near the center move more than near edges
-                    const proximity = 1 - Math.abs((x - midX) / midX);
-                    const localPhase = t.phase + j * 0.9;
-                    const cpRadius = t.radius * (0.3 + 0.7 * proximity);
-                    return midY + Math.sin(t.angle + localPhase) * cpRadius;
-                });
+            const lines = linesRef.current;
+            const targets = motionTargetsRef.current;
+            const len = lines.length;
+            const midXInv = 1 / midX;
 
-                // Tangent continuity enforcement at the join:
-                // We want the slope of the left cubic at the join to equal the slope of the right cubic at the join.
-                // Solve for y_rightControl so slopes match:
-                // slope_left = (midY - rawYs[1]) / (midX - xLeft)
-                // slope_right = (yRight - midY) / (xRight - midX)
-                // => yRight = midY + (xRight - midX) * (midY - rawYs[1]) / (midX - xLeft)
-                const xLeft = line.cx[1];
-                const xRight = line.cx[2];
-                let enforcedRightY = rawYs[2];
-                const denom = midX - xLeft;
-                if (Math.abs(denom) > 1e-6) {
-                    enforcedRightY =
-                        midY + ((xRight - midX) * (midY - rawYs[1])) / denom;
+            for (let i = 0; i < len; i++) {
+                const line = lines[i];
+                const t = targets[i];
+
+                t.angle += t.speed * deltaFactor;
+                if (t.angle > 12.566370614359172) t.angle -= 6.283185307179586; // PI * 4 and PI * 2
+
+                // Compute all control points
+                const cx = line.cx;
+                const tAngle = t.angle;
+                const tPhase = t.phase;
+                const tRadius = t.radius;
+
+                for (let j = 0; j < 4; j++) {
+                    const x = cx[j];
+                    const proximity = 1 - Math.abs((x - midX) * midXInv);
+                    const cpRadius = tRadius * (proximityWeights[0] + proximityWeights[1] * proximity);
+                    rawYs[j] = midY + fastSin(tAngle + tPhase + phases[j]) * cpRadius;
                 }
-                // Use the enforced right control Y directly (strict C¹ continuity)
-                const cp2Y = enforcedRightY;
 
-                // final controlYs (we use raw for cp0, cp1, cp3; cp2 replaced with enforced value)
-                const controlYs = [rawYs[0], rawYs[1], cp2Y, rawYs[3]];
+                const xLeft = cx[1];
+                const xRight = cx[2];
+                const denom = midX - xLeft;
+                
+                controlYs[0] = rawYs[0];
+                controlYs[1] = rawYs[1];
+                controlYs[2] = Math.abs(denom) > 0.000001 
+                    ? midY + ((xRight - midX) * (midY - rawYs[1])) / denom 
+                    : rawYs[2];
+                controlYs[3] = rawYs[3];
+                
+                const middleY = midY + fastSin(tAngle + 0.1) * (tRadius * 0.85);
 
-                // middle anchor point for the visual bulge (keeps center moving smoothly)
-                const middleY =
-                    midY + Math.sin(t.angle + 0.1) * (t.radius * 0.85);
-
-                // draw the two Bezier segments: left->center and center->right
-                ctx.beginPath();
                 ctx.moveTo(line.startX, line.startY);
-
-                // left segment (start -> mid)
-                ctx.bezierCurveTo(
-                    line.cx[0],
-                    controlYs[0],
-                    line.cx[1],
-                    controlYs[1],
-                    midX,
-                    middleY,
-                );
-
-                // right segment (mid -> end)
-                ctx.bezierCurveTo(
-                    line.cx[2],
-                    controlYs[2],
-                    line.cx[3],
-                    controlYs[3],
-                    line.endX,
-                    line.endY,
-                );
-
-                ctx.stroke();
+                ctx.bezierCurveTo(cx[0], controlYs[0], cx[1], controlYs[1], midX, middleY);
+                ctx.bezierCurveTo(cx[2], controlYs[2], cx[3], controlYs[3], line.endX, line.endY);
             }
 
-            // schedule next frame
+            ctx.stroke();
             rafRef.current = requestAnimationFrame(draw);
         };
 
-        // Initialize geometry, start animations and begin drawing loop
         initGeometry();
-        startAngleAnimations();
-        draw();
+        rafRef.current = requestAnimationFrame(draw);
 
-        // Resize handler: re-init geometry and animations (throttled)
         let resizeTimeout: number | undefined;
         const onResize = () => {
             if (resizeTimeout) window.clearTimeout(resizeTimeout);
-            resizeTimeout = window.setTimeout(() => {
-                initGeometry();
-                startAngleAnimations();
-            }, 80);
+            resizeTimeout = window.setTimeout(initGeometry, 150);
         };
         window.addEventListener('resize', onResize);
 
-        // Cleanup on unmount
         return () => {
             window.removeEventListener('resize', onResize);
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            animationsRef.current.forEach((a) => a.pause());
-            animationsRef.current = [];
             linesRef.current = [];
             motionTargetsRef.current = [];
+            sinCache.current = null;
+            cosCache.current = null;
             if (resizeTimeout) window.clearTimeout(resizeTimeout);
         };
     }, [lineCount, lineColor, lineWidth, duration, endpointBand, sphereSize]);
 
-    // full-screen canvas behind UI (pointer-events-none so it doesn't block interaction)
     return (
         <canvas
             ref={canvasRef}

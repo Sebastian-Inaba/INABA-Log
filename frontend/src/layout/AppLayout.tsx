@@ -56,13 +56,13 @@ export function AppLayout() {
     }, [isHeaderVisible]);
 
     return (
-        <div className="flex flex-col min-h-screen bg-neutral-900 text-white">
+        <div className="flex flex-col min-h-screen text-white">
             {/* Line Network Backdrop */}
             <LineNetworkBackdrop
-                lineCount={35}
+                lineCount={20}
                 lineColor="#9162CB66"
                 lineWidth={2}
-                duration={15000}
+                duration={35000}
                 endpointBand={0.7}
                 sphereSize={0.05}
             />

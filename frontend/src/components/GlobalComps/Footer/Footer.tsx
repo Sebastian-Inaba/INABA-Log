@@ -5,17 +5,7 @@ import { routesConfig } from '../../../routes/routes';
 import { socialIcons, otherIcons } from '../../../assets/icons/icons';
 import type { RouteConfig } from '../../../routes/routes';
 
-type FooterProps = {
-    logoFont?: string;
-    navFont?: string;
-    ctaFont?: string;
-};
-
-export function Footer({
-    logoFont = 'Poppins',
-    navFont = 'Lato',
-    ctaFont = 'Roboto_Slab',
-}: FooterProps) {
+export function Footer() {
     const footerNavItems: RouteConfig[] = useMemo(
         () => routesConfig[0].children?.filter((r) => r.showInNav) ?? [],
         [],
@@ -65,7 +55,6 @@ export function Footer({
                     {/* Row 1: Logo */}
                     <Link
                         to="/"
-                        style={{ fontFamily: logoFont }}
                         className="text-2xl text-purple-500 font-medium tracking-widest"
                     >
                         INABA-Log
@@ -78,7 +67,6 @@ export function Footer({
                                 <li key={item.path} className="flex">
                                     <Link
                                         to={item.path}
-                                        style={{ fontFamily: navFont }}
                                         className="hover:text-purple-500 transition-colors underline"
                                     >
                                         {item.label}
@@ -97,7 +85,6 @@ export function Footer({
                     <div className="flex items-center gap-4 text-lg">
                         <span
                             className="text-green-400 font-bold"
-                            style={{ fontFamily: ctaFont }}
                         >
                             Like what you see?
                         </span>
