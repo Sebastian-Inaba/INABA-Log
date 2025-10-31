@@ -64,7 +64,7 @@ export function LineNetworkBackdrop({
         // Initialize WebGL context with performance optimizations
         const gl = canvas.getContext('webgl', {
             alpha: false, // Opaque background for better performance
-            antialias: true, // Hardware antialiasing instead of multi-pass blur
+            antialias: true, // Hardware anti-aliasing instead of multi-pass blur
             desynchronized: true, // Allow async rendering
         });
         if (!gl) {
@@ -317,7 +317,7 @@ export function LineNetworkBackdrop({
 
             // === OPTIMIZED BLUR: Single pass with wider, softer lines ===
             // Instead of multiple render passes, we use:
-            // 1. Hardware antialiasing (enabled in context)
+            // 1. Hardware anti-aliasing (enabled in context)
             // 2. Wider lines with alpha gradient from center to edges
             // 3. Adjustable line width based on blur amount
             const effectiveWidth = lineWidth * (1 + blurAmount * 0.3);

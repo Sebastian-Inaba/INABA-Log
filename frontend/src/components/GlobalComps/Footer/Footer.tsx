@@ -116,7 +116,12 @@ export function Footer() {
                     {/* Row 4: Social icons */}
                     <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center p-3">
                         {socialIconList.map((s) => (
-                            <a key={s.key} href={s.url} aria-label={s.label}>
+                            <a
+                                key={s.key}
+                                href={s.url}
+                                aria-label={s.label}
+                                className="flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 hover:border-2 hover:border-gray-500"
+                            >
                                 <img
                                     src={s.icon}
                                     alt={s.label}

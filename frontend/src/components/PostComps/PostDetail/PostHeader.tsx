@@ -18,6 +18,73 @@ interface PostHeaderProps {
     slug: string;
 }
 
+/**
+ * TagList - responsive tag list
+ *
+ * - Defaults to shrink-to-content (inline-flex) so container only uses needed width.
+ * - Pass `fullWidth` to force `w-full` behavior.
+ */
+interface TagListProps {
+    tags: string[];
+    tagColorMap: string[]; // colors corresponding to tags (may be shorter)
+    maxVisible?: number;
+    className?: string;
+    fullWidth?: boolean; // default false -> shrink-to-content
+}
+function TagList({
+    tags,
+    tagColorMap,
+    maxVisible = 5,
+    className = '',
+    fullWidth = false,
+}: TagListProps) {
+    const visible = tags.slice(0, maxVisible);
+
+    const containerClass = [
+        fullWidth ? 'w-full min-w-0 flex' : 'inline-flex',
+        'flex-wrap',
+        'items-center',
+        'gap-2',
+        'rounded-lg',
+        'bg-neutral-900',
+        'p-2 md:p-3',
+        className,
+    ]
+        .filter(Boolean)
+        .join(' ');
+
+    return (
+        <div className={containerClass}>
+            {visible.map((tag, idx) => {
+                const textColor = tagColorMap[idx] ?? 'text-white';
+                const bgColor = textColor.replace(/^text-/, 'bg-') + '/30';
+                return (
+                    <div key={idx} className="flex items-center">
+                        <span
+                            className={`inline-block px-3 py-1 md:px-4 rounded-full ${bgColor} ${textColor} text-sm truncate max-w-[200px] max-[425px]:px-2 max-[425px]:mx-1`}
+                            title={tag}
+                        >
+                            {tag}
+                        </span>
+
+                        {idx !== visible.length - 1 && (
+                            <span className="mx-2 text-white max-[425px]:mx-0">
+                                |
+                            </span>
+                        )}
+                    </div>
+                );
+            })}
+
+            {tags.length > maxVisible && (
+                <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm max-[425px]:p-0 max-[425px]:m-0">
+                    +{tags.length - maxVisible} more
+                </span>
+            )}
+        </div>
+    );
+}
+
 export function PostHeader({ slug }: PostHeaderProps) {
     // fetched post
     const [post, setPost] = useState<Post | null>(null);
@@ -131,6 +198,10 @@ export function PostHeader({ slug }: PostHeaderProps) {
         );
     }
 
+    // Helper to avoid SSR crash when reading window
+    const isLargeViewport =
+        typeof window !== 'undefined' ? window.innerWidth > 1440 : false;
+
     // Default Post Detail render
     return (
         <FadeIn direction="up" duration={800} distance={100}>
@@ -167,19 +238,20 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                         distance={50}
                                         delay={400}
                                     >
-                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-start sm:justify-between gap-4 mb-4">
                                             <h1 className="text-3xl md:text-4xl text-gray-900">
                                                 {post.title}
                                             </h1>
+
                                             {post.category && (
-                                                <span className="text-base md:text-lg text-gray-900 whitespace-nowrap">
+                                                <span className="inline-flex flex-none self-start items-center rounded-4xl border border-neutral-900 px-3 py-1 text-base md:text-lg text-gray-900 whitespace-nowrap">
                                                     {post.category}
                                                 </span>
                                             )}
                                         </div>
                                     </FadeIn>
 
-                                    {/* Tags */}
+                                    {/* Tags - LEFT aligned for image layout */}
                                     {post.tags?.length > 0 && (
                                         <FadeIn
                                             direction="up"
@@ -187,47 +259,11 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             distance={50}
                                             delay={600}
                                         >
-                                            <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-lg bg-neutral-900">
-                                                {post.tags
-                                                    .slice(0, 5)
-                                                    .map((tag, idx) => {
-                                                        const textColor =
-                                                            tagColorMap[idx] ??
-                                                            'text-white';
-                                                        const bgColor =
-                                                            textColor.replace(
-                                                                /^text-/,
-                                                                'bg-',
-                                                            ) + '/30';
-                                                        return (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center"
-                                                            >
-                                                                <span
-                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                                {idx !==
-                                                                    post.tags.slice(
-                                                                        0,
-                                                                        5,
-                                                                    ).length -
-                                                                        1 && (
-                                                                    <span className="mx-2 text-white">
-                                                                        |
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                {post.tags.length > 5 && (
-                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
-                                                        +{post.tags.length - 5}{' '}
-                                                        more
-                                                    </span>
-                                                )}
+                                            <div className="mb-4 flex justify-start">
+                                                <TagList
+                                                    tags={post.tags}
+                                                    tagColorMap={tagColorMap}
+                                                />
                                             </div>
                                         </FadeIn>
                                     )}
@@ -269,10 +305,9 @@ export function PostHeader({ slug }: PostHeaderProps) {
                             <div
                                 className="hidden lg:grid w-full "
                                 style={{
-                                    gridTemplateColumns:
-                                        window.innerWidth > 1440
-                                            ? 'auto minmax(280px,640px) minmax(auto,800px) auto'
-                                            : '0px minmax(280px,640px) minmax(auto,800px) auto',
+                                    gridTemplateColumns: isLargeViewport
+                                        ? 'auto minmax(280px,640px) minmax(auto,800px) auto'
+                                        : '0px minmax(280px,640px) minmax(auto,800px) auto',
                                     gridTemplateRows: '100px auto 36px 72px',
                                     alignItems: 'stretch',
                                     gridTemplateAreas: `
@@ -344,63 +379,27 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             </h1>
 
                                             {post.category && (
-                                                <span className="p-5 text-lg text-gray-900">
+                                                <span className="rounded-4xl border border-neutral-900 p-5 text-lg text-gray-900">
                                                     {post.category}
                                                 </span>
                                             )}
                                         </FadeIn>
                                     </div>
 
-                                    {/* Tags */}
+                                    {/* Tags - LEFT aligned for image layout */}
                                     {post.tags?.length > 0 && (
-                                        <div className="flex items-center justify-left gap-2 bg-[#9162CB] p-3">
+                                        <div className="flex items-center justify-start gap-2 bg-[#9162CB] p-3">
                                             <FadeIn
                                                 direction="up"
                                                 duration={700}
                                                 distance={50}
                                                 delay={600}
-                                                className="flex items-center rounded-lg bg-neutral-900"
+                                                className="flex items-center"
                                             >
-                                                {post.tags
-                                                    .slice(0, 5)
-                                                    .map((tag, idx) => {
-                                                        const textColor =
-                                                            tagColorMap[idx] ??
-                                                            'text-white';
-                                                        const bgColor =
-                                                            textColor.replace(
-                                                                /^text-/,
-                                                                'bg-',
-                                                            ) + '/30';
-                                                        return (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center"
-                                                            >
-                                                                <span
-                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm`}
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                                {idx !==
-                                                                    post.tags.slice(
-                                                                        0,
-                                                                        5,
-                                                                    ).length -
-                                                                        1 && (
-                                                                    <span className="mx-2 text-white">
-                                                                        |
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                {post.tags.length > 5 && (
-                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm">
-                                                        +{post.tags.length - 5}{' '}
-                                                        more
-                                                    </span>
-                                                )}
+                                                <TagList
+                                                    tags={post.tags}
+                                                    tagColorMap={tagColorMap}
+                                                />
                                             </FadeIn>
                                         </div>
                                     )}
@@ -472,7 +471,7 @@ export function PostHeader({ slug }: PostHeaderProps) {
                             </div>
                         </>
                     ) : (
-                        // SIMPLER GRID (when no image)
+                        // SIMPLER GRID (when no image) - Tags centered
                         <div className="w-full bg-[#9162CB] mx-auto px-2 md:px-8">
                             <div className="h-[60px] md:h-[100px]" />
 
@@ -499,13 +498,13 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                         delay={400}
                                         className="w-full flex justify-center"
                                     >
-                                        <span className="p-5 text-base md:text-lg text-gray-900 text-center">
+                                        <span className="rounded-4xl border border-neutral-900 p-5 text-base md:text-lg text-gray-900 text-center">
                                             {post.category}
                                         </span>
                                     </FadeIn>
                                 )}
 
-                                {/* Tags */}
+                                {/* Tags - centered; TagList intrinsic width */}
                                 {post.tags?.length > 0 && (
                                     <div className="flex items-center justify-center gap-2 p-3">
                                         <FadeIn
@@ -514,48 +513,10 @@ export function PostHeader({ slug }: PostHeaderProps) {
                                             distance={50}
                                             delay={600}
                                         >
-                                            <div className="flex flex-wrap items-center justify-center rounded-lg bg-neutral-900 max-[425px]:p-0 max-[425px]:m-0">
-                                                {post.tags
-                                                    .slice(0, 5)
-                                                    .map((tag, idx) => {
-                                                        const textColor =
-                                                            tagColorMap[idx] ??
-                                                            'text-white';
-                                                        const bgColor =
-                                                            textColor.replace(
-                                                                /^text-/,
-                                                                'bg-',
-                                                            ) + '/30';
-                                                        return (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center max-[425px]:m-0 max-[425px]:p-0"
-                                                            >
-                                                                <span
-                                                                    className={`p-2 ml-5 mr-5 rounded-full ${bgColor} ${textColor} text-sm max-[425px]:p-2 max-[425px]:m-0`}
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                                {idx !==
-                                                                    post.tags.slice(
-                                                                        0,
-                                                                        5,
-                                                                    ).length -
-                                                                        1 && (
-                                                                    <span className="mx-2 text-white max-[425px]:mx-0">
-                                                                        |
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                {post.tags.length > 5 && (
-                                                    <span className="ml-2 px-2 py-1 rounded-full bg-white/20 text-white text-sm max-[425px]:p-0 max-[425px]:m-0">
-                                                        +{post.tags.length - 5}{' '}
-                                                        more
-                                                    </span>
-                                                )}
-                                            </div>
+                                            <TagList
+                                                tags={post.tags}
+                                                tagColorMap={tagColorMap}
+                                            />
                                         </FadeIn>
                                     </div>
                                 )}

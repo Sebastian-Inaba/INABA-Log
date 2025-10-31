@@ -9,7 +9,8 @@ interface FadeInProps {
     distance?: number;
     className?: string;
     triggerOnce?: boolean;
-    threshold?: number;
+    threshold?: number; // proportion of element that must be visible (0 = any intersection)
+    rootMargin?: string; // optional - e.g. '0px 0px -10% 0px'
 }
 
 export function FadeIn({
@@ -20,33 +21,39 @@ export function FadeIn({
     distance = 30,
     className = '',
     triggerOnce = true,
-    threshold = 0.1,
+    threshold = 0, // <<< change: default to 0 so tall elements can show when any part is visible
+    rootMargin = '0px',
 }: FadeInProps) {
-    // tracks whether element is considered visible
     const [isVisible, setIsVisible] = useState(false);
-    const elementRef = useRef<HTMLDivElement>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
 
-    /**
-     * Set up IntersectionObserver on mount and clean up on unmount.
-     * Observes the element and toggles `isVisible` based on intersection.
-     */
     useEffect(() => {
         const element = elementRef.current;
         if (!element) return;
+
+        // Immediate check: if any part of the element is already inside the viewport, reveal it.
+        // This helps when an element is very tall and the observer callback hasn't fired yet.
+        if (typeof window !== 'undefined') {
+            const rect = element.getBoundingClientRect();
+            const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+            if (inViewport) {
+                setIsVisible(true);
+                if (triggerOnce) return; // already visible, no need to set up observer
+            }
+        }
 
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         setIsVisible(true);
-                        if (triggerOnce) observer.unobserve(element); // stop after first reveal
+                        if (triggerOnce && element) observer.unobserve(element);
                     } else if (!triggerOnce) {
-                        // if we allow replay, hide when it leaves viewport
                         setIsVisible(false);
                     }
                 });
             },
-            { threshold },
+            { threshold, rootMargin },
         );
 
         observer.observe(element);
@@ -54,23 +61,19 @@ export function FadeIn({
         return () => {
             if (element) observer.unobserve(element);
         };
-    }, [triggerOnce, threshold]); // re-create observer only when these change
+    }, [triggerOnce, threshold, rootMargin]);
 
-    /**
-     * Compute the transform applied while *not* visible. When visible we
-     * return 'none' so the element animates to its natural position.
-     */
     const getTransform = () => {
         if (!isVisible) {
             switch (direction) {
                 case 'up':
-                    return `translateY(${distance}px)`; // start lower, animate up
+                    return `translateY(${distance}px)`;
                 case 'down':
-                    return `translateY(-${distance}px)`; // start higher, animate down
+                    return `translateY(-${distance}px)`;
                 case 'left':
-                    return `translateX(${distance}px)`; // start right, animate left
+                    return `translateX(${distance}px)`;
                 case 'right':
-                    return `translateX(-${distance}px)`; // start left, animate right
+                    return `translateX(-${distance}px)`;
                 default:
                     return 'none';
             }
