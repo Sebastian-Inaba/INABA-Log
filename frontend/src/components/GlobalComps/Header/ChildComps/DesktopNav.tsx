@@ -16,6 +16,7 @@ export function DesktopNav({
     return (
         <ul className="flex flex-row gap-4">
             {navItems.map((route) => {
+                const IconComponent = route.icon;
                 return (
                     <li key={route.path} className="group">
                         <Link
@@ -25,17 +26,10 @@ export function DesktopNav({
                             aria-label={route.label}
                         >
                             {/* icon */}
-                            {route.icon && (
-                                <img
-                                    src={route.icon}
-                                    alt={
-                                        route.iconLabel ?? `${route.label} icon`
-                                    }
-                                    className="w-5 h-5 shrink-0 ml-0.5"
-                                    loading="lazy"
-                                />
-                            )}
-
+                            {IconComponent &&
+                                typeof IconComponent === 'function' && (
+                                    <IconComponent className="w-5 h-5 shrink-0 ml-0.5" />
+                                )}
                             {/* Label text */}
                             <span
                                 style={{

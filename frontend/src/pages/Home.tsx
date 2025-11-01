@@ -6,25 +6,27 @@ import { LatestPosts } from '../components/HomeComps/FiveLatest';
 import { FadeIn } from '../components/AnimationComps/FadeIn';
 
 export function Home() {
-    // Refs to important DOM elements
+    // Refs to DOM sections used by the sticky behaviour and measurements
     const topSectionRef = useRef<HTMLDivElement | null>(null);
     const bottomSectionRef = useRef<HTMLDivElement | null>(null);
     const stickyHeaderRef = useRef<HTMLDivElement | null>(null);
     const latestPostsWrapperRef = useRef<HTMLDivElement | null>(null);
 
-    // State to track sticky status
+    // Sticky state and a ref mirror for the scroll handler (avoid stale closures)
     const [isSticky, setIsSticky] = useState(false);
     const isStickyRef = useRef(isSticky);
 
-    // Sync mutable ref with state
+    // Keep isStickyRef in sync with state
     useEffect(() => {
         isStickyRef.current = isSticky;
     }, [isSticky]);
 
-    /** Apply fixed positioning to the top section */
+    // Style helper functions
+    // Apply/Remove fixed styles to the top section when sticky
     const applyFixedStyles = (topOffset: number) => {
         const section = topSectionRef.current;
         if (!section) return;
+        // // Styling applied when section becomes sticky
         section.style.position = 'fixed';
         section.style.top = `${topOffset}px`;
         section.style.left = '0';
@@ -33,10 +35,10 @@ export function Home() {
         section.style.width = '';
     };
 
-    /** Remove fixed positioning from the top section */
     const removeFixedStyles = () => {
         const section = topSectionRef.current;
         if (!section) return;
+        // Remove previously set inline styles when leaving sticky state
         section.style.position = '';
         section.style.top = '';
         section.style.left = '';
@@ -45,30 +47,29 @@ export function Home() {
         section.style.width = '';
     };
 
-    /** Set bottom section margin to prevent layout shift when sticky */
+    // Manage bottom section margin to avoid layout jump when top section is fixed
     const setBottomSectionMargin = (marginPx: number) => {
         const section = bottomSectionRef.current;
         if (!section) return;
         section.style.marginTop = `${marginPx}px`;
     };
 
-    /** Clear bottom section margin */
     const clearBottomSectionMargin = () => {
         const section = bottomSectionRef.current;
         if (!section) return;
         section.style.marginTop = '';
     };
 
-    /** Keep measurements updated during sticky state (responsive handling) */
+    // Resize observer & layout measurement
     useLayoutEffect(() => {
         const section = topSectionRef.current;
         if (!section) return;
 
+        // Update measurements when observed elements resize
         const updateMeasurements = () => {
-            // ONLY update measurements if already sticky - don't trigger state changes
             if (isStickyRef.current) {
                 const rect = section.getBoundingClientRect();
-                // Just update the inline styles, don't call applyFixedStyles
+                // Keep fixed top position stable and adjust bottom margin to match height
                 section.style.top = `${Math.round(rect.top)}px`;
                 setBottomSectionMargin(Math.ceil(rect.height));
             }
@@ -76,16 +77,14 @@ export function Home() {
 
         let resizeObserver: ResizeObserver | null = null;
         if (typeof ResizeObserver !== 'undefined') {
-            // Observe size changes to keep measurements accurate
+            // Resize observer to react to content changes (height changes)
             resizeObserver = new ResizeObserver(updateMeasurements);
             resizeObserver.observe(section);
-            // Also observe the bottom section to catch layout changes
             if (bottomSectionRef.current) {
                 resizeObserver.observe(bottomSectionRef.current);
             }
         }
 
-        // Also react to window resize/load
         window.addEventListener('resize', updateMeasurements);
         window.addEventListener('load', updateMeasurements);
 
@@ -98,7 +97,7 @@ export function Home() {
         };
     }, []);
 
-    /** Scroll handler for sticky top section */
+    // Scroll handler / sticky logic
     useEffect(() => {
         let scrollRafId: number | null = null;
 
@@ -108,7 +107,7 @@ export function Home() {
             const bottomRect = bottomSectionRef.current.getBoundingClientRect();
             const shouldBeSticky = bottomRect.top <= window.innerHeight;
 
-            // Enter sticky state - ONCE
+            // Make section sticky when the bottom section enters the viewport threshold
             if (shouldBeSticky && !isStickyRef.current) {
                 if (scrollRafId) cancelAnimationFrame(scrollRafId);
                 scrollRafId = requestAnimationFrame(() => {
@@ -125,7 +124,7 @@ export function Home() {
                 return;
             }
 
-            // Exit sticky state - ONCE
+            // Remove sticky when it should no longer be sticky
             if (!shouldBeSticky && isStickyRef.current) {
                 if (scrollRafId) cancelAnimationFrame(scrollRafId);
                 scrollRafId = requestAnimationFrame(() => {
@@ -136,86 +135,116 @@ export function Home() {
             }
         };
 
-        // Attach listeners
+        // Scroll handler added with passive option for performance
         window.addEventListener('scroll', handleScroll, { passive: true });
-
-        // Initial check
+        // run once to set initial state
         handleScroll();
 
         return () => {
             if (scrollRafId) cancelAnimationFrame(scrollRafId);
             window.removeEventListener('scroll', handleScroll);
-            // Clean up any styles left behind
+            // Ensure styles and margins are cleared on unmount
             removeFixedStyles();
             clearBottomSectionMargin();
         };
     }, []);
 
     return (
-        <div className="w-full mx-auto h-full pt-[70px]">
-            {/* Top section (newest post & research highlight) */}
-            <div
+        <div className="w-full mx-auto h-full pt-[70px]" aria-label="Homepage">
+            {/* Visually-hidden page title for proper heading hierarchy */}
+            <h1 className="sr-only">Home</h1>
+
+            {/* Bento grid top section */}
+            <section
                 ref={topSectionRef}
+                // This section contains featured/newest content; it's made sticky via JS.
                 className={`transition-all duration-200 ${isSticky ? 'z-0' : ''}`}
+                aria-label="Featured content"
+                role="region"
             >
-                <div className="max-w-11/12 mx-auto relative pt-10 pb-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-2">
-                        {/* Newest post wrapper */}
+                <div className="max-w-7xl mx-auto relative pt-10 pb-20 px-4">
+                    {/* Bento grid layout: 3 columns on desktop, responsive breakpoints */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 auto-rows-fr">
+                        {/* New Post */}
                         <FadeIn
                             direction="up"
-                            className="flex justify-center items-center"
+                            delay={200}
+                            className="xl:col-span-7 md:col-span-2 flex flex-col h-full min-h-[400px]"
                         >
-                            <NewestPost apiUrl="/posts/newest" />
+                            {/* Fetch handler */}
+                            <NewestPost
+                                apiUrl="/posts/newest"
+                                className="flex-1"
+                                aria-label="Newest post"
+                            />
                         </FadeIn>
-                        {/* Latest research wrapper*/}
+
+                        {/* Info section */}
                         <FadeIn
                             direction="up"
-                            delay={100}
-                            className="flex items-center mt-10 lg:mt-0"
+                            delay={300}
+                            className="xl:col-span-5 md:col-span-1 flex flex-col h-full min-h-[300px]"
                         >
-                            {/* Divider */}
-                            <div className="border-2 border-gray-400 mx-0 mr-4 lg:mx-6 rounded-2xl h-full" />
-                            <NewestResearch apiUrl="/research/newest" />
+                            {/* Fetch handler */}
+                            <NewestResearch
+                                className="flex-1"
+                                aria-label="Research highlight"
+                            />
                         </FadeIn>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Bottom section (sticky heading + latest posts) */}
-            <div
+            {/* Bottom section with recent posts */}
+            <section
                 ref={bottomSectionRef}
                 className={`relative ${isSticky ? 'z-40' : 'z-10'} w-full`}
+                aria-label="Recent posts section"
+                role="region"
+                aria-labelledby="recent-posts-heading"
             >
-                {/* Backdrop blur (instant, no fade) */}
-                <div className="absolute top-0 left-0 w-full h-[calc(100%+100px)] bg-neutral-950 -z-100" />
+                {/* Decorative background - mark aria-hidden so screen readers ignore it */}
+                <div
+                    className="absolute top-0 left-0 w-full h-[calc(100%+100px)] bg-neutral-950 z-[-100]"
+                    aria-hidden="true"
+                />
 
-                {/* Fade in everything else */}
                 <FadeIn direction="up" threshold={0}>
-                    {/* Divider */}
-                    <div className="w-full max-w-10/12 mx-auto border-2 rounded-2xl border-gray-400" />
+                    {/* Decorative separator */}
+                    <div
+                        className="w-full max-w-7xl mx-auto border-2 rounded-2xl border-gray-400"
+                        aria-hidden="true"
+                    />
 
                     <div className="relative z-50 w-full mx-auto flex flex-col items-center h-fit">
-                        {/* Sticky heading*/}
                         <div
                             ref={stickyHeaderRef}
-                            className="flex top-0 items-center justify-center w-full lg:pr-150 py-4 z-80"
+                            className="flex top-0 items-center justify-center w-full py-4 z-50"
                         >
-                            <h1 className="text-3xl italic">Recent Posts</h1>
+                            <h2
+                                id="recent-posts-heading"
+                                className="text-3xl italic"
+                            >
+                                Recent Posts
+                            </h2>
                         </div>
 
-                        {/* Latest posts wrapper*/}
                         <div
                             ref={latestPostsWrapperRef}
-                            className="w-full xl:w-1/2 flex justify-center mt-10 mb-15 relative z-10 px-4 xl:px-0"
+                            className="w-full max-w-7xl flex justify-center mt-10 mb-15 relative z-10 px-4"
+                            role="region"
+                            aria-labelledby="recent-posts-heading"
                         >
+                            {/* Fetch handler: LatestPosts handles fetching the latest five posts */}
                             <LatestPosts
                                 className="w-full"
                                 apiUrl="/posts/latest-five"
+                                aria-label="Latest posts list"
                             />
                         </div>
                     </div>
                 </FadeIn>
-            </div>
+            </section>
         </div>
     );
 }

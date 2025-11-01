@@ -1,0 +1,26 @@
+interface LogoSvgIconComponentProps {
+    className?: string;
+}
+
+export function HomeSvgIconComponent({
+    className = '',
+}: LogoSvgIconComponentProps) {
+    return (
+        <svg
+            className={className}
+            width="23"
+            height="24"
+            viewBox="0 0 23 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M2.125 11.5L11.5 2.125L20.875 11.5V20.875C20.875 21.1513 20.7653 21.4162 20.5699 21.6116C20.3746 21.8069 20.1096 21.9167 19.8333 21.9167H14.625V15.6667H8.375V21.9167H3.16667C2.8904 21.9167 2.62545 21.8069 2.4301 21.6116C2.23475 21.4162 2.125 21.1513 2.125 20.875V11.5Z"
+                stroke="#252525"
+                strokeWidth="2.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}

@@ -62,10 +62,10 @@ export function AppLayout() {
                 lineCount={20}
                 lineColor="#9162CB66"
                 lineWidth={0.05}
-                duration={30000}
+                duration={60000}
                 endpointBand={0.9}
                 sphereSize={0.12}
-                blurAmount={100}
+                blurAmount={50}
             />
 
             {/* Header */}
@@ -86,7 +86,7 @@ export function AppLayout() {
             </LenisScroll>
 
             {/* Footer */}
-            <footer className="w-full mt-auto h-[300px] bg-neutral-800 flex items-center justify-center p-4 relative z-50">
+            <footer className="w-full mt-auto h-auto bg-neutral-800 flex items-start justify-center p-4 relative z-50">
                 <Footer />
             </footer>
         </div>

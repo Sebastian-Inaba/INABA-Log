@@ -1,34 +1,38 @@
 // src/assets/icons/icons.ts
-import FilterIcon from './other/filterIcon.svg';
-import SearchIcon from './other/searchIcon.svg';
-import ArrowIcon from './other/arrowIcon.svg';
-import HomeIcon from './other/homeIcon.svg';
-import PostIcon from './other/postIcon.svg';
-import ResearchIcon from './other/deepDiveIcon.svg';
-import LongArrow from './other/longArrowIcon.svg';
+import { FilterSvgIconComponent } from './other/filterIcon';
+import { SearchSvgIconComponent } from './other/searchIcon';
+import { ArrowSvgIconComponent } from './other/arrowIcon';
+import { HomeSvgIconComponent } from './other/homeIcon';
+import { PostSvgIconComponent } from './other/postIcon';
+import { DeepDiveSvgIconComponent } from './other/deepDiveIcon';
+import { LongArrowSvgIconComponent } from './other/longArrowIcon';
 
-import GitHubIcon from './brands/GitHubBrand.svg';
-import LinkedInIcon from './brands/LinkedInBrand.svg';
-import InstagramIcon from './brands/InstagramBrand.svg';
+import { GitHubBrandSvgIconComponent } from './brands/GitHubBrand';
+import { LinkedinBrandSvgIconComponent } from './brands/LinkedinBrand';
+import { InstagramBrandSvgIconComponent } from './brands/InstagramBrand';
 
-export const filterIcons = {
-    filter: FilterIcon,
-    search: SearchIcon,
-    arrowDown: ArrowIcon,
+import { LogoSvgIconComponent } from './logo/InabaLogo';
+
+export const FilterIcons = {
+    Filter: FilterSvgIconComponent,
+    Search: SearchSvgIconComponent,
+    ArrowDown: ArrowSvgIconComponent,
 };
 
-export const navIcons = {
-    home: HomeIcon,
-    post: PostIcon,
-    research: ResearchIcon,
+export const NavIcons = {
+    Home: HomeSvgIconComponent,
+    Post: PostSvgIconComponent,
+    Research: DeepDiveSvgIconComponent,
 };
 
-export const socialIcons = {
-    github: GitHubIcon,
-    linkedin: LinkedInIcon,
-    instagram: InstagramIcon,
+export const SocialIcons = {
+    Github: GitHubBrandSvgIconComponent,
+    Linkedin: LinkedinBrandSvgIconComponent,
+    Instagram: InstagramBrandSvgIconComponent,
 };
 
-export const otherIcons = {
-    longArrow: LongArrow,
+export const OtherIcons = {
+    LongArrow: LongArrowSvgIconComponent,
 };
+
+export const LogoIcon = LogoSvgIconComponent;

@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { routesConfig } from '../../../routes/routes';
-import { socialIcons, otherIcons } from '../../../assets/icons/icons';
+import { SocialIcons, LogoIcon } from '../../../assets/icons/icons';
 import type { RouteConfig } from '../../../routes/routes';
 
 export function Footer() {
@@ -15,64 +15,53 @@ export function Footer() {
     const socialIconList = [
         {
             key: 'github',
-            icon: (socialIcons as Record<string, string>).github,
-            label: 'GitHub',
+            Icon: SocialIcons.Github,
+            label: 'GitHub Icon',
             url: 'https://github.com/yourname',
         },
         {
             key: 'linkedin',
-            icon: (socialIcons as Record<string, string>).linkedin,
-            label: 'LinkedIn',
+            Icon: SocialIcons.Linkedin,
+            label: 'LinkedIn Icon',
             url: 'https://linkedin.com/in/yourname',
         },
         {
             key: 'instagram',
-            icon: (socialIcons as Record<string, string>).instagram,
-            label: 'Instagram',
+            Icon: SocialIcons.Instagram,
+            label: 'Instagram Icon',
             url: 'https://instagram.com/yourname',
         },
     ];
 
-    const otherList = [
-        {
-            key: 'longArrow',
-            icon: (otherIcons as Record<string, string>).longArrow,
-            label: 'Long Arrow',
-        },
-    ];
-
-    // Lookup directly by key
-    const longArrow = otherList.find((i) => i.key === 'longArrow')?.icon;
-
     return (
         <div className="w-full flex justify-center relative tracking-wider">
-            <div className="flex">
-                {/* Vertical divider */}
-                <div className="w-1 bg-gray-300 mr-6" />
-
-                {/* Footer content */}
-                <div className="flex flex-col gap-4">
-                    {/* Row 1: Logo */}
+            <div className="flex border-t-2 border-gray-300 px-5 lg:px-25 py-3 gap-0 max-w-6xl w-full items-start">
+                {/* Left: Logo */}
+                <div className="hidden lg:flex items-start justify-start w-40">
                     <Link
                         to="/"
-                        className="text-2xl text-purple-500 font-medium tracking-widest"
+                        className="tracking-widest flex items-start"
+                        aria-label="Logo link to homepage"
                     >
-                        INABA-Log
+                        <LogoIcon className="h-12 w-auto" />
                     </Link>
+                </div>
 
-                    {/* Row 2: Page nav */}
+                {/* Center: Page nav + (mobile logo on smaller devices) + socials + copyright */}
+                <div className="flex flex-col flex-1 items-center gap-4 lg:gap-15">
+                    {/* Row 1: Page nav */}
                     <nav aria-label="Footer Navigation">
-                        <ul className="flex flex-wrap gap-y-1 text-gray-300 text-base">
+                        <ul className="flex flex-wrap gap-y-1 text-gray-300 text-base justify-center">
                             {footerNavItems.map((item, idx) => (
                                 <li key={item.path} className="flex">
                                     <Link
                                         to={item.path}
-                                        className="hover:text-purple-500 transition-colors underline"
+                                        className="hover:text-green-400 transition-colors underline"
                                     >
                                         {item.label}
                                     </Link>
                                     {idx < footerNavItems.length - 1 && (
-                                        <span className="px-3 text-gray-400">
+                                        <span className="px-2 md:px-8 lg:px-15 text-gray-400">
                                             •
                                         </span>
                                     )}
@@ -81,62 +70,46 @@ export function Footer() {
                         </ul>
                     </nav>
 
-                    {/* Row 3: Call to action to portfolio */}
-                    <div className="flex items-center gap-4 text-lg">
-                        <span className="text-green-400 font-bold">
-                            Like what you see?
-                        </span>
-
-                        {longArrow && (
-                            <img
-                                src={longArrow}
-                                alt="Arrow"
-                                className="w-4 h-4"
-                            />
-                        )}
-
+                    {/* Logo(row 2 on Mobile / Tablet) */}
+                    <div className="flex lg:hidden mt-3">
                         <Link
-                            to="/portfolio"
-                            className="group flex items-center gap-1 px-2 py-1 relative text-yellow-400 font-bold hover:border-yellow-200"
+                            to="/"
+                            className="tracking-widest flex items-center"
+                            aria-label="Logo link to homepage"
                         >
-                            <span className="absolute top-1 left-1 right-1 border-t border-yellow-400 group-hover:border-yellow-200 transition-colors" />
-                            <span className="absolute bottom-1 left-1 right-1 border-b border-yellow-400 group-hover:border-yellow-200 transition-colors" />
-                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">
-                                -
-                            </span>
-                            <span className="group-hover:text-yellow-200 transition-colors">
-                                Portfolio
-                            </span>
-                            <span className="text-yellow-400 font-bold group-hover:text-yellow-200 transition-colors">
-                                -
-                            </span>
+                            <LogoIcon className="h-12 w-auto" />
                         </Link>
                     </div>
 
-                    {/* Row 4: Social icons */}
-                    <div className="flex gap-10 bg-gray-100 rounded-2xl justify-center p-3">
-                        {socialIconList.map((s) => (
-                            <a
-                                key={s.key}
-                                href={s.url}
-                                aria-label={s.label}
-                                className="flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 hover:border-2 hover:border-gray-500"
-                            >
-                                <img
-                                    src={s.icon}
-                                    alt={s.label}
-                                    className="w-8 h-8"
-                                />
-                            </a>
-                        ))}
+                    {/* Row 2: Social icons */}
+                    <div className="flex gap-10 rounded-2xl justify-center p-3">
+                        {socialIconList.map((s) => {
+                            const IconComponent = s.Icon;
+                            return (
+                                <a
+                                    key={s.key}
+                                    href={s.url}
+                                    aria-label={s.label}
+                                    className="flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 hover:border-2 hover:border-green-400"
+                                >
+                                    <IconComponent className="w-8 h-8" />
+                                </a>
+                            );
+                        })}
                     </div>
 
-                    {/* Row 5: Copyright */}
-                    <div className="text-gray-400 text-sm">
+                    {/* Row 3: Copyright */}
+                    <div className="text-gray-400 text-sm text-center">
                         © {new Date().getFullYear()} INABA-Log. All rights
-                        reserved.
+                        reserved. Made by Sebastian Inaba.
                     </div>
                 </div>
+
+                {/* Right spacer */}
+                <div
+                    className="hidden lg:flex items-start justify-end w-40"
+                    aria-hidden
+                ></div>
             </div>
         </div>
     );

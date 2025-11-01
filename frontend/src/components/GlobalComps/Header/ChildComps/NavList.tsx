@@ -18,35 +18,37 @@ export function NavList({
     tabIndex,
 }: NavListProps) {
     return (
-        <ul className={`flex flex-col gap-4`}>
-            {navItems.map((route) => (
-                <li key={route.path}>
-                    {/* Each navigation link */}
-                    <Link
-                        to={route.path}
-                        onClick={onItemClick}
-                        tabIndex={tabIndex}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-400 rounded-3xl hover:bg-green-500 transition-colors"
-                    >
-                        {/* Optional icon */}
-                        {route.icon && (
-                            <img
-                                src={route.icon}
-                                alt={route.iconLabel}
-                                className="w-5 h-5"
-                                loading="lazy"
-                            />
-                        )}
-                        {/* Link label */}
-                        <span
-                            style={{ fontFamily: navFont, color: '#252525' }}
-                            className="font-semibold"
+        <ul className="flex flex-col gap-4">
+            {navItems.map((route) => {
+                const IconComponent = route.icon;
+                return (
+                    <li key={route.path}>
+                        {/* Each navigation link */}
+                        <Link
+                            to={route.path}
+                            onClick={onItemClick}
+                            tabIndex={tabIndex}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-400 rounded-3xl hover:bg-green-500 transition-colors"
                         >
-                            {route.label}
-                        </span>
-                    </Link>
-                </li>
-            ))}
+                            {/* Optional icon */}
+                            {IconComponent &&
+                                typeof IconComponent === 'function' && (
+                                    <IconComponent className="w-5 h-5" />
+                                )}
+                            {/* Link label */}
+                            <span
+                                style={{
+                                    fontFamily: navFont,
+                                    color: '#252525',
+                                }}
+                                className="font-semibold"
+                            >
+                                {route.label}
+                            </span>
+                        </Link>
+                    </li>
+                );
+            })}
         </ul>
     );
 }

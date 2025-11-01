@@ -4,18 +4,14 @@ import { Link } from 'react-router-dom';
 import { routesConfig } from '../../../routes/routes';
 import { DesktopNav } from './ChildComps/DesktopNav';
 import { MobileNav } from './ChildComps/MobileNav';
-import type { RouteConfig } from '../../../routes/routes';
+import { LogoIcon } from '../../../assets/icons/icons';
 
 type HeaderProps = {
-    logoFont?: string;
     navFont?: string;
 };
 
-export function Header({
-    logoFont = 'Poppins',
-    navFont = 'Lato',
-}: HeaderProps) {
-    const navItems: RouteConfig[] = useMemo(
+export function Header({ navFont = 'Lato' }: HeaderProps) {
+    const navItems = useMemo(
         () => routesConfig[0].children?.filter((r) => r.showInNav) ?? [],
         [],
     );
@@ -28,11 +24,10 @@ export function Header({
             {/* Logo */}
             <Link
                 to="/"
-                style={{ fontFamily: logoFont }}
-                className="text-3xl text-purple-500 font-bold tracking-widest flex items-center"
+                className="tracking-widest flex items-center"
                 aria-label="Logo link to homepage"
             >
-                INABA-Log
+                <LogoIcon className="h-12 w-auto"></LogoIcon>
             </Link>
 
             {/* Desktop nav */}

@@ -13,8 +13,10 @@ body {
 /* Utility to hide native scrollbar but keep scroll functionality */
 body {
     overflow: auto;
-    -ms-overflow-style: none; /* IE and Edge */
+}
+* {
     scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 /* WebKit browsers */

@@ -1,5 +1,5 @@
 // src/routes/routes.tsx
-import type { ReactNode } from 'react';
+import type { ReactNode, ComponentType } from 'react';
 import { AppLayout } from '../layout/AppLayout';
 import { AdminWrapper } from '../layout/wrapper/AdminWrapper';
 import { Home } from '../pages/Home';
@@ -10,7 +10,7 @@ import { Login } from '../pages/Login';
 import { PostDetail } from '../pages/PostDetail';
 import { ResearchDetail } from '../pages/ResearchDetail';
 import { NotFound } from '../pages/NotFound';
-import { navIcons } from '../assets/icons/icons';
+import { NavIcons } from '../assets/icons/icons';
 
 // TypeScript types for my routes
 export type RouteConfig = {
@@ -18,8 +18,7 @@ export type RouteConfig = {
     element: ReactNode;
     label?: string;
     showInNav?: boolean;
-    icon?: string;
-    children?: RouteConfig[];
+    icon?: ComponentType<{ className?: string }>;
     iconLabel?: string;
 };
 
@@ -32,7 +31,7 @@ export const routesConfig = [
                 element: <Home />,
                 label: 'Home',
                 showInNav: true,
-                icon: navIcons.home,
+                icon: NavIcons.Home,
                 iconLabel: 'A home Icon shaped like a house',
                 iconKey: 'home',
             },
@@ -41,7 +40,7 @@ export const routesConfig = [
                 element: <Post />,
                 label: 'Posts',
                 showInNav: true,
-                icon: navIcons.post,
+                icon: NavIcons.Post,
                 iconLabel: 'A home Icon shaped like a note',
                 iconKey: 'post',
             },
@@ -50,7 +49,7 @@ export const routesConfig = [
                 element: <Research />,
                 label: 'Deep Dives',
                 showInNav: true,
-                icon: navIcons.research,
+                icon: NavIcons.Research,
                 iconLabel: 'A home Icon shaped like a lightbulb',
                 iconKey: 'research',
             },

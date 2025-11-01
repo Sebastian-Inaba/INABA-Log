@@ -1,6 +1,6 @@
 // src/components/CommonComps/FilterWrapper.tsx
 import { useEffect, useState } from 'react';
-import { filterIcons } from '../../assets/icons/icons';
+import { FilterIcons } from '../../assets/icons/icons';
 import type { ContentItem } from '../../types';
 
 interface FilterWrapperProps {
@@ -34,23 +34,6 @@ export function FilterWrapper({
         'all' | 'featured' | 'non-featured'
     >('all');
     const [searchTerm, setSearchTerm] = useState('');
-
-    // Local array
-    const FilterIconList = [
-        { key: 'search', icon: filterIcons.search, label: 'Search icon' },
-        { key: 'filter', icon: filterIcons.filter, label: 'Filter icon' },
-        {
-            key: 'arrowDown',
-            icon: filterIcons.arrowDown,
-            label: 'Arrow down icon',
-        },
-    ];
-
-    // Array helper
-    const getIcon = (key: string) =>
-        FilterIconList.find((i) => i.key === key)?.icon || '';
-    const getLabel = (key: string) =>
-        FilterIconList.find((i) => i.key === key)?.label || '';
 
     // Extract unique values from items for filter options
     const allTags = Array.from(
@@ -202,11 +185,7 @@ export function FilterWrapper({
             <div className="flex items-center gap-3">
                 {showSearch && (
                     <div className="relative flex-1">
-                        <img
-                            src={getIcon('search')}
-                            alt={getLabel('search')}
-                            className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 opacity-70"
-                        />
+                        <FilterIcons.Search className="absolute left-3 top-1/2 w-4 h-4 transform -translate-y-1/2 opacity-70" />
                         <input
                             type="text"
                             placeholder="Search posts, research, tags..."
@@ -233,11 +212,7 @@ export function FilterWrapper({
                             : ''
                     }`}
                 >
-                    <img
-                        src={getIcon('filter')}
-                        alt={getLabel('filter')}
-                        className="w-4 h-4"
-                    />
+                    <FilterIcons.Filter className="w-4 h-4" />
                     {/* Hide "Filter" text on mobile */}
                     <span className="hidden sm:inline">Filter</span>
                     {hasActiveFilters && (
@@ -245,9 +220,7 @@ export function FilterWrapper({
                             Active
                         </span>
                     )}
-                    <img
-                        src={getIcon('arrowDown')}
-                        alt={getLabel('arrowDown')}
+                    <FilterIcons.ArrowDown
                         className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                     />
                 </button>
