@@ -33,9 +33,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 # Update
 
-- I had a design in mind, but due to performance issues with blur effects and canvas animations, I couldn’t get it to work. So now I’m back to square one...
-
-- At the moment, it just feels… empty.
+- I have improved the performance issues
+- I made a new logo and redesigned the landing page
+- I change all svg's in to react components 
 
 #### Full Design Example (might not be final product)
 
