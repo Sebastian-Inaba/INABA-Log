@@ -8,6 +8,7 @@ import { error as logError } from '../../utilities/logger';
 import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 import { FadeIn } from '../AnimationComps/FadeIn';
 import { FeaturedPosts } from './PostFeatured';
+import { ArrowSvgIconComponent } from '../../assets/icons/other/arrowIcon';
 
 const COLOR_OPTIONS = [
     'text-yellow-500',
@@ -164,8 +165,8 @@ export default function PublicPostList({
     // Loading state
     if (loading) {
         return (
-            <div className="w-full py-6 px-4">
-                {/* Filter skeleton*/}
+            <div className="w-full min-h-screen flex flex-col items-stretch py-6 px-4">
+                {/* Filter skeleton */}
                 <div className="w-full max-w-[1040px] xl:max-w-[1600px] mx-auto mb-6">
                     <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6">
                         <div /> {/* Spacer for desktop alignment */}
@@ -174,8 +175,8 @@ export default function PublicPostList({
                     </div>
                 </div>
 
-                {/* Content skeleton*/}
-                <div className="w-full max-w-[1040px] xl:max-w-none grid grid-cols-1 xl:grid-cols-[1fr_auto_280px] gap-6 xl:mx-0 mx-auto">
+                {/* Content skeleton */}
+                <div className="w-full max-w-[1040px] xl:max-w-none mx-auto flex-1 grid grid-cols-1 xl:grid-cols-[1fr_auto_280px] gap-6">
                     <div /> {/* Left spacer for desktop */}
                     <div className="w-full max-w-[1040px] space-y-6">
                         {[...Array(3)].map((_, idx) => (
@@ -196,7 +197,7 @@ export default function PublicPostList({
     // Error state
     if (error) {
         return (
-            <div className="h-full min-h-0 flex items-center justify-center p-6">
+            <div className="w-full min-h-screen flex items-center justify-center py-6 px-4">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-6 rounded-lg max-w-lg w-full">
                     <p className="wrap-break-words mb-4">Error: {error}</p>
                     <button
@@ -211,10 +212,10 @@ export default function PublicPostList({
         );
     }
 
-    // Empty state
+    // Empty state (posts) — replace your current `if (filteredPosts.length === 0) { ... }` block with this
     if (filteredPosts.length === 0) {
         return (
-            <div className="w-full py-6 px-4">
+            <div className="w-full min-h-screen flex flex-col items-stretch py-6 px-4">
                 {/* Filter section */}
                 <div className="w-full max-w-[1040px] xl:max-w-[1600px] mx-auto mb-6">
                     <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr_280px] gap-6">
@@ -235,9 +236,60 @@ export default function PublicPostList({
                     </div>
                 </div>
 
-                {/* Empty state message */}
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 text-center max-w-[1040px] mx-auto">
-                    <p className="text-gray-300">No posts found.</p>
+                {/* Empty state panel */}
+                <div className="w-full max-w-[1040px] mx-auto flex-1 flex items-center justify-center">
+                    <div className="bg-neutral-900 border border-gray-700 rounded-lg p-10 text-center max-w-[880px] w-full">
+                        {/* subtle illustrative icon */}
+                        <div className="mx-auto mb-6 w-24 h-24 flex items-center justify-center rounded-full bg-neutral-800/60">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-12 h-12 text-purple-300"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={1.5}
+                                    d="M4 7h16M4 12h16M4 17h16"
+                                />
+                            </svg>
+                        </div>
+
+                        <h2 className="text-2xl md:text-3xl text-white font-semibold mb-2">
+                            No posts found
+                        </h2>
+
+                        <p className="text-sm text-slate-400 mb-6 max-w-[720px] mx-auto">
+                            There aren't any posts that match your filters right
+                            now. Try widening your search, clearing filters, or
+                            refresh the list.
+                        </p>
+
+                        <div className="flex items-center justify-center gap-3">
+                            <button
+                                onClick={() => void fetchPosts()}
+                                className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 transition"
+                                aria-label="Refresh post list"
+                            >
+                                Refresh
+                            </button>
+
+                            <button
+                                onClick={() => {
+                                    // restore all posts and reset pagination
+                                    setFilteredPosts(posts);
+                                    navigate('/post?page=1', { replace: true });
+                                }}
+                                className="px-4 py-2 bg-neutral-800 border border-gray-700 text-slate-300 rounded-lg hover:bg-neutral-900 transition"
+                                aria-label="Clear post filters"
+                            >
+                                Clear filters
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -253,6 +305,7 @@ export default function PublicPostList({
                     <div>
                         <FilterWrapper
                             items={posts}
+                            contentType="post"
                             onFilter={handleFilter}
                             isAdmin={false}
                             showSearch={true}
@@ -379,7 +432,7 @@ export default function PublicPostList({
                                         {/* Title and category row */}
                                         <div className="flex justify-between items-center gap-4">
                                             <h2
-                                                className="text-2xl text-white line-clamp-2 cursor-pointer inline-flex relative group/title"
+                                                className="text-2xl text-white cursor-pointer inline-flex relative group/title"
                                                 onClick={() =>
                                                     handleReadMore(post.slug)
                                                 }
@@ -448,7 +501,7 @@ export default function PublicPostList({
 
                                         {/* Description */}
                                         {post.description && (
-                                            <p className="text-white line-clamp-3 tracking-wide mt-4">
+                                            <p className="text-white tracking-wide mt-4">
                                                 {post.description}
                                             </p>
                                         )}
@@ -505,56 +558,121 @@ export default function PublicPostList({
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-8 mt-8 border-t border-gray-700">
-                    {/* Previous button */}
-                    <button
-                        onClick={() => setPage(Math.max(page - 1, 1))}
-                        disabled={page === 1}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        aria-label="Previous page"
-                    >
-                        &lt;
-                    </button>
+                <nav
+                    aria-label="Pagination"
+                    className="flex flex-col items-center justify-center pt-8 mt-8"
+                >
+                    <div className="flex items-center justify-center gap-6">
+                        {/* Previous Button */}
+                        <div className="flex flex-col items-center group">
+                            <button
+                                type="button"
+                                onClick={() => setPage(Math.max(page - 1, 1))}
+                                disabled={page === 1}
+                                className="cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-neutral-700 transition disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-purple-600"
+                                aria-label="Previous page"
+                            >
+                                <ArrowSvgIconComponent className="rotate-90 w-4 h-4" />
+                            </button>
 
-                    {/* Page numbers */}
-                    <div className="flex gap-2">
-                        {[...Array(Math.min(totalPages, 10))].map((_, i) => {
-                            const pageNumber = i + 1;
-                            return (
-                                <button
-                                    key={i}
-                                    onClick={() => setPage(pageNumber)}
-                                    className={`w-10 h-10 rounded-lg transition-all duration-200 font-semibold cursor-pointer ${
-                                        page === pageNumber
-                                            ? 'bg-purple-500 text-white scale-110'
-                                            : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
-                                    }`}
-                                    aria-label={`Go to page ${pageNumber}`}
-                                    aria-current={
-                                        page === pageNumber ? 'page' : undefined
-                                    }
-                                >
-                                    {pageNumber}
-                                </button>
-                            );
-                        })}
-                        {totalPages > 10 && (
-                            <span className="flex items-center text-gray-500 text-xs px-2">
-                                +{totalPages - 10} more
-                            </span>
-                        )}
+                            <button
+                                type="button"
+                                onClick={() => setPage(Math.max(page - 1, 1))}
+                                disabled={page === 1}
+                                className="text-xs text-gray-400 mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 group-hover:text-purple-400"
+                                aria-label="Previous page"
+                            >
+                                Previous
+                            </button>
+                        </div>
+
+                        {/* Page Indicators */}
+                        <div className="flex items-center justify-center gap-4">
+                            {[...Array(Math.min(totalPages, 10))].map(
+                                (_, i) => {
+                                    const pageNumber = i + 1;
+                                    const isActive = page === pageNumber;
+                                    return (
+                                        <div
+                                            key={i}
+                                            className="flex flex-col items-center group"
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setPage(pageNumber)
+                                                }
+                                                className={`cursor-pointer w-4 h-4 rounded-full transition-all duration-200 ${
+                                                    isActive
+                                                        ? 'bg-purple-500 scale-110'
+                                                        : 'bg-neutral-600 group-hover:bg-purple-400'
+                                                }`}
+                                                aria-label={`Go to page ${pageNumber}`}
+                                                aria-current={
+                                                    isActive
+                                                        ? 'page'
+                                                        : undefined
+                                                }
+                                            />
+
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setPage(pageNumber)
+                                                }
+                                                className={`text-xs mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 ${
+                                                    isActive
+                                                        ? 'text-purple-400 font-semibold'
+                                                        : 'text-gray-400 group-hover:text-purple-400'
+                                                }`}
+                                                aria-label={`Go to page ${pageNumber}`}
+                                                aria-current={
+                                                    isActive
+                                                        ? 'page'
+                                                        : undefined
+                                                }
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        </div>
+                                    );
+                                },
+                            )}
+                            {totalPages > 10 && (
+                                <span className="flex items-center text-gray-500 text-xs px-2">
+                                    +{totalPages - 10} more
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Next Button */}
+                        <div className="flex flex-col items-center group">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPage(Math.min(page + 1, totalPages))
+                                }
+                                disabled={page === totalPages}
+                                className="cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-neutral-700 transition disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-purple-600"
+                                aria-label="Next page"
+                            >
+                                <ArrowSvgIconComponent className="-rotate-90 w-4 h-4" />
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPage(Math.min(page + 1, totalPages))
+                                }
+                                disabled={page === totalPages}
+                                className="text-xs text-gray-400 mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 group-hover:text-purple-400"
+                                aria-label="Next page"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
-
-                    {/* Next button */}
-                    <button
-                        onClick={() => setPage(Math.min(page + 1, totalPages))}
-                        disabled={page === totalPages}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                        aria-label="Next page"
-                    >
-                        &gt;
-                    </button>
-                </div>
+                </nav>
             )}
         </div>
     );

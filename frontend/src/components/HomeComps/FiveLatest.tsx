@@ -241,7 +241,7 @@ export function LatestPosts({
 
                                             <div className="p-0 pt-2 lg:p-6 flex flex-col gap-4">
                                                 <h2
-                                                    className="group relative text-2xl text-white line-clamp-2 cursor-pointer pb-1"
+                                                    className="group relative text-2xl text-white cursor-pointer pb-1"
                                                     onClick={() =>
                                                         handleReadMore(
                                                             post.slug,
@@ -305,7 +305,7 @@ export function LatestPosts({
                                                 )}
 
                                                 {post.description && (
-                                                    <p className="text-white line-clamp-3 tracking-wide mt-4">
+                                                    <p className="text-white tracking-wide mt-4">
                                                         {post.description}
                                                     </p>
                                                 )}

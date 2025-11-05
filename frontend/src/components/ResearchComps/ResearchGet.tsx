@@ -7,6 +7,7 @@ import type { Research, ContentItem } from '../../types';
 import { error as logError } from '../../utilities/logger';
 import { FilterWrapper } from '../../components/GlobalComps/FilterWrapper';
 import { FadeIn } from '../AnimationComps/FadeIn';
+import { ArrowSvgIconComponent } from '../../assets/icons/other/arrowIcon';
 
 export default function PublicResearchList() {
     const navigate = useNavigate();
@@ -163,11 +164,12 @@ export default function PublicResearchList() {
     // Loading state
     if (loading) {
         return (
-            <div className="w-full py-6 px-4">
+            <div className="w-full min-h-screen flex flex-col items-stretch py-6 px-4">
                 <div className="w-full max-w-[1200px] mx-auto mb-6">
                     <div className="h-20 bg-neutral-800 rounded animate-pulse" />
                 </div>
-                <div className="w-full max-w-[1200px] mx-auto space-y-4">
+
+                <div className="w-full max-w-[1200px] mx-auto flex-1 space-y-4">
                     {[...Array(5)].map((_, idx) => (
                         <div
                             key={idx}
@@ -182,24 +184,28 @@ export default function PublicResearchList() {
     // Error state
     if (error) {
         return (
-            <div className="h-full min-h-0 flex items-center justify-center p-6">
+            <div className="w-full min-h-screen flex items-center justify-center p-6">
                 <div className="bg-red-900 border border-red-700 text-red-200 p-6 rounded-lg max-w-lg w-full">
                     <p className="wrap-break-words mb-4">Error: {error}</p>
-                    <button
-                        onClick={() => void fetchResearch()}
-                        className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600 cursor-pointer"
-                    >
-                        Try Again
-                    </button>
+                    <div className="flex gap-3 justify-center">
+                        <button
+                            onClick={() => void fetchResearch()}
+                            className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-600"
+                            aria-label="Retry fetching research"
+                        >
+                            Try Again
+                        </button>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    // Empty state
+    // Empty state (full-height, updated style)
     if (filteredResearch.length === 0) {
         return (
-            <div className="w-full py-6 px-4">
+            <div className="w-full min-h-screen flex flex-col items-stretch py-6 px-4">
+                {/* Filter area (keeps same placement) */}
                 <div className="w-full max-w-[900px] mx-auto mb-6">
                     <FilterWrapper
                         items={research}
@@ -210,8 +216,62 @@ export default function PublicResearchList() {
                         showFeaturedFilter={false}
                     />
                 </div>
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-8 text-center max-w-[1200px] mx-auto">
-                    <p className="text-gray-300">No research found.</p>
+
+                {/* Centered empty panel */}
+                <div className="w-full max-w-[1200px] mx-auto flex-1 flex items-center justify-center">
+                    <div className="bg-neutral-900 border border-gray-700 rounded-lg p-10 text-center max-w-[880px] w-full">
+                        {/* subtle illustrative SVG */}
+                        <div className="mx-auto mb-6 w-24 h-24 flex items-center justify-center rounded-full bg-neutral-800/60">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-12 h-12 text-purple-300"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={1.5}
+                                    d="M21 21l-4.35-4.35M9 17a8 8 0 100-16 8 8 0 000 16z"
+                                />
+                            </svg>
+                        </div>
+
+                        <h2 className="text-2xl md:text-3xl text-white font-semibold mb-2">
+                            No research found
+                        </h2>
+                        <p className="text-sm text-slate-400 mb-6 max-w-[680px] mx-auto">
+                            We couldn't find any research matching your current
+                            filters. Try widening your search, clearing filters,
+                            or refresh the list.
+                        </p>
+
+                        <div className="flex items-center justify-center gap-3">
+                            <button
+                                onClick={() => void fetchResearch()}
+                                className="px-4 py-2 bg-purple-700/80 text-purple-100 rounded-lg hover:bg-purple-600 transition"
+                                aria-label="Refresh research list"
+                            >
+                                Refresh
+                            </button>
+
+                            <button
+                                onClick={() => {
+                                    // small convenience — clear filters by resetting to full dataset
+                                    setFilteredResearch(research);
+                                    navigate('/research?page=1', {
+                                        replace: true,
+                                    });
+                                }}
+                                className="px-4 py-2 bg-neutral-800 border border-gray-700 text-slate-300 rounded-lg hover:bg-neutral-900 transition"
+                                aria-label="Clear filters"
+                            >
+                                Clear filters
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -224,6 +284,7 @@ export default function PublicResearchList() {
             <div className="w-full max-w-[1000px] mx-auto mb-6 px-4">
                 <FilterWrapper
                     items={research}
+                    contentType="research"
                     onFilter={handleFilter}
                     isAdmin={false}
                     showSearch={true}
@@ -494,49 +555,123 @@ export default function PublicResearchList() {
                 </FadeIn>
             </div>
 
-            {/* Pagination */}
+            {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-8 mt-8 border-t border-gray-700 mx-auto">
-                    <button
-                        onClick={() => setPage(Math.max(page - 1, 1))}
-                        disabled={page === 1}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                    >
-                        &lt;
-                    </button>
+                <nav
+                    aria-label="Pagination"
+                    className="flex flex-col items-center justify-center pt-8 mt-8"
+                >
+                    <div className="flex items-center justify-center gap-6">
+                        {/* Previous Button */}
+                        <div className="flex flex-col items-center group">
+                            <button
+                                type="button"
+                                onClick={() => setPage(Math.max(page - 1, 1))}
+                                disabled={page === 1}
+                                className="cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-neutral-700 transition disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-purple-600"
+                                aria-label="Previous page"
+                            >
+                                <ArrowSvgIconComponent className="rotate-90 w-4 h-4" />
+                            </button>
 
-                    <div className="flex gap-2">
-                        {[...Array(Math.min(totalPages, 10))].map((_, i) => {
-                            const pageNumber = i + 1;
-                            return (
-                                <button
-                                    key={i}
-                                    onClick={() => setPage(pageNumber)}
-                                    className={`w-10 h-10 rounded-lg transition-all duration-200 font-semibold cursor-pointer ${
-                                        page === pageNumber
-                                            ? 'bg-purple-500 text-white scale-110'
-                                            : 'bg-neutral-700 text-neutral-300 hover:bg-purple-600 hover:text-white'
-                                    }`}
-                                >
-                                    {pageNumber}
-                                </button>
-                            );
-                        })}
-                        {totalPages > 10 && (
-                            <span className="flex items-center text-gray-500 text-xs px-2">
-                                +{totalPages - 10} more
-                            </span>
-                        )}
+                            <button
+                                type="button"
+                                onClick={() => setPage(Math.max(page - 1, 1))}
+                                disabled={page === 1}
+                                className="text-xs text-gray-400 mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 group-hover:text-purple-400"
+                                aria-label="Previous page"
+                            >
+                                Previous
+                            </button>
+                        </div>
+
+                        {/* Page Indicators */}
+                        <div className="flex items-center justify-center gap-4">
+                            {[...Array(Math.min(totalPages, 10))].map(
+                                (_, i) => {
+                                    const pageNumber = i + 1;
+                                    const isActive = page === pageNumber;
+                                    return (
+                                        <div
+                                            key={i}
+                                            className="flex flex-col items-center group"
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setPage(pageNumber)
+                                                }
+                                                className={`cursor-pointer w-4 h-4 rounded-full transition-all duration-200 ${
+                                                    isActive
+                                                        ? 'bg-purple-500 scale-110'
+                                                        : 'bg-neutral-600 group-hover:bg-purple-400'
+                                                }`}
+                                                aria-label={`Go to page ${pageNumber}`}
+                                                aria-current={
+                                                    isActive
+                                                        ? 'page'
+                                                        : undefined
+                                                }
+                                            />
+
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setPage(pageNumber)
+                                                }
+                                                className={`text-xs mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 ${
+                                                    isActive
+                                                        ? 'text-purple-400 font-semibold'
+                                                        : 'text-gray-400 group-hover:text-purple-400'
+                                                }`}
+                                                aria-label={`Go to page ${pageNumber}`}
+                                                aria-current={
+                                                    isActive
+                                                        ? 'page'
+                                                        : undefined
+                                                }
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        </div>
+                                    );
+                                },
+                            )}
+                            {totalPages > 10 && (
+                                <span className="flex items-center text-gray-500 text-xs px-2">
+                                    +{totalPages - 10} more
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Next Button */}
+                        <div className="flex flex-col items-center group">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPage(Math.min(page + 1, totalPages))
+                                }
+                                disabled={page === totalPages}
+                                className="cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-neutral-700 transition disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-purple-600"
+                                aria-label="Next page"
+                            >
+                                <ArrowSvgIconComponent className="-rotate-90 w-4 h-4" />
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPage(Math.min(page + 1, totalPages))
+                                }
+                                disabled={page === totalPages}
+                                className="text-xs text-gray-400 mt-1 bg-transparent border-0 p-0 cursor-pointer transition-colors duration-200 group-hover:text-purple-400"
+                                aria-label="Next page"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
-
-                    <button
-                        onClick={() => setPage(Math.min(page + 1, totalPages))}
-                        disabled={page === totalPages}
-                        className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
-                    >
-                        &gt;
-                    </button>
-                </div>
+                </nav>
             )}
         </div>
     );

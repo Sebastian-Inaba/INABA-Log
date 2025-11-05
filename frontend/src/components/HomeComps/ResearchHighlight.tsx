@@ -116,7 +116,7 @@ export function NewestResearch({
     showAuthor = true,
     autoFetch = true,
     heroTitle = 'The place of infinite loops of coffee and errors',
-    heroText = 'You have come to the right place if you are interested in web development, gaming, or Sebastian Inaba(me). I can assure you my code works most of the time, so feel free to look around my posts; and if something catches your eye, check out my latest deep dives or some of my other projects.',
+    heroText = 'You have come to the right place if you are interested in web development, gaming, or Sebastian Inaba(me). I can assure you my code works most of the time, so feel free to look around; and if something catches your eye, check out my latest posts, deep dives, or some of my other projects.',
     heroCtaText = 'or go deeper.',
 }: NewestResearchProps) {
     const [researchList, setResearchList] = useState<Research[]>([]);
