@@ -32,7 +32,7 @@
 
 * [ ] Post comments functionality.
 * [ ] Dashboard stats.
-* [ ] Redo Edit and Create modal for admin: preview + content in better view, selectable markdown text.
+* [ ] Redo admin: preview + content in better view, selectable markdown text and mobile responsive.
 * [ ] Make page pagination server-side for true scalability.
 * [ ] Make page refresh maintain last scroll position.
 * [ ] Fix WCAG accessibility.
@@ -55,7 +55,7 @@
 * [ ] Refresh tokens with server-side tracking.
 * [ ] Make page pagination server-side for true scalability.
 * [ ] Consider heavy endpoints for `GET all` if 500+ posts / deep dives exist.
-* [ ] Redo Edit and Create modal for admin: preview + content in better view, selectable markdown text.
+* [ ] Redo admin: preview + content in better view, selectable markdown text and mobile responsive.
 * [ ] Make page refresh maintain last scroll position.
 * [ ] Post comments functionality.
 * [ ] Dashboard stats.
