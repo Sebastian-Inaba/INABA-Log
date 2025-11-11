@@ -1,5 +1,6 @@
 // logging middleware
 import { Request, Response, NextFunction } from 'express';
+import { log, error, debug } from '../utilities/logger';
 
 export const requestLogger = (
     req: Request,
@@ -8,12 +9,12 @@ export const requestLogger = (
 ) => {
     const startTime = Date.now();
 
-    console.log(`➡️ ${req.method} ${req.originalUrl} - Body:`, req.body);
+    log(`➡️ ${req.method} ${req.originalUrl} - Body:`, req.body);
 
     // Listen for response finish to log status and duration
     res.on('finish', () => {
         const duration = Date.now() - startTime;
-        console.log(
+        log(
             `⬅️ ${req.method} ${req.originalUrl} - Status: ${res.statusCode} - ${duration}ms`,
         );
     });

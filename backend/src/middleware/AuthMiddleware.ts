@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library'; // google token verifier
 import { Request, Response, NextFunction } from 'express'; // express types for TypeScript
 import { env } from '../config/env';
 import createHttpError from 'http-errors'; // error thrower instead of res.status..
+import { log, error, debug, warn } from '../utilities/logger';
 
 const client = new OAuth2Client(env.google.clientId);
 
@@ -37,7 +38,7 @@ export async function requireGoogleAuth(
                 }
             } catch (e) {
                 // Cookie exists but is invalid, continue to check Authorization header
-                console.warn('Invalid session cookie:', e);
+                warn('Invalid session cookie:', e);
             }
         }
 

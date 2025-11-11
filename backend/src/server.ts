@@ -13,6 +13,7 @@ import { connectDB, disconnectDB } from './config/DB';
 import { errorHandler } from './middleware/ErrorMiddleware';
 import { requestLogger } from './middleware/LoggingMiddleware';
 import healthRouter from './routes/HealthRoutes';
+import { log, error, debug } from './utilities/logger';
 
 dotenv.config();
 const app = express();
@@ -76,11 +77,11 @@ app.use(errorHandler);
 connectDB()
     .then(() => {
         app.listen(PORT, '0.0.0.0', () => {
-            console.log(`🚀 Server running on port ${PORT}`);
+            log(`🚀 Server running on port ${PORT}`);
         });
     })
     .catch((err) => {
-        console.error(
+        error(
             '❌ Failed to connect to MongoDB. Server not started.',
             err,
         );
@@ -88,13 +89,13 @@ connectDB()
 
 // ---------------- Graceful shutdown ----------------------------------- //
 process.on('SIGINT', async () => {
-    console.log('SIGINT received. Disconnecting DB...');
+    log('SIGINT received. Disconnecting DB...');
     await disconnectDB();
     process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
-    console.log('SIGTERM received. Disconnecting DB...');
+    log('SIGTERM received. Disconnecting DB...');
     await disconnectDB();
     process.exit(0);
 });

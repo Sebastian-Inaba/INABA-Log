@@ -1,6 +1,7 @@
 // error middleware
 import { Request, Response, NextFunction } from 'express';
 import { env } from '../config/env';
+import { log, error, debug } from '../utilities/logger';
 
 // error type extension
 interface ErrorWithStatus extends Error {
@@ -16,7 +17,7 @@ export const errorHandler = (
 ) => {
     const statusCode = err.status || 500;
 
-    console.error('❌ Error:', err.message);
+    error('❌ Error:', err.message);
 
     res.status(statusCode).json({
         success: false,

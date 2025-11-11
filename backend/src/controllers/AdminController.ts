@@ -8,6 +8,7 @@ import {
     removeFile,
     UploadResult,
 } from '../controllers/UploadController';
+import { log, error, debug, warn } from '../utilities/logger';
 
 // -------------------- POSTS -------------------------------------------------------------------- //
 
@@ -80,18 +81,18 @@ export const updatePost = async (
 
         if (req.file) {
             // Replace image
-            console.log('Old featured image (full URL):', post.featuredImage);
+            log('Old featured image (full URL):', post.featuredImage);
 
             if (post.featuredImage) {
                 const urlParts = post.featuredImage.split('/');
                 const encodedFilename = urlParts.pop()!;
                 const filename = decodeURIComponent(encodedFilename); // ✅ decode URL
-                console.log('Deleting old file from bucket:', filename);
+                log('Deleting old file from bucket:', filename);
                 await removeFile('posts', filename);
             }
 
             const uploaded: UploadResult = await uploadFile(req.file, 'posts');
-            console.log(
+            log(
                 'Uploaded new file:',
                 uploaded.filename,
                 'Public URL:',
@@ -105,13 +106,13 @@ export const updatePost = async (
                 const urlParts = post.featuredImage.split('/');
                 const encodedFilename = urlParts.pop()!;
                 const filename = decodeURIComponent(encodedFilename);
-                console.log('Deleting image without replacement:', filename);
+                log('Deleting image without replacement:', filename);
                 await removeFile('posts', filename);
                 post.featuredImage = null;
             }
         } else {
             // No change
-            console.log(
+            log(
                 'No image uploaded and no delete requested — keeping current image',
             );
         }
@@ -153,12 +154,12 @@ export const deletePost = async (
             const encodedFilename = urlParts.pop()!;
             const filename = decodeURIComponent(encodedFilename);
 
-            console.log('Deleting featured image from bucket:', filename);
+            log('Deleting featured image from bucket:', filename);
             await removeFile('posts', filename);
 
             post.featuredImage = null;
         } else {
-            console.log('No featured image to delete');
+            log('No featured image to delete');
         }
 
         await Post.findByIdAndDelete(id);
@@ -297,7 +298,7 @@ export const updateResearch = async (
                 const oldFile = decodeURIComponent(
                     research.featuredImage.split('/').pop()!,
                 );
-                console.log('Deleting old research image:', oldFile);
+                log('Deleting old research image:', oldFile);
                 await removeFile('research', oldFile);
             }
 
@@ -306,7 +307,7 @@ export const updateResearch = async (
                 imageFile,
                 'research',
             );
-            console.log(
+            log(
                 'Uploaded new research image:',
                 uploadedImage.filename,
                 uploadedImage.publicUrl,
@@ -317,11 +318,11 @@ export const updateResearch = async (
             const oldFile = decodeURIComponent(
                 research.featuredImage.split('/').pop()!,
             );
-            console.log('Deleting research image only:', oldFile);
+            log('Deleting research image only:', oldFile);
             await removeFile('research', oldFile);
             research.featuredImage = null;
         } else {
-            console.log('No new image uploaded and no delete requested');
+            log('No new image uploaded and no delete requested');
         }
 
         // Handle PDF attachment update
@@ -330,7 +331,7 @@ export const updateResearch = async (
                 const oldPdf = decodeURIComponent(
                     research.pdfAttachment.split('/').pop()!,
                 );
-                console.log('Deleting old PDF attachment:', oldPdf);
+                log('Deleting old PDF attachment:', oldPdf);
                 await removeFile('attachments', oldPdf);
             }
 
@@ -339,7 +340,7 @@ export const updateResearch = async (
                 pdfFile,
                 'attachments',
             );
-            console.log(
+            log(
                 'Uploaded new PDF attachment:',
                 uploadedPdf.filename,
                 uploadedPdf.publicUrl,
@@ -350,11 +351,11 @@ export const updateResearch = async (
             const oldPdf = decodeURIComponent(
                 research.pdfAttachment.split('/').pop()!,
             );
-            console.log('Deleting PDF attachment only:', oldPdf);
+            log('Deleting PDF attachment only:', oldPdf);
             await removeFile('attachments', oldPdf);
             research.pdfAttachment = null;
         } else {
-            console.log('No new PDF uploaded and no delete requested');
+            log('No new PDF uploaded and no delete requested');
         }
 
         const parsedTags = tags
@@ -405,11 +406,11 @@ export const deleteResearch = async (
             const urlParts = research.featuredImage.split('/');
             const encodedFilename = urlParts.pop()!;
             const filename = decodeURIComponent(encodedFilename);
-            console.log('Deleting research image from bucket:', filename);
+            log('Deleting research image from bucket:', filename);
             await removeFile('research', filename);
             research.featuredImage = null;
         } else {
-            console.log('No research image to delete');
+            log('No research image to delete');
         }
 
         // Delete PDF attachment
@@ -417,11 +418,11 @@ export const deleteResearch = async (
             const urlParts = research.pdfAttachment.split('/');
             const encodedFilename = urlParts.pop()!;
             const filename = decodeURIComponent(encodedFilename);
-            console.log('Deleting PDF attachment from bucket:', filename);
+            log('Deleting PDF attachment from bucket:', filename);
             await removeFile('attachments', filename);
             research.pdfAttachment = null;
         } else {
-            console.log('No PDF attachment to delete');
+            log('No PDF attachment to delete');
         }
 
         await Research.findByIdAndDelete(id);
