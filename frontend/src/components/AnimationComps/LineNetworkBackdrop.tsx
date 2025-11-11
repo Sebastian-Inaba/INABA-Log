@@ -1,5 +1,6 @@
 // src/components/AnimationComps/LineNetworkBackdrop.tsx
 import { useEffect, useRef } from 'react';
+import { error } from './../../utilities/logger';
 
 // This was created with performance in mind and with heavy help of AI
 // I cant imagine doing all of this calculation and WebGL setup by hand
@@ -68,7 +69,7 @@ export function LineNetworkBackdrop({
             desynchronized: true, // Allow async rendering
         });
         if (!gl) {
-            console.error('WebGL not supported');
+            error('WebGL not supported');
             return;
         }
         glRef.current = gl;
@@ -107,7 +108,7 @@ export function LineNetworkBackdrop({
             gl.shaderSource(shader, source);
             gl.compileShader(shader);
             if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error(gl.getShaderInfoLog(shader));
+                error(gl.getShaderInfoLog(shader));
                 gl.deleteShader(shader);
                 return null;
             }
@@ -130,7 +131,7 @@ export function LineNetworkBackdrop({
         gl.linkProgram(program);
 
         if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-            console.error(gl.getProgramInfoLog(program));
+            error(gl.getProgramInfoLog(program));
             return;
         }
         programRef.current = program;

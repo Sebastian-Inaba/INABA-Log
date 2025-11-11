@@ -1,6 +1,6 @@
 // src/utilities/api.ts
 import axios from 'axios';
-import { log, error } from './logger';
+import { log, error, warn } from './logger';
 
 // Set the base URL for all API requests
 export const apiClient = axios.create({
@@ -52,7 +52,7 @@ setInterval(
     () => {
         pingBackend().catch(() => {
             // Silent fail - just log it
-            console.warn('Scheduled ping failed');
+            warn('Scheduled ping failed');
         });
     },
     5 * 24 * 60 * 60 * 1000,

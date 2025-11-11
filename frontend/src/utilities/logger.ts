@@ -25,3 +25,10 @@ export const debug = (...args: LogArgs): void => {
         console.debug('[DEBUG]', ...args);
     }
 };
+
+// Log warnings in development
+export const warn = (...args: LogArgs): void => {
+    if (import.meta.env.DEV) {
+        console.warn('[WARN]', ...args);
+    }
+};
