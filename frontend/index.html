@@ -7,6 +7,17 @@
     <title>INABA-Log</title>
   </head>
   <body style="background-color: #171717;"> <!--style to not se white flash on every refresh-->
+    <!--support direct URL navigation on GitHub Pages-->
+    <script>
+        // Check if we were redirected from 404.html
+        var r = sessionStorage.redirect;
+        if (r) {
+            // Clear the stored redirect URL
+            sessionStorage.removeItem('redirect');
+            // Update browser URL to the original path without reloading (so React Router can handle it)
+            history.replaceState(null, '', r.slice(location.origin.length));
+        }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

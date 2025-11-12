@@ -1,0 +1,14 @@
+<!--public/404.html-->
+<!--support direct URL navigation on GitHub Pages-->
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+  // Save the URL the user tried to visit (mostly for admin to go to login and admin page)
+  sessionStorage.redirect = location.href;
+  // Redirect back to the base of your app (your-website-name.com/repo-name/)
+  location.replace(location.origin + location.pathname.split('/').slice(0, 2).join('/'));
+</script>
+</head>
+<body></body>
+</html>
