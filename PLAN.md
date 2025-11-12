@@ -56,6 +56,7 @@
 - Concurrently (run frontend + backend at the same time form root)
 - ts-node (not sure, lol. Think its to make TypeScript work on a node server)
 - Prettier (Terminal command for prettier code structure)
+- gh-pages (deployment helper for fast publishing of builds to GitHub pages)
 
 ---
 

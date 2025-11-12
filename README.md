@@ -2,6 +2,8 @@
 
 **By Sebastian Inaba**
 
+**Live at:** https://sebastian-inaba.github.io/INABA-Log/ — (WIP)
+
 > A personal blog combining coding, research, and project updates.
 
 ---
@@ -31,11 +33,21 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 ### Progress Updates
 
-# Update
+# Update : Site is live!
 
-- I’ve been procrastinating the launch of the website because I always feel it’s not quite ready and there’s always something small I can fix. But I think it’s time. Next steps will be to create some initial posts, maybe a dive deeper, and then host it.
+**It’s live!** The site is published on GitHub Pages for now: https://sebastian-inaba.github.io/INABA-Log/
 
-- Once it’s hosted, I’ll start tackling some of the bigger tasks, like SEO and WCAG accessibility, server-side pagination, signed URLs, Google Analytics, and more. There’s still a lot to do, but this is a solid start.
+This initial release is still light on content(none), but the core deployment and auth flow are working. During testing I ran into several issues CORS, URL redirects, service worker registration, a white flash during redirects, and auth persistence (was using `sessionStorage` which is not very good). I fixed these problems.
+
+Next steps:
+- Add posts and deep-dives
+- Improve SEO and accessibility (WCAG)
+- Implement server-side pagination and signed URLs
+- Add analytics and other monitoring
+- And a lot more
+
+There’s still a lot to do, but this is a solid start.
+
 
 #### Full Design Example (might not be final product)
 
