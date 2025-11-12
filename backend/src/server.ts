@@ -33,24 +33,7 @@ app.use(helmet());
 // Enable CORS (only allow frontend domain in production)
 app.use(
     cors({
-        origin: function(origin, callback) {
-            log('🔍 Incoming origin:', origin);
-            log('🔍 Configured frontendUrl:', env.frontendUrl);
-            log('🔍 Match check:', origin === env.frontendUrl);
-            log('🔍 Without slash:', origin === env.frontendUrl.replace(/\/$/, ''));
-            
-            if (!origin) return callback(null, true);
-            
-            if (origin === env.frontendUrl || origin === env.frontendUrl.replace(/\/$/, '')) {
-                return callback(null, true);
-            }
-            
-            if (origin.startsWith('http://localhost')) {
-                return callback(null, true);
-            }
-            
-            callback(new Error('Not allowed by CORS'));
-        },
+        origin: env.frontendUrl,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowedHeaders: ['Content-Type', 'Authorization'],
