@@ -1,7 +1,8 @@
 // src/pages/Home.tsx
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { NewestPost } from '../components/HomeComps/NewPost';
-import { NewestResearch } from '../components/HomeComps/ResearchHighlight';
+import { NewestResearch } from '../components/HomeComps/NewResearch';
+import { HeroInfo } from '../components/HomeComps/HeroInfo';
 import { LatestPosts } from '../components/HomeComps/FiveLatest';
 import { FadeIn } from '../components/AnimationComps/FadeIn';
 
@@ -162,14 +163,14 @@ export function Home() {
                 aria-label="Featured content"
                 role="region"
             >
-                <div className="max-w-7xl mx-auto relative pt-10 pb-20 px-4">
+                <div className="max-w-7xl mx-auto relative pt-0 [@media(max-width:900px)]:pt-5 pb-10 px-4 md:px-0 transform scale-100 md:scale-90">
                     {/* Bento grid layout: 3 columns on desktop, responsive breakpoints */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 auto-rows-fr">
+                    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-4 auto-rows-auto [@media(min-width:768px)_and_(max-width:900px)]:grid-cols-2">
                         {/* New Post */}
                         <FadeIn
                             direction="up"
                             delay={200}
-                            className="xl:col-span-7 md:col-span-2 flex flex-col h-full min-h-[400px]"
+                            className="xl:col-span-7 md:col-span-2 xl:row-span-2 flex flex-col [@media(min-width:768px)_and_(max-width:900px)]:col-span-1"
                         >
                             {/* Fetch handler */}
                             <NewestPost
@@ -179,16 +180,24 @@ export function Home() {
                             />
                         </FadeIn>
 
-                        {/* Info section */}
+                        {/* Hero info */}
                         <FadeIn
                             direction="up"
                             delay={300}
-                            className="xl:col-span-5 md:col-span-1 flex flex-col h-full min-h-[300px]"
+                            className="xl:col-span-5 md:col-span-1 flex flex-col h-full min-h-[300px] md:justify-center [@media(min-width:768px)_and_(max-width:900px)]:col-span-1"
                         >
-                            {/* Fetch handler */}
+                            <HeroInfo aria-label="Research highlight" />
+                        </FadeIn>
+
+                        {/* Research cards */}
+                        <FadeIn
+                            direction="up"
+                            delay={400}
+                            className="xl:col-start-8 xl:col-span-5 md:col-span-3 flex flex-col [@media(min-width:768px)_and_(max-width:900px)]:col-span-2"
+                        >
                             <NewestResearch
                                 className="flex-1"
-                                aria-label="Research highlight"
+                                aria-label="Research highlights list"
                             />
                         </FadeIn>
                     </div>
@@ -231,7 +240,7 @@ export function Home() {
 
                         <div
                             ref={latestPostsWrapperRef}
-                            className="w-full max-w-7xl flex justify-center mt-10 mb-15 relative z-10 px-4"
+                            className="w-full max-w-7xl flex justify-center mt-10 mb-15 relative z-10 px-4 transform scale-100 md:scale-90"
                             role="region"
                             aria-labelledby="recent-posts-heading"
                         >

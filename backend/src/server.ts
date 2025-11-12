@@ -81,10 +81,7 @@ connectDB()
         });
     })
     .catch((err) => {
-        error(
-            '❌ Failed to connect to MongoDB. Server not started.',
-            err,
-        );
+        error('❌ Failed to connect to MongoDB. Server not started.', err);
     });
 
 // ---------------- Graceful shutdown ----------------------------------- //

@@ -1,19 +1,16 @@
-// src/components/HomeComps/ResearchHighlight.tsx
+// src/components/HomeComps/NewResearch.tsx
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
 import { FadeIn } from '../AnimationComps/FadeIn';
-import type { Research } from '../../types/';
+import type { Research } from '../../types';
 
 interface NewestResearchProps {
     apiUrl?: string;
     className?: string;
     showAuthor?: boolean;
     autoFetch?: boolean;
-    heroTitle?: string;
-    heroText?: string;
-    heroCtaText?: string;
 }
 
 /**
@@ -115,9 +112,6 @@ export function NewestResearch({
     className = '',
     showAuthor = true,
     autoFetch = true,
-    heroTitle = 'The place of infinite loops of coffee and errors',
-    heroText = 'You have come to the right place if you are interested in web development, gaming, or Sebastian Inaba(me). I can assure you my code works most of the time, so feel free to look around; and if something catches your eye, check out my latest posts, deep dives, or some of my other projects.',
-    heroCtaText = 'or go deeper.',
 }: NewestResearchProps) {
     const [researchList, setResearchList] = useState<Research[]>([]);
     const [loading, setLoading] = useState(autoFetch);
@@ -167,11 +161,6 @@ export function NewestResearch({
         [handleFetchNewestResearch],
     );
 
-    // // redirect handler - navigate to research listing page
-    const handleResearchNavigation = useCallback(() => {
-        navigate('/research');
-    }, [navigate]);
-
     if (error) {
         // Error state
         return (
@@ -202,69 +191,12 @@ export function NewestResearch({
         );
     }
 
+    // default return
     return (
-        <section
-            className={`${className} relative z-20 h-full flex flex-col`}
-            // Hero heading id referenced by aria-labelledby
-            aria-labelledby="home-hero"
-            role="region"
-        >
-            {/* Info/Hero section */}
-            <div className="border border-[#9162CB] p-4 rounded-2xl bg-neutral-950/80 mb-4">
-                <FadeIn direction="right" delay={0}>
-                    <h2
-                        id="home-hero"
-                        className="text-xl sm:text-2xl md:text-3xl text-gray-900 dark:text-white wrap-break-words"
-                    >
-                        {heroTitle}
-                    </h2>
-                </FadeIn>
-
-                <FadeIn direction="right" delay={100}>
-                    <p className="mt-2 max-w-2xl text-xs sm:text-sm md:text-base text-gray-600 dark:text-slate-300">
-                        {heroText}
-                    </p>
-                </FadeIn>
-
-                <FadeIn direction="right" delay={200}>
-                    <div className="mt-3 sm:mt-4 flex flex-wrap gap-1 sm:gap-3 items-center">
-                        <a
-                            href="/portfolio"
-                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50"
-                            aria-label="View portfolio"
-                        >
-                            View Portfolio
-                        </a>
-                        <a
-                            href="https://github.com/your-username"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50"
-                            aria-label="Open GitHub in a new tab"
-                        >
-                            GitHub
-                        </a>
-                        <span
-                            className="inline text-sm text-gray-500 dark:text-slate-400"
-                            aria-hidden="true"
-                        >
-                            •
-                        </span>
-                        <button
-                            onClick={handleResearchNavigation}
-                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 hover:underline whitespace-nowrap cursor-pointer"
-                            aria-label={heroCtaText}
-                        >
-                            {heroCtaText}
-                        </button>
-                    </div>
-                </FadeIn>
-            </div>
-
-            {/* Research cards section */}
+        <div className={className}>
             <div className="flex-1">
                 {loading ? (
-                    // Loading state — use role=status so screen readers are informed
+                    // Loading state
                     <div className="space-y-3" role="status" aria-live="polite">
                         {[0, 1].map((_, researchIndex) => (
                             <div
@@ -337,6 +269,6 @@ export function NewestResearch({
                     </ul>
                 )}
             </div>
-        </section>
+        </div>
     );
 }

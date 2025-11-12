@@ -5,6 +5,7 @@ import { apiClient } from '../../utilities/api';
 import { error as logError } from '../../utilities/logger';
 import type { Post } from '../../types/';
 import { OtherIcons } from '../../assets/icons/icons';
+import PlaceholderImageSvg from '../../assets/icons/PlaceholderImage/PlaceHolderImageNoStars.svg';
 
 interface NewestPostProps {
     apiUrl?: string;
@@ -184,20 +185,6 @@ export function NewestPost({
                     border: 1px solid transparent;
                 }
 
-                /* Mobile layout: 2 columns */
-                @media (max-width: 640px) {
-                    .newpost-container .wrap {
-                        grid-template-columns: 1fr auto;
-                    }
-                }
-
-                /* Desktop layout: 3 columns */
-                @media (min-width: 641px) {
-                    .newpost-container .wrap {
-                        grid-template-columns: auto 1fr auto;
-                    }
-                }
-
                 .newpost-container .wrap > span {
                     display: inline-grid;
                     text-align: left;
@@ -216,16 +203,12 @@ export function NewestPost({
                     transition: background-color 0.3s ease, color 0.3s ease;
                 }
 
-                .newpost-container .collection {
-                    padding-bottom: 0.5em;
-                }
-
                 /* Badge positioning - top right */
                 .newpost-container .wrap > span:nth-child(1) {
                     grid-row: 1;
                     justify-self: end;
                     align-self: start;
-                    padding: 0 0 12px 12px;
+                    padding: 0 0 8px 8px;
                 }
 
                 @media (max-width: 640px) {
@@ -257,7 +240,6 @@ export function NewestPost({
                 @media (max-width: 640px) {
                     .newpost-container .wrap > span:nth-child(2) {
                         grid-column: 1 / span 2;
-                        padding: 12px 12px 0 0;
                     }
                 }
 
@@ -265,7 +247,7 @@ export function NewestPost({
                 @media (min-width: 641px) {
                     .newpost-container .wrap > span:nth-child(2) {
                         grid-column: 1;
-                        padding: 12px 12px 0 0;
+                        padding: 8px 8px 0 0;
                     }
                 }
 
@@ -281,7 +263,7 @@ export function NewestPost({
                 @media (max-width: 640px) {
                     .newpost-container .wrap > span:nth-child(3) {
                         grid-column: 1 / span 2;
-                        padding: 12px 0 0 0;
+                        padding: 8px 8px 0 0;
                     }
                 }
 
@@ -289,7 +271,7 @@ export function NewestPost({
                 @media (min-width: 641px) {
                     .newpost-container .wrap > span:nth-child(3) {
                         grid-column: 1;
-                        padding: 12px 8px 0 0;
+                        padding: 8px 8px 0 0;
                     }
                 }
 
@@ -306,7 +288,7 @@ export function NewestPost({
                     font-size: 0.875rem;
                 }
 
-                @media (min-width: 640px) {
+                @media (min-width: 1280px) {
                     .newpost-container .description {
                         font-size: 1rem;
                     }
@@ -370,18 +352,18 @@ export function NewestPost({
                     inset: 0; 
                     z-index: -1; 
                     opacity: 0.5;
-                    background: url(${post.featuredImage}) 50%/cover content-box no-repeat;
+                    background: url(${post.featuredImage || PlaceholderImageSvg}) 50%/cover content-box no-repeat;
                     content: "";
                 }
                 
                 /* Border blur effect */
                 .newpost-container .image-layer .rect { 
-                    outline: solid 1em #9162CB; 
+                    outline: solid 1em #000; 
                     filter: url(#rond); 
                 }
                 
                 .newpost-container .image-layer span:not([class]) { 
-                    background: #000; 
+                    background: #9162CB; 
                 }
 
                 /* Content layer - prevent background clicks */
@@ -453,7 +435,7 @@ export function NewestPost({
                     width: fit-content;
                 }
 
-                @media (min-width: 640px) {
+                @media (min-width: 1280px) {
                     .newpost-container .badge {
                         font-size: 0.75rem;
                     }
@@ -461,27 +443,23 @@ export function NewestPost({
 
                 /* Responsive title sizes */
                 .newpost-container .title-wrapper {
-                    font-size: 1.125rem;
+                    font-size: 1rem;
                 }
 
-                @media (min-width: 640px) {
+                @media (min-width: 1280px) {
                     .newpost-container .title-wrapper {
                         font-size: 1.5rem;
                     }
                 }
 
-                @media (min-width: 768px) {
+                @media (min-width: 1024px) {
                     .newpost-container .title-wrapper {
                         font-size: 1.75rem;
                     }
                 }
 
                 /* Touch devices: always show hover effects */
-                @media (hover: none) and (pointer: coarse) {
-                    .newpost-container .image-layer {
-                        transform: scale(1.01);
-                    }
-                    
+                @media (hover: none) and (pointer: coarse) {                  
                     .newpost-container .content-layer .gapMaker {
                         color: #ffffff;
                     }
@@ -498,10 +476,20 @@ export function NewestPost({
                         transform: scaleX(1);
                     }
                 }
+                    @media (max-width: 1280px) {
+  .newpost-container {
+    min-height: 500px; 
+  }
+                       @media (max-width: 1024px) {
+  .newpost-container {
+    min-height: 400px; 
+  }
+}
+
             `}</style>
 
             <article
-                className={`newpost-container ${className} border border-[#9162CB] p-2 rounded-2xl h-full`}
+                className={`newpost-container ${className} border border-[#9162CB] p-2 rounded-2xl`}
                 aria-label={`Newest post: ${post.title}`}
             >
                 {/* SVG filters for visual effects */}
@@ -515,8 +503,16 @@ export function NewestPost({
                     <filter id="rond" colorInterpolationFilters="sRGB">
                         <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
                         <feComponentTransfer>
-                            <feFuncA type="table" tableValues="-4 10" />
+                            <feFuncA type="table" tableValues="-1 10" />
                         </feComponentTransfer>
+                        <feColorMatrix
+                            type="matrix"
+                            values="
+                            0 0 0 0 0.569
+                            0 0 0 0 0.384
+                            0 0 0 0 0.796
+                            0 0 0 1 0"
+                        />
                     </filter>
 
                     {/* Extract filter */}
@@ -546,38 +542,49 @@ export function NewestPost({
                             <div className="wrap">
                                 {/* Badge */}
                                 <span>
-                                    <span className="gapMaker badge">
+                                    <span className="gapMaker badge collection border-2">
                                         New Post
                                     </span>
                                 </span>
 
                                 {/* Title */}
                                 <span>
-                                    <span className="gapMaker">
-                                        <span className="title-wrapper">
+                                    <span className="gapMaker collection border-2">
+                                        <span
+                                            className="title-wrapper cursor-pointer"
+                                            onClick={() =>
+                                                handleReadMore(post.slug)
+                                            }
+                                        >
                                             <h2>{post.title}</h2>
-                                            <span
-                                                className="title-underline"
-                                                aria-hidden="true"
-                                            />
+                                            <span className="title-underline" />
                                         </span>
                                     </span>
                                 </span>
 
                                 {/* Description */}
                                 <span>
-                                    <span className="description gapMaker">
-                                        <p>{post.description}</p>
+                                    <span
+                                        className="cursor-pointer description collection gapMaker border-2"
+                                        onClick={() =>
+                                            handleReadMore(post.slug)
+                                        }
+                                    >
+                                        <p className="line-clamp-5">
+                                            {post.description}
+                                        </p>
                                     </span>
                                 </span>
 
                                 {/* Arrow icon */}
                                 <span>
-                                    <span className="gapMaker">
-                                        <OtherIcons.LongArrow
-                                            className="h-4 w-4 sm:h-5 sm:w-5"
-                                            aria-hidden="true"
-                                        />
+                                    <span
+                                        className="gapMaker border-2"
+                                        onClick={() =>
+                                            handleReadMore(post.slug)
+                                        }
+                                    >
+                                        <OtherIcons.LongArrow className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </span>
                                 </span>
                             </div>
@@ -618,7 +625,9 @@ export function NewestPost({
                                             handleReadMore(post.slug)
                                         }
                                     >
-                                        <p>{post.description}</p>
+                                        <p className="line-clamp-5">
+                                            {post.description}
+                                        </p>
                                     </span>
                                 </span>
 
