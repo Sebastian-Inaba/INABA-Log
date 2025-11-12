@@ -1,8 +1,8 @@
 // public/sw.js
-import { warn } from './utilities/logger.ts';
+
+const warn = (...args) => console.warn('[SW]', ...args);
 
 // Service worker caching JS/CSS bundles for faster loading
-
 const CACHE_NAME = 'my-app-cache-v2';
 const PRECACHE_URLS = [
   '/',
