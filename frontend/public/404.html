@@ -3,7 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>html,body{height:100%;margin:0;background:#171717}</style> <!--trying to make sure no white flash on redirects-->
 <script>
+    document.documentElement.style.backgroundColor = '#171717'; // trying to make sure no white flash on redirects
   // Save the URL the user tried to visit (mostly for admin to go to login and admin page)
   sessionStorage.redirect = location.href;
   // Redirect back to the base of your app (your-website-name.com/repo-name/)

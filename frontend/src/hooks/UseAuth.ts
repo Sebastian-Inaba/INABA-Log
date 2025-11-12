@@ -57,7 +57,6 @@ export function useAuthLogic() {
 
             if (res.data?.admin) {
                 setUser(res.data.admin);
-                sessionStorage.setItem('inaba_admin_flag', '1'); // marker for refresh
             } else {
                 await fetchUser(); // fallback if no admin returned
             }
@@ -76,7 +75,6 @@ export function useAuthLogic() {
             await axiosInstance.post('/admin/logout');
             setUser(null);
             setInitialized(false);
-            sessionStorage.removeItem('inaba_admin_flag');
         } catch (err) {
             error('Logout failed:', err);
         } finally {
@@ -84,20 +82,21 @@ export function useAuthLogic() {
         }
     };
 
-    // Run once on mount - always check auth status
+    // Run once on mount - always verify session with backend
     useEffect(() => {
         if (!initialized) {
-            // Check sessionStorage flag to see if we should verify session
-            const hasSession = sessionStorage.getItem('inaba_admin_flag');
-            
-            if (hasSession) {
-                // User was logged in, verify session is still valid
+            const isProtectedRoute =
+                location.pathname.startsWith('/admin') ||
+                location.pathname === '/login';
+
+            if (isProtectedRoute) {
+                // Protected route - verify session
                 fetchUser();
             } else {
-                // No session marker, skip auth check
+                // Public route - skip auth check
                 setLoading(false);
             }
-            
+
             setInitialized(true);
         }
     }, [initialized]);
