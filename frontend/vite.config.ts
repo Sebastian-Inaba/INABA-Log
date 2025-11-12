@@ -9,4 +9,5 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: { host: true }, // Allow access from network (for mobile testing)
+    base: '/INABA-Log/',
 })
