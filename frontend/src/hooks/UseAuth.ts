@@ -84,18 +84,20 @@ export function useAuthLogic() {
         }
     };
 
-    // Run once on mount, check if user is logged in on /login and /admin routes
+    // Run once on mount - always check auth status
     useEffect(() => {
-        const isProtectedRoute =
-            window.location.pathname.startsWith('/admin') ||
-            window.location.pathname === '/login';
-
-        if (!initialized && isProtectedRoute) {
-            fetchUser();
-            setInitialized(true);
-        } else if (!isProtectedRoute) {
-            // Skip auth check on public pages
-            setLoading(false);
+        if (!initialized) {
+            // Check sessionStorage flag to see if we should verify session
+            const hasSession = sessionStorage.getItem('inaba_admin_flag');
+            
+            if (hasSession) {
+                // User was logged in, verify session is still valid
+                fetchUser();
+            } else {
+                // No session marker, skip auth check
+                setLoading(false);
+            }
+            
             setInitialized(true);
         }
     }, [initialized]);

@@ -65,7 +65,7 @@ export function NewestPost({
     if (error) {
         return (
             <div
-                className={`rounded-lg text-center bg-transparent border border-gray-700 p-8 ${className}`}
+                className={`flex flex-col items-center justify-center rounded-lg text-center bg-transparent border border-gray-700 p-8 ${className}`}
                 role="alert"
                 aria-live="polite"
             >
