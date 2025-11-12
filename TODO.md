@@ -37,6 +37,7 @@
 * [ ] Make page refresh maintain last scroll position.
 * [ ] Fix WCAG accessibility.
 * [ ] Fix page printing.
+* [ ] Fix SEO.
 
 ---
 
@@ -52,6 +53,7 @@
 * [ ] Fix model validation if something is required or not on the front end.
 * [ ] Fix keyboard navigation on new post forms and clickable titles.
 * [ ] Fix WCAG accessibility .
+* [ ] Fix SEO.
 * [ ] Refresh tokens with server-side tracking.
 * [ ] Make page pagination server-side for true scalability.
 * [ ] Consider heavy endpoints for `GET all` if 500+ posts / deep dives exist.

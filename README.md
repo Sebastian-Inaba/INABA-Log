@@ -33,9 +33,9 @@ INABA-Log is a **personal blog** designed to document coding projects, case stud
 
 # Update
 
-- I have improved the performance issues
-- I made a new logo and redesigned the landing page
-- I change all svg's in to react components 
+- I’ve been procrastinating the launch of the website because I always feel it’s not quite ready and there’s always something small I can fix. But I think it’s time. Next steps will be to create some initial posts, maybe a dive deeper, and then host it.
+
+- Once it’s hosted, I’ll start tackling some of the bigger tasks, like SEO and WCAG accessibility, server-side pagination, signed URLs, Google Analytics, and more. There’s still a lot to do, but this is a solid start.
 
 #### Full Design Example (might not be final product)
 
