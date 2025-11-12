@@ -34,15 +34,17 @@ app.use(helmet());
 app.use(
     cors({
         origin: function(origin, callback) {
-            // Allow requests with no origin
+            log('🔍 Incoming origin:', origin);
+            log('🔍 Configured frontendUrl:', env.frontendUrl);
+            log('🔍 Match check:', origin === env.frontendUrl);
+            log('🔍 Without slash:', origin === env.frontendUrl.replace(/\/$/, ''));
+            
             if (!origin) return callback(null, true);
             
-            // Check if origin matches or starts with the frontend URL
             if (origin === env.frontendUrl || origin === env.frontendUrl.replace(/\/$/, '')) {
                 return callback(null, true);
             }
             
-            // Allow localhost for dev
             if (origin.startsWith('http://localhost')) {
                 return callback(null, true);
             }
