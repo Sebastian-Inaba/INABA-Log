@@ -71,3 +71,8 @@ INABA-Log serves as a **development journal** and **my personal thoughts**, comb
 ## License
 
 MIT License © Sebastian Inaba
+
+<sub>
+The **INABA-Log** logo and branding are protected under a separate license.  
+See [LOGO-LICENSE](./LOGO-LICENSE) for details.  
+</sub>
