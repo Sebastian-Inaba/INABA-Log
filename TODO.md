@@ -78,3 +78,4 @@
 * [ ] Add google analytics.
 * [ ] Add singed url for get requests.
 * [ ] Maybe add visualization for lists.
+* [ ] Fix markdown rendering for special links.
