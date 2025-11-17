@@ -79,4 +79,5 @@
 * [ ] Add singed url for get requests.
 * [ ] Maybe add visualization for lists.
 * [ ] Fix markdown rendering for special links.
-* [ ] Make error and empty states consistent.
+* [ ] Make error and empty states consistent(for example, in NewResearch component the error state loads instead of empty state and they all look just a bit different).
+* [ ] Fix backdrop animation on mobile, it scrolls and (render problem / pauses ) but the other 2 problems might be because it scrolls in the first place.

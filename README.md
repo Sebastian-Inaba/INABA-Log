@@ -2,7 +2,7 @@
 
 **By Sebastian Inaba**
 
-**Live at:** https://sebastian-inaba.github.io/INABA-Log/ — (WIP)
+**Live at:** https://sebastian-inaba.github.io/INABA-Log/ — (Initial load might take a while as the backend is on a free plan)
 
 > A personal blog combining coding, research, and project updates.
 
