@@ -99,7 +99,7 @@ export const updatePost = async (
                 uploaded.publicUrl,
             );
 
-            post.featuredImage = uploaded.filename;
+            post.featuredImage = uploaded.publicUrl;
         } else if (req.body.removeImage === 'true') {
             // Delete only
             if (post.featuredImage) {

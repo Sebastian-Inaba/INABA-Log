@@ -103,7 +103,7 @@ const LinkPreview = memo(
             const previewPatterns = [
                 /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/,
                 /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/,
-                /^https?:\/\/(www\.)?github\.com\/[\w-]+/,
+                // /^https?:\/\/(www\.)?github\.com\/[\w-]+/, // commented out for now since i don't like it
             ];
             try {
                 return previewPatterns.some((pattern) => pattern.test(url));
