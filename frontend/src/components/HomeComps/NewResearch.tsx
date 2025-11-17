@@ -177,11 +177,11 @@ export function NewestResearch({
                         Research highlights error
                     </h2>
                     <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
-                        Something went wrong getting research highlights.
+                        Something went wrong getting research highlights or there are none yet.
                     </p>
                     <button
                         onClick={handleRetry}
-                        className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2"
+                        className="bg-indigo-700 hover:bg-indigo-800 text-white py-2 px-4 rounded-lg mt-2 hover:cursor-pointer"
                         aria-label="Retry fetching research highlights"
                     >
                         Try Again

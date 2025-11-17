@@ -156,7 +156,7 @@ export function LatestPosts({
                 <p className="text-gray-300">No recent posts available.</p>
                 <button
                     onClick={handleRetry}
-                    className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm"
+                    className="mt-3 text-indigo-400 hover:text-indigo-200 text-sm hover:cursor-pointer"
                 >
                     Refresh
                 </button>

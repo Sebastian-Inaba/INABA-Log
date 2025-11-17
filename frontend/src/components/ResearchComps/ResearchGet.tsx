@@ -240,10 +240,10 @@ export default function PublicResearchList() {
                         </div>
 
                         <h2 className="text-2xl md:text-3xl text-white font-semibold mb-2">
-                            No research found
+                            No Deep dive found
                         </h2>
                         <p className="text-sm text-slate-400 mb-6 max-w-[680px] mx-auto">
-                            We couldn't find any research matching your current
+                            We couldn't find any dive matching your current
                             filters. Try widening your search, clearing filters,
                             or refresh the list.
                         </p>
