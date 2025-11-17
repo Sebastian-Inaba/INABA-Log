@@ -457,7 +457,9 @@ const REHYPE_PLUGINS = [rehypeRaw];
 
 // Create components object once outside component
 const createMarkdownComponents = () => ({
-    p: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+    p: ({ children }: { children?: React.ReactNode }) => (
+        <p className="my-4">{children}</p>
+    ),
     code: ({
         inline,
         className,
