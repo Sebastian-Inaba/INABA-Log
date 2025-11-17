@@ -47,7 +47,7 @@ export function HeroInfo({
                         <div className="flex flex-wrap gap-1 sm:gap-3 items-center">
                             {/* Portfolio link */}
                             <a
-                                href="/portfolio"
+                                href="https://sebastian-inaba.github.io/Portfolio/"
                                 className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50"
                                 aria-label="View portfolio"
                             >
@@ -56,7 +56,7 @@ export function HeroInfo({
 
                             {/* External GitHub link */}
                             <a
-                                href="https://github.com/your-username"
+                                href="https://github.com/Sebastian-Inaba"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-md border border-gray-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800/40 whitespace-nowrap bg-neutral-900/50"

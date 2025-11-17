@@ -17,19 +17,19 @@ export function Footer() {
             key: 'github',
             Icon: SocialIcons.Github,
             label: 'GitHub Icon',
-            url: 'https://github.com/yourname',
+            url: 'https://github.com/Sebastian-Inaba',
         },
         {
             key: 'linkedin',
             Icon: SocialIcons.Linkedin,
             label: 'LinkedIn Icon',
-            url: 'https://linkedin.com/in/yourname',
+            url: 'https://www.linkedin.com/in/sebastian-inaba-123abc/',
         },
         {
             key: 'instagram',
             Icon: SocialIcons.Instagram,
             label: 'Instagram Icon',
-            url: 'https://instagram.com/yourname',
+            url: 'https://www.instagram.com/sebastianinaba/',
         },
     ];
 
