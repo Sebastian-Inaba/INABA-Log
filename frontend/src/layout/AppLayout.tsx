@@ -80,7 +80,7 @@ export function AppLayout() {
 
             {/* Main content wrapped in Lenis smooth scroll */}
             <LenisScroll>
-                <main className="flex-1 w-full relative z-10">
+                <main className="flex-1 w-full relative z-10 min-h-screen">
                     <Outlet />
                 </main>
             </LenisScroll>

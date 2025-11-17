@@ -224,7 +224,7 @@ export function CreateNewModal() {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-500 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-500 flex items-center justify-center pt-20"
                     role="dialog"
                     aria-modal="true"
                     aria-label="Create new content"
