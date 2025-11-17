@@ -73,4 +73,8 @@
 * [ ] Fix page printing.
 
 ### Quick add of new todo's
-* Empty
+* [ ] Remove IOS bounce/over-drag on top of website(makes header hide uncontrollably).
+* [ ] Add robot and sitemap.
+* [ ] Add google analytics.
+* [ ] Add singed url for get requests.
+* [ ] Maybe add visualization for lists.
