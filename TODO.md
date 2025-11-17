@@ -79,3 +79,4 @@
 * [ ] Add singed url for get requests.
 * [ ] Maybe add visualization for lists.
 * [ ] Fix markdown rendering for special links.
+* [ ] Make error and empty states consistent.
