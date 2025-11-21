@@ -182,8 +182,6 @@ export function LineNetworkBackdrop({
             const dpr = Math.min(2, window.devicePixelRatio || 1);
             const cssW = window.innerWidth;
             const cssH = window.innerHeight;
-            canvas.style.width = `${cssW}px`;
-            canvas.style.height = `${cssH}px`;
             canvas.width = Math.round(cssW * dpr);
             canvas.height = Math.round(cssH * dpr);
 
@@ -544,7 +542,11 @@ export function LineNetworkBackdrop({
         <canvas
             ref={canvasRef}
             className="fixed top-0 left-0 w-full h-full pointer-events-none"
-            style={{ zIndex: 1 }}
+            style={{ 
+                zIndex: 1,
+                touchAction: 'none',
+                WebkitTransform: 'translate3d(0,0,0)',
+            }}
         />
     );
 }
