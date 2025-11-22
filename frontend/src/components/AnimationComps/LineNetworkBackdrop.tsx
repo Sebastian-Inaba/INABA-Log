@@ -181,7 +181,13 @@ export function LineNetworkBackdrop({
         const setupCanvasSize = () => {
             const dpr = Math.min(2, window.devicePixelRatio || 1);
             const cssW = window.innerWidth;
-            const cssH = window.innerHeight;
+            // const cssH = window.screen.height;
+            // canvas.style.width = `${cssW}px`;
+            // canvas.style.height = `${cssH}px`;
+            const cssH = Math.max(
+                window.innerHeight,
+                window.screen.availHeight,
+            );
             canvas.width = Math.round(cssW * dpr);
             canvas.height = Math.round(cssH * dpr);
 
@@ -509,24 +515,25 @@ export function LineNetworkBackdrop({
         initGeometry();
         rafRef.current = requestAnimationFrame(draw);
 
+        // Commented out for now: to avoid bug on mobile
         // Debounced resize handler to avoid performance issues
-        let resizeTimeout: number | undefined;
-        const onResize = () => {
-            if (resizeTimeout) window.clearTimeout(resizeTimeout);
-            resizeTimeout = window.setTimeout(initGeometry, 150);
-        };
-        window.addEventListener('resize', onResize);
+        // let resizeTimeout: number | undefined;
+        // const onResize = () => {
+        //     if (resizeTimeout) window.clearTimeout(resizeTimeout);
+        //     resizeTimeout = window.setTimeout(initGeometry, 150);
+        // };
+        // window.addEventListener('resize', onResize);
 
         // Cleanup function to free resources
         return () => {
-            window.removeEventListener('resize', onResize);
+            //  window.removeEventListener('resize', onResize);
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
             if (gl && positionBuffer) gl.deleteBuffer(positionBuffer);
             if (gl && alphaBuffer) gl.deleteBuffer(alphaBuffer);
             if (gl && program) gl.deleteProgram(program);
             linesRef.current = [];
             motionTargetsRef.current = [];
-            if (resizeTimeout) window.clearTimeout(resizeTimeout);
+            // if (resizeTimeout) window.clearTimeout(resizeTimeout);
         };
     }, [
         lineCount,
@@ -541,12 +548,9 @@ export function LineNetworkBackdrop({
     return (
         <canvas
             ref={canvasRef}
-            className="fixed top-0 left-0 w-full h-full pointer-events-none"
-            style={{ 
-                zIndex: 1,
-                touchAction: 'none',
-                WebkitTransform: 'translate3d(0,0,0)',
-            }}
+            // min-w-full h-dvh min-h-dvh
+            className="fixed inset-0 w-full pointer-events-none overscroll-none touch-none"
+            style={{ zIndex: 1 }}
         />
     );
 }

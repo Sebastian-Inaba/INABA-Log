@@ -177,7 +177,8 @@ export function NewestResearch({
                         Research highlights error
                     </h2>
                     <p className="text-gray-300 mb-2 text-base md:text-lg leading-relaxed tracking-wide">
-                        Something went wrong getting research highlights or there are none yet.
+                        Something went wrong getting research highlights or
+                        there are none yet.
                     </p>
                     <button
                         onClick={handleRetry}

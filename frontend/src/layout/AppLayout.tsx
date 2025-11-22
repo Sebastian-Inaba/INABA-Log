@@ -1,5 +1,5 @@
 // src/layout/AppLayout.tsx
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/GlobalComps/Header/Header';
 import { Footer } from '../components/GlobalComps/Footer/Footer';
@@ -8,50 +8,48 @@ import { LineNetworkBackdrop } from '../components/AnimationComps/LineNetworkBac
 
 export function AppLayout() {
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-    const lastScrollY = useRef(0);
-
-    // Disable browser scroll restoration
-    useEffect(() => {
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-    }, []);
 
     // Handle scroll direction
     useEffect(() => {
+        let lastValidScrollY = 0;
+
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
 
-            if (currentScrollY > lastScrollY.current) {
-                // Scrolling down - hide header
+            // Ignore negative scroll positions
+            if (currentScrollY < 0) {
+                return;
+            }
+
+            // Ignore very small scroll changes
+            const scrollDelta = Math.abs(currentScrollY - lastValidScrollY);
+            if (scrollDelta < 3) {
+                return;
+            }
+
+            // Hide header when scrolling down past threshold
+            if (currentScrollY > lastValidScrollY && currentScrollY > 80) {
                 setIsHeaderVisible(false);
-            } else if (currentScrollY < lastScrollY.current) {
-                // Scrolling up - show header
+            }
+            // Show header when scrolling up
+            else if (currentScrollY < lastValidScrollY) {
                 setIsHeaderVisible(true);
             }
-            // When scroll stops, state stays as is
 
-            lastScrollY.current = currentScrollY;
+            lastValidScrollY = currentScrollY;
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // reflect header-hidden state on the root element so portaled elements can react
+    // Reflect header-hidden state on the root element
     useEffect(() => {
         if (typeof document !== 'undefined') {
-            if (!isHeaderVisible) {
-                document.documentElement.setAttribute(
-                    'data-header-hidden',
-                    'true',
-                );
-            } else {
-                document.documentElement.setAttribute(
-                    'data-header-hidden',
-                    'false',
-                );
-            }
+            document.documentElement.setAttribute(
+                'data-header-hidden',
+                isHeaderVisible ? 'false' : 'true',
+            );
         }
     }, [isHeaderVisible]);
 

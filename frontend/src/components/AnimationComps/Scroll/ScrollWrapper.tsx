@@ -1,5 +1,5 @@
 // src/components/AnimationComps/Scroll/ScrollWrapper.tsx
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ScrollBar } from './ScrollBar';
 import Lenis from 'lenis';
@@ -9,23 +9,35 @@ interface LenisScrollProps {
     onDirectionChange?: (dir: 'up' | 'down') => void;
 }
 
-export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
-    // Ref to store the Lenis instance
-    const lenisRef = useRef<Lenis | null>(null);
-    // Get current location to detect route changes
-    const location = useLocation();
-    // MutationObserver ref so we can disconnect on cleanup
-    const moRef = useRef<MutationObserver | null>(null);
+// Hook to detect if we're on mobile/tablet
+function useIsDesktop() {
+    const [isDesktop, setIsDesktop] = useState(() => {
+        if (typeof window === 'undefined') return true;
+        return window.innerWidth >= 1024; // lg breakpoint
+    });
 
-    // track last scroll and last direction in refs to compute diffs cheaply
+    useEffect(() => {
+        const checkIsDesktop = () => {
+            setIsDesktop(window.innerWidth >= 1024);
+        };
+
+        window.addEventListener('resize', checkIsDesktop);
+        return () => window.removeEventListener('resize', checkIsDesktop);
+    }, []);
+
+    return isDesktop;
+}
+
+export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
+    const isDesktop = useIsDesktop();
+    const lenisRef = useRef<Lenis | null>(null);
+    const location = useLocation();
+    const moRef = useRef<MutationObserver | null>(null);
     const lastScrollRef = useRef<number>(0);
     const lastDirectionRef = useRef<'up' | 'down'>('up');
-    // track if user is actively scrolling
     const isScrollingRef = useRef<boolean>(false);
-    // timeout ref for debouncing scroll
     const scrollTimeoutRef = useRef<number | null>(null);
 
-    // Returns once every image is either complete or has fired load/error.
     const waitForImagesToLoad = async () => {
         const imgs = Array.from(document.images);
         if (!imgs.length) return;
@@ -42,18 +54,19 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
     };
 
     useEffect(() => {
+        // Only initialize Lenis on desktop
+        if (!isDesktop) return;
+
         // Initialize Lenis for smooth scrolling
         lenisRef.current = new Lenis({
-            lerp: 0.07, // smoothing factor
-            smoothWheel: true, // enable smooth wheel scroll
-            wheelMultiplier: 1, // control wheel sensitivity
-            autoRaf: true, // automatically hook into requestAnimationFrame
+            lerp: 0.07,
+            smoothWheel: true,
+            wheelMultiplier: 1,
+            autoRaf: true,
         });
 
-        // Make Lenis available globally
         window.lenis = lenisRef.current;
 
-        // Track when user is actively scrolling
         const handleWheel = () => {
             isScrollingRef.current = true;
             if (scrollTimeoutRef.current) {
@@ -67,7 +80,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
         window.addEventListener('wheel', handleWheel, { passive: true });
         window.addEventListener('touchmove', handleWheel, { passive: true });
 
-        // wire a Lenis 'scroll' listener
         const handleLenisScroll = (e: unknown) => {
             let current = window.scrollY;
 
@@ -99,29 +111,24 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             // If Lenis build doesn't support `.on`, skip
         }
 
-        // Initial measurement
         (async () => {
             await waitForImagesToLoad();
             lenisRef.current?.resize?.();
         })();
 
-        // Very conservative resize scheduling - only when NOT scrolling
         let resizeScheduled = false;
         let lastResizeTime = 0;
-        const RESIZE_THROTTLE = 300; // Increased from 150ms
+        const RESIZE_THROTTLE = 300;
         const pendingResize = { scheduled: false };
 
         const scheduleResize = () => {
-            // NEVER resize while user is scrolling
             if (isScrollingRef.current) {
-                // Mark that we need a resize later
                 pendingResize.scheduled = true;
                 return;
             }
 
             const now = Date.now();
 
-            // Immediate update if enough time has passed
             if (now - lastResizeTime >= RESIZE_THROTTLE) {
                 if (lenisRef.current) {
                     lenisRef.current.resize();
@@ -132,13 +139,11 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 return;
             }
 
-            // Otherwise throttle
             if (resizeScheduled) return;
             resizeScheduled = true;
 
             setTimeout(
                 () => {
-                    // Check again if still not scrolling
                     if (!isScrollingRef.current && lenisRef.current) {
                         lenisRef.current.resize();
                         lastResizeTime = Date.now();
@@ -150,7 +155,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             );
         };
 
-        // Check for pending resizes when scrolling stops
         const checkPendingResize = () => {
             if (pendingResize.scheduled && !isScrollingRef.current) {
                 scheduleResize();
@@ -159,12 +163,9 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
 
         const pendingInterval = window.setInterval(checkPendingResize, 500);
 
-        // Only observe very specific layout-changing mutations
         moRef.current = new MutationObserver((mutations) => {
             const shouldResize = mutations.some((mutation) => {
-                // Only care about childList changes (elements added/removed)
                 if (mutation.type === 'childList') {
-                    // Ignore if nodes are just text nodes
                     const hasElementNodes =
                         Array.from(mutation.addedNodes).some(
                             (node) => node.nodeType === Node.ELEMENT_NODE,
@@ -175,7 +176,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                     return hasElementNodes;
                 }
 
-                // For attributes, ONLY src/srcset (images loading)
                 if (mutation.type === 'attributes') {
                     const attrName = mutation.attributeName;
                     return (
@@ -200,7 +200,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 childList: true,
                 subtree: true,
                 attributes: true,
-                // Observe a larger set of attributes
                 attributeFilter: [
                     'src',
                     'srcset',
@@ -211,8 +210,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             });
         }
 
-        // Custom listener for explicit content-change events from components
-        // Some UI changes (CSS height transitions) don't mutate the DOM tree.
         let resizeDebounce: number | null = null;
         const onExternalContentChange = () => {
             if (resizeDebounce) {
@@ -223,15 +220,13 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                     lenisRef.current.resize();
                 }
                 resizeDebounce = null;
-            }, 60); // small debounce
+            }, 60);
         };
         window.addEventListener(
             'lenis:contentchange',
             onExternalContentChange as EventListener,
         );
-        // -----------------------------------------------------------------------------------
 
-        // Cleanup
         return () => {
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchmove', handleWheel);
@@ -255,27 +250,22 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
             lenisRef.current = null;
             window.lenis = undefined;
 
-            // remove the custom listener
             window.removeEventListener(
                 'lenis:contentchange',
                 onExternalContentChange as EventListener,
             );
         };
-    }, [onDirectionChange]);
+    }, [onDirectionChange, isDesktop]);
 
-    // Reset scroll on route change
     useEffect(() => {
-        if (!lenisRef.current) return;
+        if (!isDesktop || !lenisRef.current) return;
 
-        // Immediately force scroll to 0
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
 
-        // Stop Lenis
         lenisRef.current.stop();
 
-        // Force Lenis to 0
         requestAnimationFrame(() => {
             window.scrollTo(0, 0);
 
@@ -285,7 +275,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 // fallback
             }
 
-            // Resume and re-measure
             requestAnimationFrame(() => {
                 lenisRef.current?.start();
 
@@ -293,7 +282,6 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                     await waitForImagesToLoad();
                     lenisRef.current?.resize?.();
 
-                    // Final safety scroll
                     window.scrollTo(0, 0);
                     try {
                         lenisRef.current?.scrollTo(0, { immediate: true });
@@ -303,17 +291,16 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
                 });
             });
         });
-    }, [location.pathname, location.search]);
+    }, [location.pathname, location.search, isDesktop]);
 
-    // Handle browser back/forward - prevent scroll restoration
     useEffect(() => {
-        // Disable browser scroll restoration
+        if (!isDesktop) return;
+
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
 
         const onPop = () => {
-            // Immediately force to top
             window.scrollTo(0, 0);
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
@@ -349,18 +336,16 @@ export function LenisScroll({ children, onDirectionChange }: LenisScrollProps) {
 
         return () => {
             window.removeEventListener('popstate', onPop);
-            // Restore default behavior on cleanup
             if ('scrollRestoration' in history) {
                 history.scrollRestoration = 'auto';
             }
         };
-    }, []);
+    }, [isDesktop]);
 
     return (
         <div className="h-full w-full">
             {children}
-            {/** Custom scrollbar */}
-            <ScrollBar />
+            {isDesktop && <ScrollBar />}
         </div>
     );
 }

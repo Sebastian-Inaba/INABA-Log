@@ -149,7 +149,7 @@ export function MobileNav({
                     borderRadius: isOpen ? '0.75rem' : '0.375rem',
                     padding: isOpen ? '1.5rem' : '0',
                 }}
-                className={`fixed top-3.5 right-4 bg-neutral-900 z-1300 flex flex-col transition-all duration-500 ease-in-out origin-top-right overflow-hidden ${
+                className={`fixed top-5 right-4 bg-neutral-900 z-1300 flex flex-col transition-all duration-500 ease-in-out origin-top-right overflow-hidden ${
                     isOpen ? 'border border-purple-500' : 'border-0'
                 }`}
             >
